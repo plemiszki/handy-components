@@ -1,0 +1,114 @@
+table.admin-table {
+  width: 100%;
+
+  &.no-links tbody td {
+    padding: 10px 0;
+  }
+
+  thead {
+    border-bottom: solid 1px #DADEE2;
+
+    th {
+      font-family: 'TeachableSans-SemiBold';
+      padding-bottom: 20px;
+      color: black;
+    }
+    th:first-of-type {
+      padding-left: 10px;
+    }
+  }
+
+  &.sortable th div {
+    display: inline;
+
+    &.sort-header-active {
+      cursor: default;
+      font-family: 'TeachableSans-ExtraBold';
+    }
+
+    &.sort-header-inactive {
+      cursor: pointer;
+    }
+  }
+
+  &.blue-headers th div.sort-header-active {
+    color: #013ADF;
+  }
+
+  tbody {
+
+    td {
+      position: relative;
+      color: #96939B;
+
+      &:empty {
+        padding: 10px 0;
+      }
+
+      &.x-column {
+        width: 50px;
+        cursor: pointer;
+        background-image: image-url('handy-tools/images/x.svg');
+        background-size: 25px;
+        background-position: 50%;
+        background-repeat: no-repeat;
+      }
+
+      &.play-column {
+        width: 50px;
+        cursor: pointer;
+        background-image: image-url('handy-tools/images/play-button.svg');
+        background-size: 25px;
+        background-position: 50%;
+        background-repeat: no-repeat;
+      }
+
+      a {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+      }
+    }
+
+    tr.bold td, td.bold {
+      font-family: 'TeachableSans-Medium';
+      color: black;
+    }
+
+    td:first-of-type {
+      padding-left: 10px;
+    }
+
+    tr:first-child {
+      td {
+        padding-top: 10px;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  tr:not(:first-child) {
+    cursor: pointer;
+  }
+
+  tr:not(:first-child):hover {
+    background-color: #F5F5F5;
+  }
+}
+
+input.search-box {
+  float: right;
+  border-radius: 100px;
+  padding: 15px 15px 15px 50px;
+  width: 250px;
+  background-image: image-url('handy-tools/images/magnifying-glass.svg');
+  background-repeat: no-repeat;
+  background-position: 15px 15px;
+  border: 1px solid #E4E9ED;
+  color: #5F5F5F;
+  letter-spacing: 1.08px;
+
+  &.margin {
+    margin-right: 30px;
+  }
+}

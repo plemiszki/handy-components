@@ -1,0 +1,8 @@
+# Ignore DS Store Files
+*.DS_Store
+.DS_Store
+
+# Ignore Node Modules
+/node_modules/*
+
+*.swp
