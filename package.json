@@ -1,0 +1,19 @@
+{
+  "name": "handy-components",
+  "version": "1.0.0",
+  "description": "React components I use across multiple apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plemiszki/handy-components.git"
+  },
+  "author": "Peter Lemiszki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plemiszki/handy-components/issues"
+  },
+  "homepage": "https://github.com/plemiszki/handy-components#readme"
+}
