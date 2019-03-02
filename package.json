@@ -1,6 +1,6 @@
 {
   "name": "handy-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React components I use across multiple apps",
   "main": "dist/handy-components.bundle.js",
   "scripts": {
