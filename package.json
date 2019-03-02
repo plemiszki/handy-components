@@ -2,7 +2,7 @@
   "name": "handy-components",
   "version": "1.0.0",
   "description": "React components I use across multiple apps",
-  "main": "handy-components.js",
+  "main": "dist/handy-components.bundle.js",
   "scripts": {
     "build-release": "webpack --config ./webpack.config.js"
   },
