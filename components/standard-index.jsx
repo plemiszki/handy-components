@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 // import { bindActionCreators } from 'redux';
 // import { fetchEntities } from '../actions/index';
 // import Modal from 'react-modal';
-import HandyTools from 'handy-tools';
-import _ from 'lodash';
+// import HandyTools from 'handy-tools';
+// import _ from 'lodash';
 // import Index from './modules/index.js';
 // import Common from './modules/common.js';
 // import TabActions from './modules/tab-actions.js';
@@ -61,7 +61,7 @@ export default class StandardIndex extends React.Component {
 
   render() {
     return(
-      <div className="component">
+      <div>
         standard index
       </div>
     );

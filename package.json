@@ -2,9 +2,9 @@
   "name": "handy-components",
   "version": "1.0.0",
   "description": "React components I use across multiple apps",
-  "main": "index.js",
+  "main": "handy-components.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-release": "webpack --config ./webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -12,15 +12,12 @@
   },
   "author": "Peter Lemiszki",
   "dependencies": {
-    "handy-tools": "1.26.0",
-    "jquery": "^3.3.1",
-    "jquery-match-height": "^0.7.2",
-    "lodash": "^4.17.11",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-react": "^6.24.1",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-modal": "^3.6.1",
-    "react-redux": "5.0.7",
-    "redux": "4.0.0",
-    "redux-thunk": "^2.3.0"
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
   }
 }
