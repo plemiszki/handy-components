@@ -1,5 +1,5 @@
 import StandardIndex from './components/standard-index'
 
-export {
-  StandardIndex
-}
+const foo = { foo: 'bar' }
+
+export { foo }
