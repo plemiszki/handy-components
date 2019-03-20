@@ -1,23 +1,26 @@
 {
   "name": "handy-components",
-  "version": "1.0.3",
-  "description": "React components I use across multiple apps",
-  "main": "dist/handy-components.bundle.js",
-  "scripts": {
-    "build-release": "webpack --config ./webpack.config.js"
-  },
+  "version": "1.0.0",
+  "main": "build/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plemiszki/handy-components.git"
   },
-  "author": "Peter Lemiszki",
+  "scripts": {
+    "start": "webpack --watch",
+    "build": "webpack"
+  },
   "dependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-preset-react": "^6.24.1",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0"
+    "react": "16.8.4",
+    "webpack": "4.29.6"
+  },
+  "devDependencies": {
+    "@babel/core": "7.4.0",
+    "@babel/preset-react": "7.0.0",
+    "babel-loader": "8.0.5",
+    "webpack-cli": "3.3.0"
+  },
+  "engines": {
+    "node": "10.9.0"
   }
 }
