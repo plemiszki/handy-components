@@ -11,7 +11,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx$/,
         include: path.resolve(__dirname, 'src'),
         exclude: /(node_modules|bower_components|build)/,
         use: {
@@ -19,6 +19,9 @@ module.exports = {
         }
       }
     ]
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   },
   externals: {
     'react': 'commonjs react'

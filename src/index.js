@@ -1,18 +1,4 @@
-import React from "react";
+import React from 'react';
+import StandardIndex from './containers/standard-index.jsx';
 
-const ReactColorSquare = props => {
-  const { width, height, color, text } = props;
-  return (
-    <div
-      style={{
-        width: width || 100,
-        height: height || 100,
-        backgroundColor: color || "blue"
-      }}
-    >
-      howdyadf
-    </div>
-  );
-};
-
-export default ReactColorSquare;
+export { StandardIndex }
