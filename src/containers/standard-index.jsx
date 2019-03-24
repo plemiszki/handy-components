@@ -9,6 +9,7 @@ import Common from './modules/common.js';
 import Index from './modules/index.js';
 
 let directory;
+let entityNamePlural;
 
 class StandardIndex extends React.Component {
 
@@ -23,7 +24,8 @@ class StandardIndex extends React.Component {
       newEntityModalOpen: false
     }
 
-    directory = this.props.entityNamePlural;
+    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    directory = entityNamePlural;
 
     this.state = initialState;
   }
@@ -49,7 +51,11 @@ class StandardIndex extends React.Component {
     const children = React.Children.map(
       this.props.children,
       (child) => {
-        return React.cloneElement(child, { callback: this.updateIndex.bind(this) });
+        return React.cloneElement(child, {
+          entityName: this.props.entityName,
+          entityNamePlural: entityNamePlural,
+          callback: this.updateIndex.bind(this)
+        });
       }
     );
 
@@ -57,7 +63,7 @@ class StandardIndex extends React.Component {
 
     return(
       <div className="component">
-        <h1>{ HandyTools.capitalize(this.props.entityNamePlural) }</h1>
+        <h1>{ HandyTools.capitalize(entityNamePlural) }</h1>
         <a className={ "blue-button btn float-button" + HandyTools.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { HandyTools.capitalize(this.props.entityName) }</a>
         <input className="search-box margin" onChange={ HandyTools.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         <div className="white-box">
