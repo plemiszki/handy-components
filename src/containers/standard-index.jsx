@@ -59,23 +59,23 @@ class StandardIndex extends React.Component {
       }
     );
 
-    let filteredEntities = HandyTools.filterSearchText(this.state.entities, this.state.searchText, this.state.searchProperty);
+    let filteredEntities = Index.filterSearchText(this.state.entities, this.state.searchText, this.state.searchProperty);
 
     return(
       <div className="component">
         <h1>{ HandyTools.capitalize(entityNamePlural) }</h1>
-        <a className={ "blue-button btn float-button" + HandyTools.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { HandyTools.capitalize(this.props.entityName) }</a>
-        <input className="search-box margin" onChange={ HandyTools.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
+        <a className={ "blue-button btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { HandyTools.capitalize(this.props.entityName) }</a>
+        <input className="search-box margin" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className="admin-table sortable blue-headers">
             <thead>
               <tr>
                 { this.props.columns.map((column, index) => {
                   return(
                     <th key={ index }>
-                      <div className={ HandyTools.sortClass.bind(this)(column) } onClick={ HandyTools.changeState.bind(this, 'searchProperty', column) }>
+                      <div className={ Index.sortClass.bind(this)(column) } onClick={ Common.changeState.bind(this, 'searchProperty', column) }>
                         { this.props.columnHeaders && this.props.columnHeaders[index] ? this.props.columnHeaders[index] : HandyTools.capitalize(column) }
                       </div>
                     </th>

@@ -1,4 +1,18 @@
+import React from 'react';
+
 export default {
+
+  changeState(property, value) {
+    this.setState({
+      [property]: value
+    });
+  },
+
+  changeStateToTarget(property, e) {
+    this.setState({
+      [property]: e.target.value
+    });
+  },
 
   checkForMessage() {
     let message = localStorage.getItem('message');
@@ -54,6 +68,48 @@ export default {
         maxWidth: modalDimensions.width || 1000,
         height: height
       }
+    }
+  },
+
+  renderDisabledButtonClass: function(condition) {
+    return condition ? " disabled" : "";
+  },
+
+  renderInactiveButtonClass: function(condition) {
+    return condition ? " inactive" : "";
+  },
+
+  renderGrayedOut: function(shouldIRender, marginTop, marginLeft, borderRadius) {
+    var grayedOutStyle = {
+      position: 'absolute',
+      zIndex: 100,
+      backgroundColor: 'gray',
+      opacity: 0.1,
+      width: '100%',
+      height: '100%',
+      borderRadius: borderRadius || 0,
+      marginTop: marginTop || 0,
+      marginLeft: marginLeft || 0
+    };
+    if (shouldIRender) {
+      return(
+        React.createElement("div", {className: "grayed-out", style:  grayedOutStyle })
+      );
+    }
+  },
+
+  renderSpinner: function(shouldIRender, spinnerSize) {
+    spinnerSize = spinnerSize || 90;
+    var spinnerStyle = {
+      width: spinnerSize,
+      height: spinnerSize,
+      left: 'calc(50% - ' + (spinnerSize / 2) + 'px)',
+      top: 'calc(50% - ' + (spinnerSize / 2) + 'px)'
+    };
+    if (shouldIRender) {
+      return(
+        React.createElement("div", { className: "spinner", style:  spinnerStyle })
+      );
     }
   }
 }

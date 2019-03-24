@@ -5,12 +5,61 @@ import ChangeCase from 'change-case';
 
 let Details = {
 
+  changeField: function(changeFieldArgs, event) {
+    var key = event.target.dataset.field;
+    var entity = event.target.dataset.entity;
+    var saveKey;
+    var saveValue;
+
+    var value = $(event.target).is('select') ? HandyTools.convertTFStringsToBoolean(event.target.value) : event.target.value;
+
+    if (entity) {
+      var newEntity = this.state[entity];
+      newEntity[key] = value;
+      saveKey = entity;
+      saveValue = newEntity;
+    } else {
+      saveKey = key;
+      saveValue = value;
+    }
+
+    Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, key);
+
+    if (changeFieldArgs.beforeSave) {
+      var beforeSaveResult = changeFieldArgs.beforeSave.call(this, saveKey, saveValue);
+      saveKey = beforeSaveResult.key;
+      saveValue = beforeSaveResult.value;
+    }
+
+    this.setState({
+      [saveKey]: saveValue,
+      justSaved: false
+    }, function() {
+      if (changeFieldArgs.changesFunction) {
+        var changesToSave = changeFieldArgs.changesFunction.call();
+        this.setState({
+          changesToSave: changesToSave
+        });
+      }
+    });
+  },
+
   clickDelete() {
     this.setState({
       fetching: true
     });
     let urlSections = window.location.pathname.split('/');
     this.props.deleteEntity(urlSections[1], urlSections[2]);
+  },
+
+  errorClass: function(stateErrors, fieldErrors) {
+    var i;
+    for (i = 0; i < fieldErrors.length; i++) {
+      if (stateErrors.indexOf(fieldErrors[i]) > -1) {
+        return 'error';
+      }
+    }
+    return '';
   },
 
   fetchEntity() {
@@ -42,6 +91,17 @@ let Details = {
 
   getColumnHeader(args) {
     return args.columnHeader || ChangeCase.titleCase(args.property);
+  },
+
+  removeFieldError(errors, errorsArray, fieldName) {
+    if (errors[fieldName]) {
+      if (!errorsArray) {
+        console.log("no errors array!!!");
+      }
+      errors[fieldName].forEach(function(message) {
+        HandyTools.removeFromArray(errorsArray, message);
+      });
+    }
   },
 
   renderDropDown(args) {
@@ -84,6 +144,19 @@ let Details = {
     );
   },
 
+  renderDropdownFieldError(stateErrors, fieldErrors) {
+    for (var i = 0; i < fieldErrors.length; i++) {
+      if (stateErrors.indexOf(fieldErrors[i]) > -1) {
+        return(
+          React.createElement("div", { className: "yes-dropdown-field-error" }, fieldErrors[i])
+        );
+      }
+    }
+    return(
+      React.createElement("div", { className: "no-dropdown-field-error" })
+    );
+  },
+
   renderField(args) {
     let columnHeader = Details.getColumnHeader(args);
     return(
@@ -92,6 +165,19 @@ let Details = {
         <input className={ HandyTools.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ HandyTools.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } />
         { HandyTools.renderFieldError(this.state.errors, Errors[args.property] || []) }
       </div>
+    );
+  },
+
+  renderFieldError(stateErrors, fieldErrors) {
+    for (var i = 0; i < fieldErrors.length; i++) {
+      if (stateErrors.indexOf(fieldErrors[i]) > -1) {
+        return(
+          React.createElement("div", { className: "yes-field-error" }, fieldErrors[i])
+        );
+      }
+    }
+    return(
+      React.createElement("div", { className: "no-field-error" })
     );
   },
 
