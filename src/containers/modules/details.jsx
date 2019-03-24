@@ -139,7 +139,7 @@ let Details = {
           { renderNoneOption(args) }
           { renderOptions(args) }
         </select>
-        { HandyTools.renderDropdownFieldError(this.state.errors, Errors[args.property] || []) }
+        { Details.renderDropdownFieldError(this.state.errors, Errors[args.property] || []) }
       </div>
     );
   },
