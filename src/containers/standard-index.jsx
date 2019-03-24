@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import HandyTools from 'handy-tools';
 import _ from 'lodash';
 import { fetchEntities } from '../actions/index';
-import Common from './modules/common.js';
+import FlashCardsCommon from './modules/common.js';
 import Index from './modules/index.js';
 
 let directory;

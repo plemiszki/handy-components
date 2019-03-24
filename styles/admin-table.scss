@@ -48,7 +48,7 @@ table.admin-table {
       &.x-column {
         width: 50px;
         cursor: pointer;
-        background-image: image-url('handy-tools/images/x.svg');
+        background-image: image-url('handy-components/images/x.svg');
         background-size: 25px;
         background-position: 50%;
         background-repeat: no-repeat;
@@ -57,7 +57,7 @@ table.admin-table {
       &.play-column {
         width: 50px;
         cursor: pointer;
-        background-image: image-url('handy-tools/images/play-button.svg');
+        background-image: image-url('handy-components/images/play-button.svg');
         background-size: 25px;
         background-position: 50%;
         background-repeat: no-repeat;
@@ -101,7 +101,7 @@ input.search-box {
   border-radius: 100px;
   padding: 15px 15px 15px 50px;
   width: 250px;
-  background-image: image-url('handy-tools/images/magnifying-glass.svg');
+  background-image: image-url('handy-components/images/magnifying-glass.svg');
   background-repeat: no-repeat;
   background-position: 15px 15px;
   border: 1px solid #E4E9ED;
