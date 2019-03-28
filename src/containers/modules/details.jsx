@@ -159,13 +159,17 @@ let Details = {
 
   renderField(args) {
     let columnHeader = Details.getColumnHeader(args);
-    return(
-      <div className={ `col-xs-${args.columnWidth}` }>
-        <h2>{ columnHeader }</h2>
-        <input className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } />
-        { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
-      </div>
-    );
+    if (args.hidden) {
+      return null;
+    } else {
+      return(
+        <div className={ `col-xs-${args.columnWidth}` }>
+          <h2>{ columnHeader }</h2>
+          <input className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } />
+          { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
+        </div>
+      );
+    }
   },
 
   renderFieldError(stateErrors, fieldErrors) {
