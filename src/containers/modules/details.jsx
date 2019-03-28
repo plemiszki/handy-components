@@ -160,7 +160,7 @@ let Details = {
   renderField(args) {
     let columnHeader = Details.getColumnHeader(args);
     if (args.hidden) {
-      return null;
+      return <div className={ `col-xs-${args.columnWidth}` }></div>;
     } else {
       return(
         <div className={ `col-xs-${args.columnWidth}` }>
