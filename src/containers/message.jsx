@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import Common from './modules/common.js';
+import React, { Component } from 'react'
+import Common from './modules/common.js'
 
 class Message extends React.Component {
 
