@@ -19,9 +19,10 @@ class SimpleDetails extends React.Component {
   }
 
   componentDidMount() {
+    let pathDirectories = window.location.pathname.split('/');
     this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
+      id: pathDirectories[pathDirectories.length - 1],
+      directory: pathDirectories[pathDirectories.length - 2],
       entityName: this.props.entityName
     }).then(() => {
       this.setState({
@@ -51,10 +52,11 @@ class SimpleDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
+    }, () => {
+      let pathDirectories = window.location.pathname.split('/');
       this.props.updateEntity({
-        id: window.location.pathname.split('/')[2],
-        directory: window.location.pathname.split('/')[1],
+        id: pathDirectories[pathDirectories.length - 1],
+        directory: pathDirectories[pathDirectories.length - 2],
         entityName: this.props.entityName,
         entity: this.state[this.props.entityName]
       }).then(() => {
@@ -87,7 +89,7 @@ class SimpleDetails extends React.Component {
                   { row.map((field, index2) => {
                     return(
                       <div key={ index2 }>
-                        { Details.renderField.bind(this)(field) }
+                        { this.renderField(field) }
                       </div>
                     );
                   })}
@@ -106,6 +108,14 @@ class SimpleDetails extends React.Component {
         </div>
       </div>
     );
+  }
+
+  renderField(field) {
+    if (field.type == 'textbox') {
+      return Details.renderTextBox.bind(this)(field);
+    } else {
+      return Details.renderField.bind(this)(field);
+    }
   }
 }
 

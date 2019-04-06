@@ -74,7 +74,7 @@ class StandardIndex extends React.Component {
               <tr>
                 { this.props.columns.map((column, index) => {
                   return(
-                    <th key={ index }>
+                    <th key={ index } style={ this.columnWidth(index) }>
                       <div className={ Index.sortClass.bind(this)(column) } onClick={ Common.changeState.bind(this, 'searchProperty', column) }>
                         { this.props.columnHeaders && this.props.columnHeaders[index] ? this.props.columnHeaders[index] : HandyTools.capitalize(column) }
                       </div>
@@ -114,6 +114,14 @@ class StandardIndex extends React.Component {
         </Modal>
       </div>
     );
+  }
+
+  columnWidth(index) {
+    if (this.props.columnWidths[index]) {
+      return {
+        width: +this.props.columnWidths[index]
+      };
+    }
   }
 
   renderValue(value, index) {
