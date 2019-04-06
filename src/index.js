@@ -6,6 +6,7 @@ import Index from './containers/modules/index.js'
 
 import Message from './containers/message.jsx'
 import ModalSelect from './containers/modal-select.jsx'
+import SimpleDetails from './containers/simple-details.jsx'
 import StandardIndex from './containers/standard-index.jsx'
 import TabbedIndex from './containers/tabbed-index.jsx'
 
@@ -32,6 +33,7 @@ export {
   Message,
   ModalSelect,
   ModalSelectStyles,
+  SimpleDetails,
   StandardIndex,
   TabbedIndex
 }
