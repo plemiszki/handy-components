@@ -83,7 +83,9 @@ export function deleteEntity(directory, id, callback) {
         if (callback) {
           callback.call({}, response);
         } else {
-          window.location.pathname = `/${directory}`;
+          let directories = window.location.pathname.split('/');
+          directories.pop()
+          window.location.pathname = directories.join('/');
         }
       }
     );

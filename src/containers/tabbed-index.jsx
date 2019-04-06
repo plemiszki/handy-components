@@ -102,7 +102,7 @@ class TabbedIndex extends React.Component {
                   );
                 })}
               </tr>
-              { _.sortBy(filteredEntities, [HandyTools.commonSort.bind(this)]).map((entity, index) => {
+              { _.orderBy(filteredEntities, [Index.sortIndex.bind(this)], [Index.sortDirection.call(this, filteredEntities[0])]).map((entity, index) => {
                 return(
                   <tr key={ index }>
                     { this.props.columns.map((column, index) => {

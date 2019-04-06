@@ -144,6 +144,10 @@ body.admin {
     letter-spacing: inherit;
     padding: 13px;
 
+    &::placeholder {
+      color: #d3d3d3;
+    }
+
     &.error {
       border: 1px solid red;
 

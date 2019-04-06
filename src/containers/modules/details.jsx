@@ -49,7 +49,7 @@ let Details = {
       fetching: true
     });
     let urlSections = window.location.pathname.split('/');
-    this.props.deleteEntity(urlSections[1], urlSections[2]);
+    this.props.deleteEntity(urlSections[urlSections.length - 2], urlSections[urlSections.length - 1]);
   },
 
   errorClass: function(stateErrors, fieldErrors) {
@@ -165,7 +165,7 @@ let Details = {
       return(
         <div className={ `col-xs-${args.columnWidth}` }>
           <h2>{ columnHeader }</h2>
-          <input className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } />
+          <input className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } />
           { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
         </div>
       );
