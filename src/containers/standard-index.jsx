@@ -117,7 +117,7 @@ class StandardIndex extends React.Component {
   }
 
   columnWidth(index) {
-    if (this.props.columnWidths[index]) {
+    if (this.props.columnWidths && this.props.columnWidths[index]) {
       return {
         width: +this.props.columnWidths[index]
       };
