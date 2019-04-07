@@ -224,7 +224,7 @@ body.admin {
         &:not(:last-of-type) { margin-bottom: 30px; }
 
         .highlight {
-          color: black;
+          color: $highlight-color;
           cursor: default;
           font-family: 'TeachableSans-ExtraBold';
         }

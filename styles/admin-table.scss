@@ -23,16 +23,13 @@ table.admin-table {
 
     &.sort-header-active {
       cursor: default;
+      color: $highlight-color;
       font-family: 'TeachableSans-ExtraBold';
     }
 
     &.sort-header-inactive {
       cursor: pointer;
     }
-  }
-
-  &.blue-headers th div.sort-header-active {
-    color: #013ADF;
   }
 
   tbody {

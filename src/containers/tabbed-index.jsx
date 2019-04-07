@@ -74,13 +74,13 @@ class TabbedIndex extends React.Component {
     return(
       <div className="component">
         <h1>{ HandyTools.capitalize(entityNamePlural) }</h1>
-        <a className={ "blue-button btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { HandyTools.capitalize(this.props.entityName) }</a>
+        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { HandyTools.capitalize(this.props.entityName) }</a>
         <input className="search-box margin" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         { this.renderTopTabs() }
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className="admin-table sortable blue-headers">
+          <table className="admin-table sortable">
             <thead>
               <tr>
                 { this.props.columns.map((column, index) => {
