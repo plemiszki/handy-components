@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import HandyTools from 'handy-tools'
+import ChangeCase from 'change-case'
 import Common from './modules/common.js'
 import Details from './modules/details.jsx'
 import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
@@ -78,7 +79,7 @@ class SimpleDetails extends React.Component {
   render() {
     return (
       <div id="simple-details" className="component details-component">
-        <h1>{ HandyTools.capitalize(this.props.entityName) } Details</h1>
+        <h1>{ this.props.header || `${ChangeCase.titleCase(this.props.entityName)} Details` }</h1>
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }

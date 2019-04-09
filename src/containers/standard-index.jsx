@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
+import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import _ from 'lodash'
 import { fetchEntities } from '../actions/index'
@@ -25,7 +26,7 @@ class StandardIndex extends React.Component {
     }
 
     entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    directory = entityNamePlural;
+    directory = ChangeCase.snakeCase(entityNamePlural);
 
     this.state = initialState;
   }
@@ -63,8 +64,8 @@ class StandardIndex extends React.Component {
 
     return(
       <div className="component">
-        <h1>{ HandyTools.capitalize(entityNamePlural) }</h1>
-        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { HandyTools.capitalize(this.props.entityName) }</a>
+        <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
+        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
         <input className="search-box margin" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
