@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
+import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import _ from 'lodash'
 import { fetchEntities } from '../actions/index'
 import Common from './modules/common.js'
 import Index from './modules/index.js'
 
+let arrayName;
 let directory;
 let entityNamePlural;
 
@@ -15,6 +17,10 @@ class TabbedIndex extends React.Component {
 
   constructor(props) {
     super(props);
+
+    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    directory = ChangeCase.snakeCase(entityNamePlural);
+    arrayName = ChangeCase.camelCase(entityNamePlural);
 
     let initialState = {
       fetching: true,
@@ -29,13 +35,10 @@ class TabbedIndex extends React.Component {
     })
 
     this.state = initialState;
-
-    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    directory = entityNamePlural;
   }
 
   componentDidMount() {
-    this.props.fetchEntities(directory).then(() => {
+    this.props.fetchEntities(directory, arrayName).then(() => {
       let entityArray = `entities${HandyTools.capitalize(this.state.tab)}`;
       this.setState({
         fetching: false,

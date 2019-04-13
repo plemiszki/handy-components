@@ -67,7 +67,7 @@ let Details = {
       id: window.location.pathname.split('/')[2],
       directory: window.location.pathname.split('/')[1],
       entityName: this.props.entityName
-    }).then(() => {
+    }, this.props.entityName).then(() => {
       let newState = {
         fetching: false,
         [this.props.entityName]: this.props[this.props.entityName],

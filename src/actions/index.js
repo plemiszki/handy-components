@@ -1,6 +1,6 @@
 import HandyTools from 'handy-tools';
 
-export function fetchEntities(directory) {
+export function fetchEntities(directory, arrayName) {
   return (dispatch) => {
     return $.ajax({
       method: 'GET',
@@ -8,28 +8,7 @@ export function fetchEntities(directory) {
     }).then(
       (response) => dispatch({
         type: 'FETCH_ENTITIES',
-        entities: response.entities
-      })
-    );
-  }
-}
-
-export function createEntity(args) {
-  return (dispatch) => {
-    return $.ajax({
-      method: 'POST',
-      url: `/api/${args.directory}`,
-      data: {
-        [HandyTools.convertToUnderscore(args.entityName)]: HandyTools.convertObjectKeysToUnderscore(args.entity)
-      }
-    }).then(
-      (response) => dispatch({
-        type: 'CREATE_ENTITY',
-        entities: response.entities
-      }),
-      (response) => dispatch({
-        type: 'ERRORS',
-        errors: response
+        entities: response[arrayName]
       })
     );
   }
@@ -43,7 +22,7 @@ export function fetchEntity(args) {
     }).then(
       (response) => dispatch({
         type: `FETCH_ENTITY`,
-        entity: response.entity,
+        entity: response[args.entityName],
         array1: response.array1,
         array2: response.array2,
         array3: response.array3
@@ -63,7 +42,7 @@ export function updateEntity(args) {
     }).then(
       (response) => dispatch({
         type: 'UPDATE_ENTITY',
-        entity: response.entity
+        entity: response[args.entityName]
       }),
       (response) => dispatch({
         type: 'ERRORS',

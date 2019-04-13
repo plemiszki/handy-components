@@ -9,6 +9,7 @@ import { fetchEntities } from '../actions/index'
 import Common from './modules/common.js'
 import Index from './modules/index.js'
 
+let arrayName;
 let directory;
 let entityNamePlural;
 
@@ -17,26 +18,26 @@ class StandardIndex extends React.Component {
   constructor(props) {
     super(props);
 
+    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    directory = ChangeCase.snakeCase(entityNamePlural);
+    arrayName = ChangeCase.camelCase(entityNamePlural);
+
     let initialState = {
       fetching: true,
-      entities: [],
+      [arrayName]: [],
       searchProperty: this.props.columns[0],
       searchText: '',
       newEntityModalOpen: false
     }
 
-    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    directory = ChangeCase.snakeCase(entityNamePlural);
-
     this.state = initialState;
   }
 
   componentDidMount() {
-    this.props.fetchEntities(directory).then(() => {
-      let entityArray = 'entities';
+    this.props.fetchEntities(directory, arrayName).then(() => {
       this.setState({
         fetching: false,
-        [entityArray]: this.props.entities
+        [arrayName]: this.props.entities
       });
     });
   }
@@ -44,7 +45,7 @@ class StandardIndex extends React.Component {
   updateIndex(entities) {
     this.setState({
       newEntityModalOpen: false,
-      entities: entities
+      [arrayName]: entities
     });
   }
 
@@ -60,7 +61,7 @@ class StandardIndex extends React.Component {
       }
     );
 
-    let filteredEntities = Index.filterSearchText(this.state.entities, this.state.searchText, this.state.searchProperty);
+    let filteredEntities = Index.filterSearchText(this.state[arrayName], this.state.searchText, this.state.searchProperty);
 
     return(
       <div className="component">
