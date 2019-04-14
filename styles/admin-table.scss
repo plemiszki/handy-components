@@ -84,11 +84,11 @@ table.admin-table {
     }
   }
 
-  tr:not(:first-child) {
+  tr:not(:first-child):not(.no-hover) {
     cursor: pointer;
   }
 
-  tr:not(:first-child):hover {
+  tr:not(:first-child):not(.no-hover):hover {
     background-color: #F5F5F5;
   }
 }
