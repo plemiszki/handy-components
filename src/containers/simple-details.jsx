@@ -1,21 +1,25 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 import Common from './modules/common.js'
 import Details from './modules/details.jsx'
 import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
 
+let entityNamePlural;
+
 class SimpleDetails extends React.Component {
   constructor(props) {
     super(props);
-
+    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
     this.state = {
       fetching: true,
       [this.props.entityName]: this.props.initialEntity,
       [`${this.props.entityName}Saved`]: this.props.initialEntity,
-      errors: []
+      errors: [],
+      copyModalOpen: false
     };
   }
 
@@ -76,8 +80,25 @@ class SimpleDetails extends React.Component {
     });
   }
 
+  clickCopy() {
+    this.setState({
+      copyModalOpen: true
+    });
+  }
+
   render() {
-    return (
+    const children = React.Children.map(
+      this.props.children,
+      (child) => {
+        return React.cloneElement(child, {
+          entityName: this.props.entityName,
+          entityNamePlural,
+          initialEntity: this.state[`${this.props.entityName}Saved`]
+        });
+      }
+    );
+
+    return(
       <div id="simple-details" className="component details-component">
         <h1>{ this.props.header || `${ChangeCase.titleCase(this.props.entityName)} Details` }</h1>
         <div className="white-box">
@@ -105,8 +126,12 @@ class SimpleDetails extends React.Component {
             <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Details.clickDelete.bind(this) }>
               Delete
             </a>
+            { this.renderCopyButton.call(this) }
           </div>
         </div>
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
+          { children }
+        </Modal>
       </div>
     );
   }
@@ -116,6 +141,16 @@ class SimpleDetails extends React.Component {
       return Details.renderTextBox.bind(this)(field);
     } else {
       return Details.renderField.bind(this)(field);
+    }
+  }
+
+  renderCopyButton() {
+    if (this.props.copy) {
+      return(
+        <a className={ "btn float-button margin-right" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
+          Copy
+        </a>
+      );
     }
   }
 }
