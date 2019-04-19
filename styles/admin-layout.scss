@@ -242,6 +242,14 @@ body.admin {
   }
 }
 
+a.upload {
+  margin-top: 10px;
+  display: inline-block;
+  font-size: 10px;
+  cursor: pointer;
+  color: #95949B;
+}
+
 .admin-modal {
 
   &.component {

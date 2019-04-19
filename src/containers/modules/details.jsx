@@ -166,6 +166,7 @@ let Details = {
         <div className={ `col-xs-${args.columnWidth}` }>
           <h2>{ columnHeader }</h2>
           <input className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } />
+          { Details.renderUploadLink(args.uploadLinkFunction) }
           { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
         </div>
       );
@@ -194,6 +195,14 @@ let Details = {
         { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
       </div>
     );
+  },
+
+  renderUploadLink(func) {
+    if (func) {
+      return(
+        <a className="upload" onClick={ func }>Upload Image</a>
+      );
+    }
   },
 
   saveButtonText() {
