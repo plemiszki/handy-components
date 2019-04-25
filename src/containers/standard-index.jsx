@@ -37,7 +37,7 @@ class StandardIndex extends React.Component {
     this.props.fetchEntities(directory, arrayName).then(() => {
       this.setState({
         fetching: false,
-        [arrayName]: this.props.entities
+        [arrayName]: this.props[arrayName]
       });
     });
   }
@@ -140,9 +140,7 @@ class StandardIndex extends React.Component {
 }
 
 const mapStateToProps = (reducers) => {
-  return {
-    entities: reducers.standardReducer.entities
-  };
+  return reducers.standardReducer;
 };
 
 function mapDispatchToProps(dispatch) {

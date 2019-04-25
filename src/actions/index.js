@@ -6,10 +6,10 @@ export function fetchEntities(directory, arrayName) {
       method: 'GET',
       url: `/api/${directory}`
     }).then(
-      (response) => dispatch({
-        type: 'FETCH_ENTITIES',
-        entities: response[arrayName]
-      })
+      (response) => {
+        let obj = Object.assign(response, { type: 'FETCH_ENTITIES' });
+        dispatch(obj);
+      }
     );
   }
 }
@@ -20,13 +20,10 @@ export function fetchEntity(args) {
       method: 'GET',
       url: `/api/${args.directory}/${args.id}`
     }).then(
-      (response) => dispatch({
-        type: `FETCH_ENTITY`,
-        entity: response[args.entityName],
-        array1: response.array1,
-        array2: response.array2,
-        array3: response.array3
-      })
+      (response) => {
+        let obj = Object.assign(response, { type: 'FETCH_ENTITY' });
+        dispatch(obj);
+      }
     );
   }
 }
@@ -40,10 +37,10 @@ export function updateEntity(args) {
         [HandyTools.convertToUnderscore(args.entityName)]: HandyTools.convertObjectKeysToUnderscore(args.entity)
       }
     }).then(
-      (response) => dispatch({
-        type: 'UPDATE_ENTITY',
-        entity: response[args.entityName]
-      }),
+      (response) => {
+        let obj = Object.assign(response, { type: 'UPDATE_ENTITY' });
+        dispatch(obj);
+      },
       (response) => dispatch({
         type: 'ERRORS',
         errors: response

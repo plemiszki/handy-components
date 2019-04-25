@@ -42,7 +42,7 @@ class TabbedIndex extends React.Component {
       let entityArray = `entities${HandyTools.capitalize(this.state.tab)}`;
       this.setState({
         fetching: false,
-        [entityArray]: this.props.entities
+        [entityArray]: this.props[arrayName]
       });
     });
   }
@@ -158,9 +158,7 @@ class TabbedIndex extends React.Component {
 }
 
 const mapStateToProps = (reducers) => {
-  return {
-    entities: reducers.standardReducer.entities
-  };
+  return reducers.standardReducer;
 };
 
 function mapDispatchToProps(dispatch) {

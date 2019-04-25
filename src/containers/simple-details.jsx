@@ -129,9 +129,7 @@ class SimpleDetails extends React.Component {
             { this.renderCopyButton.call(this) }
           </div>
         </div>
-        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
-          { children }
-        </Modal>
+        { this.renderCopyModal.call(this) }
       </div>
     );
   }
@@ -153,13 +151,20 @@ class SimpleDetails extends React.Component {
       );
     }
   }
+
+  renderCopyModal() {
+    if (this.props.children) {
+      return(
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
+          { children }
+        </Modal>
+      );
+    }
+  }
 }
 
 const mapStateToProps = (reducers, props) => {
-  return {
-    [props.entityName]: reducers.standardReducer.entity,
-    errors: reducers.standardReducer.errors
-  };
+  return reducers.standardReducer;
 };
 
 function mapDispatchToProps(dispatch) {
