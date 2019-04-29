@@ -66,8 +66,8 @@ class StandardIndex extends React.Component {
     return(
       <div className="component">
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
-        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
-        <input className="search-box margin" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
+        { this.renderButton() }
+        <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -111,11 +111,27 @@ class StandardIndex extends React.Component {
             </tbody>
           </table>
         </div>
+        { this.renderModal.call(this, children) }
+      </div>
+    );
+  }
+
+  renderButton() {
+    if (!this.props.hideNewButton) {
+      return(
+        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
+      );
+    }
+  }
+
+  renderModal(children) {
+    if (!this.props.hideNewButton) {
+      return(
         <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
           { children }
         </Modal>
-      </div>
-    );
+      );
+    }
   }
 
   columnWidth(index) {

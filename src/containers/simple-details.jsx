@@ -123,9 +123,7 @@ class SimpleDetails extends React.Component {
             <a className={ "btn standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
               { Details.saveButtonText.call(this) }
             </a>
-            <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Details.clickDelete.bind(this) }>
-              Delete
-            </a>
+            { this.renderDeleteButton.call(this) }
             { this.renderCopyButton.call(this) }
           </div>
         </div>
@@ -147,6 +145,16 @@ class SimpleDetails extends React.Component {
       return(
         <a className={ "btn float-button margin-right" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
           Copy
+        </a>
+      );
+    }
+  }
+
+  renderDeleteButton() {
+    if (!this.props.hideDeleteButton) {
+      return(
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Details.clickDelete.bind(this) }>
+          Delete
         </a>
       );
     }
