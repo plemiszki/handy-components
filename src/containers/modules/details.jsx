@@ -11,7 +11,15 @@ let Details = {
     var saveKey;
     var saveValue;
 
-    var value = $(event.target).is('select') ? HandyTools.convertTFStringsToBoolean(event.target.value) : event.target.value;
+    let value;
+    if ($(event.target).is('select')) {
+      value = HandyTools.convertTFStringsToBoolean(event.target.value);
+    } else if (event.target.type === 'checkbox') {
+      console.log('checkbox!');
+      value = event.target.checked;
+    } else {
+      value = event.target.value;
+    }
 
     if (entity) {
       var newEntity = this.state[entity];
@@ -156,6 +164,20 @@ let Details = {
     return(
       React.createElement("div", { className: "no-dropdown-field-error" })
     );
+  },
+
+  renderCheckbox(args) {
+    let columnHeader = Details.getColumnHeader(args);
+    if (args.hidden) {
+      return <div className={ `col-xs-${args.columnWidth}` }></div>;
+    } else {
+      return(
+        <div className={ `col-xs-${args.columnWidth}` }>
+          <input id={ `${args.entity}-${args.property}` } className="checkbox" type="checkbox" onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } checked={ this.state[args.entity][args.property] || false } data-entity={ args.entity } data-field={ args.property } /><label className="checkbox" htmlFor={ `${args.entity}-${args.property}` }>{ columnHeader }</label>
+          { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
+        </div>
+      );
+    }
   },
 
   renderField(args) {

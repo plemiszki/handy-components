@@ -4,6 +4,7 @@ import Common from './containers/modules/common.js'
 import Details from './containers/modules/details.jsx'
 import Index from './containers/modules/index.js'
 
+import ConfirmDelete from './containers/confirm-delete.jsx'
 import Message from './containers/message.jsx'
 import ModalSelect from './containers/modal-select.jsx'
 import SimpleDetails from './containers/simple-details.jsx'
@@ -28,6 +29,7 @@ const ModalSelectStyles = {
 
 export {
   Common,
+  ConfirmDelete,
   Details,
   Index,
   Message,
