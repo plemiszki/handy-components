@@ -311,3 +311,29 @@ a.upload {
     }
   }
 }
+
+.ReactModalPortal {
+
+  .confirm-delete {
+
+    h1 {
+      color: #2C2F33;
+      font-family: 'TeachableSans-SemiBold';
+      font-size: 20px;
+      line-height: 27px;
+      margin: auto;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      width: 124px;
+      min-width: 124px;
+      padding-left: 0;
+      padding-right: 0;
+
+      &:first-of-type {
+        margin-right: 40px;
+      }
+    }
+  }
+}

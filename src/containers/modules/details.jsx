@@ -44,12 +44,13 @@ let Details = {
     });
   },
 
-  clickDelete() {
+  clickDelete(callback) {
     this.setState({
+      deleteModalOpen: false,
       fetching: true
     });
     let urlSections = window.location.pathname.split('/');
-    this.props.deleteEntity(urlSections[urlSections.length - 2], urlSections[urlSections.length - 1]);
+    this.props.deleteEntity(urlSections[urlSections.length - 2], urlSections[urlSections.length - 1], callback);
   },
 
   errorClass: function(stateErrors, fieldErrors) {

@@ -6,6 +6,7 @@ import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 import Common from './modules/common.js'
 import Details from './modules/details.jsx'
+import ConfirmDelete from './confirm-delete.jsx'
 import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
 
 let entityNamePlural;
@@ -128,6 +129,9 @@ class SimpleDetails extends React.Component {
           </div>
         </div>
         { this.renderCopyModal.call(this, children) }
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName={ this.props.entityName } confirmDelete={ Details.clickDelete.bind(this, (this.props.customDeletePath ? this.deleteCallback.bind(this) : null)) } closeModal={ Common.closeModals.bind(this) } />
+        </Modal>
       </div>
     );
   }
@@ -150,10 +154,14 @@ class SimpleDetails extends React.Component {
     }
   }
 
+  deleteCallback() {
+    window.location.pathname = this.props.customDeletePath;
+  }
+
   renderDeleteButton() {
     if (!this.props.hideDeleteButton) {
       return(
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Details.clickDelete.bind(this) }>
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
           Delete
         </a>
       );

@@ -9,20 +9,19 @@ import { fetchEntities } from '../actions/index'
 import Common from './modules/common.js'
 import Index from './modules/index.js'
 
-let arrayName;
-let directory;
-let entityNamePlural;
-
 class StandardIndex extends React.Component {
 
   constructor(props) {
     super(props);
 
-    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    directory = ChangeCase.snakeCase(entityNamePlural);
-    arrayName = ChangeCase.camelCase(entityNamePlural);
+    let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    let directory = ChangeCase.snakeCase(entityNamePlural);
+    let arrayName = ChangeCase.camelCase(entityNamePlural);
 
     let initialState = {
+      entityNamePlural,
+      directory,
+      arrayName,
       fetching: true,
       [arrayName]: [],
       searchProperty: this.props.columns[0],
@@ -34,10 +33,10 @@ class StandardIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities(directory, arrayName).then(() => {
+    this.props.fetchEntities(this.state.directory, this.state.arrayName).then(() => {
       this.setState({
         fetching: false,
-        [arrayName]: this.props[arrayName]
+        [this.state.arrayName]: this.props[this.state.arrayName]
       });
     });
   }
@@ -45,7 +44,7 @@ class StandardIndex extends React.Component {
   updateIndex(entities) {
     this.setState({
       newEntityModalOpen: false,
-      [arrayName]: entities
+      [this.state.arrayName]: entities
     });
   }
 
@@ -55,17 +54,17 @@ class StandardIndex extends React.Component {
       (child) => {
         return React.cloneElement(child, {
           entityName: this.props.entityName,
-          entityNamePlural: entityNamePlural,
+          entityNamePlural: this.state.entityNamePlural,
           callback: this.updateIndex.bind(this)
         });
       }
     );
 
-    let filteredEntities = Index.filterSearchText(this.state[arrayName], this.state.searchText, this.state.searchProperty);
+    let filteredEntities = Index.filterSearchText(this.state[this.state.arrayName], this.state.searchText, this.state.searchProperty);
 
     return(
       <div className="component">
-        <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
+        <h1>{ this.props.header || ChangeCase.titleCase(this.state.entityNamePlural) }</h1>
         { this.renderButton() }
         <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         <div className="white-box">
@@ -99,7 +98,7 @@ class StandardIndex extends React.Component {
                     { this.props.columns.map((column, index) => {
                       return(
                         <td key={ index } className={ this.props.columnClasses ? this.props.columnClasses[index] : '' }>
-                          <a href={ `${directory}/${entity.id}${this.props.columnLinks && this.props.columnLinks[index] ? this.props.columnLinks[index] : ''}` }>
+                          <a href={ `${this.state.directory}/${entity.id}${this.props.columnLinks && this.props.columnLinks[index] ? this.props.columnLinks[index] : ''}` }>
                             { this.renderValue(entity[column], index) }
                           </a>
                         </td>

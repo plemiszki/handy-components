@@ -38,6 +38,25 @@ export default {
     this.setState(result);
   },
 
+  deleteModalStyles() {
+    return {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: '#FFFFFF',
+        margin: 'auto',
+        maxWidth: 540,
+        height: 207,
+        border: 'solid 1px red',
+        borderRadius: '6px',
+        textAlign: 'center',
+        color: '#5F5F5F',
+        paddingTop: '36px'
+      }
+    }
+  },
+
   firstElementPropertyOrBlank(array, property) {
     if (array && array.length > 0) {
       return array[0][property];
