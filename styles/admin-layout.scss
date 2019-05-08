@@ -9,6 +9,27 @@ body.admin {
   background-color: #F5F6F7;
 }
 
+.admin-input {
+  width: 100%;
+  border: 1px solid #E4E9ED;
+  border-radius: 3px;
+  color: #5F5F5F;
+  letter-spacing: inherit;
+  padding: 13px;
+
+  &::placeholder {
+    color: #d3d3d3;
+  }
+
+  &.error {
+    border: 1px solid red;
+
+    &:hover {
+      border: 1px solid red;
+    }
+  }
+}
+
 .component {
   margin-bottom: 62px;
 
@@ -144,24 +165,7 @@ body.admin {
   }
 
   input:not([type="submit"]):not(.search-box):not([type="checkbox"]), textarea, .nice-select {
-    width: 100%;
-    border: 1px solid #E4E9ED;
-    border-radius: 3px;
-    color: #5F5F5F;
-    letter-spacing: inherit;
-    padding: 13px;
-
-    &::placeholder {
-      color: #d3d3d3;
-    }
-
-    &.error {
-      border: 1px solid red;
-
-      &:hover {
-        border: 1px solid red;
-      }
-    }
+    @extend .admin-input;
   }
 
   input[type="checkbox"] {
