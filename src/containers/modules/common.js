@@ -130,5 +130,23 @@ export default {
         React.createElement("div", { className: "spinner", style:  spinnerStyle })
       );
     }
+  },
+
+  selectModalStyles: function() {
+    return {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: '#FFFFFF',
+        margin: 'auto',
+        maxWidth: 540,
+        height: '90%',
+        border: 'solid 1px #5F5F5F',
+        borderRadius: '6px',
+        textAlign: 'center',
+        color: '#5F5F5F'
+      }
+    };
   }
 }

@@ -1,7 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Modal from 'react-modal';
 import HandyTools from 'handy-tools';
 import MatchHeight from 'jquery-match-height';
 import ChangeCase from 'change-case';
+import ModalSelect from '../modal-select.jsx';
+import Common from './common.js';
 
 let Details = {
 
@@ -15,7 +18,6 @@ let Details = {
     if ($(event.target).is('select')) {
       value = HandyTools.convertTFStringsToBoolean(event.target.value);
     } else if (event.target.type === 'checkbox') {
-      console.log('checkbox!');
       value = event.target.checked;
     } else {
       value = event.target.value;
@@ -42,7 +44,7 @@ let Details = {
     this.setState({
       [saveKey]: saveValue,
       justSaved: false
-    }, function() {
+    }, () => {
       if (changeFieldArgs.changesFunction) {
         var changesToSave = changeFieldArgs.changesFunction.call();
         this.setState({
@@ -107,7 +109,7 @@ let Details = {
       if (!errorsArray) {
         console.log("no errors array!!!");
       }
-      errors[fieldName].forEach(function(message) {
+      errors[fieldName].forEach((message) => {
         HandyTools.removeFromArray(errorsArray, message);
       });
     }
@@ -126,8 +128,8 @@ let Details = {
     function renderOptions(args) {
       if (args.boolean) {
         return([
-          <option key={ 0 } value={ "t" }>Yes</option>,
-          <option key={ 1 } value={ "f" }>No</option>
+          <option key={ 0 } value="t">Yes</option>,
+          <option key={ 1 } value="f">No</option>
         ]);
       } else {
         { return HandyTools.alphabetizeArrayOfObjects(args.options, args.optionDisplayProperty).map((option, index) => {
@@ -184,13 +186,37 @@ let Details = {
     let columnHeader = Details.getColumnHeader(args);
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
+    } else if (args.customType === 'modal') {
+      let idEntity = args.property.slice(0, -2);
+      let selectedId = this.state[args.entity][`${idEntity}Id`];
+      let value = '';
+      if (this.state[`${idEntity}s`] && selectedId) {
+        value = HandyTools.pluckFromObjectsArray({
+          array: this.state[`${idEntity}s`],
+          property: 'id',
+          value: +selectedId
+        })[args.modalDisplayProperty];
+      }
+      return([
+        <div key={ 1 } className={ `col-xs-${args.columnWidth - 1}` }>
+          <h2>{ columnHeader }</h2>
+          <input className={ Details.errorClass(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } readOnly={ true } />
+          { Details.renderFieldError(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) }
+        </div>,
+        <div key={ 2 } className="col-xs-1 select-from-modal">
+          <img src={ Images.openModal } onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) } />
+        </div>,
+        <Modal key={ 3 } isOpen={ this.state.filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[`${idEntity}s`], args.modalDisplayProperty) } property={ args.modalDisplayProperty } func={ Details.selectModalOption.bind(this, idEntity, args.entity) } />
+        </Modal>
+      ]);
     } else {
       return(
         <div className={ `col-xs-${args.columnWidth}` }>
           <h2>{ columnHeader }</h2>
-          <input className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } />
+          <input className={ Details.errorClass(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } readOnly={ args.readOnly } />
           { Details.renderUploadLink(args.uploadLinkFunction) }
-          { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
+          { Details.renderFieldError(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) }
         </div>
       );
     }
@@ -230,6 +256,20 @@ let Details = {
 
   saveButtonText() {
     return this.state.changesToSave ? 'Save' : (this.state.justSaved ? 'Saved' : 'No Changes');
+  },
+
+  selectModalOption(idEntity, entityName, e) {
+    let entity = this.state[entityName];
+    entity[`${idEntity}Id`] = e.target.dataset.id;
+    Details.removeFieldError(Errors, this.state.errors, 'film');
+    let obj = {
+      [entityName]: entity,
+      [`${idEntity}sModalOpen`]: false
+    };
+    if (this.changeFieldArgs().changesFunction) {
+      obj.changesToSave = this.changeFieldArgs().changesFunction();
+    }
+    this.setState(obj);
   },
 
   updateEntity() {

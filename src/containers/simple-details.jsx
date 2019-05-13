@@ -15,13 +15,17 @@ class SimpleDetails extends React.Component {
   constructor(props) {
     super(props);
     entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    this.state = {
+    let obj = {
       fetching: true,
       [this.props.entityName]: this.props.initialEntity,
       [`${this.props.entityName}Saved`]: this.props.initialEntity,
       errors: [],
       copyModalOpen: false
-    };
+    }
+    this.props.fetchData.forEach((arrayName) => {
+      obj[arrayName] = [];
+    })
+    this.state = obj;
   }
 
   componentDidMount() {
@@ -31,12 +35,16 @@ class SimpleDetails extends React.Component {
       directory: pathDirectories[pathDirectories.length - 2],
       entityName: this.props.entityName
     }).then(() => {
-      this.setState({
+      let obj = {
         fetching: false,
         [this.props.entityName]: this.props[this.props.entityName],
         [`${this.props.entityName}Saved`]: HandyTools.deepCopy(this.props[this.props.entityName]),
         changesToSave: false
-      }, () => {
+      };
+      this.props.fetchData.forEach((arrayName) => {
+        obj[arrayName] = this.props[arrayName];
+      })
+      this.setState(obj, () => {
         HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
     });
