@@ -1,5 +1,6 @@
 table.admin-table {
   width: 100%;
+  user-select: none;
 
   &.no-links tbody td {
     padding: 10px 0;
@@ -84,7 +85,7 @@ table.admin-table {
     }
   }
 
-  tr:not(:first-child):not(.no-hover) {
+  &:not(.no-cursor) tbody tr:not(:first-child):not(.no-hover) {
     cursor: pointer;
   }
 
