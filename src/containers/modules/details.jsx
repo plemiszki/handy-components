@@ -206,7 +206,7 @@ let Details = {
         <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
         </div>,
         <Modal key={ 3 } isOpen={ this.state[`${idEntity}sModalOpen`] } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[`${idEntity}s`], args.modalDisplayProperty) } property={ args.modalDisplayProperty } func={ Details.selectModalOption.bind(this, idEntity, args.entity) } />
+          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[`${idEntity}s`], args.modalDisplayProperty) } property={ args.modalDisplayProperty } func={ Details.selectModalOption.bind(this, idEntity, args.entity) } noneOption={ args.noneOption } />
         </Modal>
       ]);
     } else {

@@ -16,6 +16,7 @@ class ModalSelect extends React.Component {
       <div className="modal-select">
         <input className="search-box" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } data-field="searchText" />
         <ul className="licensor-modal-list">
+          { this.renderNoneOption() }
           { Index.filterSearchText(this.props.options, this.state.searchText, this.props.property).map((option, index) => {
             return(
               <li key={ index } onClick={ this.props.func } data-id={ option.id } data-type={ option.itemType }>{ option[this.props.property] }</li>
@@ -24,6 +25,14 @@ class ModalSelect extends React.Component {
         </ul>
       </div>
     );
+  }
+
+  renderNoneOption() {
+    if (this.props.noneOption) {
+      return(
+        <li onClick={ this.props.func } data-id={ null } data-type={ null }>(None)</li>
+      );
+    }
   }
 }
 
