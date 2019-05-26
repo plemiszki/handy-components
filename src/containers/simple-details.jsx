@@ -22,9 +22,11 @@ class SimpleDetails extends React.Component {
       errors: [],
       copyModalOpen: false
     }
-    this.props.fetchData.forEach((arrayName) => {
-      obj[arrayName] = [];
-    })
+    if (this.props.fetchData) {
+      this.props.fetchData.forEach((arrayName) => {
+        obj[arrayName] = [];
+      })
+    }
     this.state = obj;
   }
 
@@ -41,9 +43,11 @@ class SimpleDetails extends React.Component {
         [`${this.props.entityName}Saved`]: HandyTools.deepCopy(this.props[this.props.entityName]),
         changesToSave: false
       };
-      this.props.fetchData.forEach((arrayName) => {
-        obj[arrayName] = this.props[arrayName];
-      })
+      if (this.props.fetchData) {
+        this.props.fetchData.forEach((arrayName) => {
+          obj[arrayName] = this.props[arrayName];
+        })
+      }
       this.setState(obj, () => {
         HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
