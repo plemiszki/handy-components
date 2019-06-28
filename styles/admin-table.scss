@@ -85,12 +85,17 @@ table.admin-table {
     }
   }
 
-  &:not(.no-cursor) tbody tr:not(:first-child):not(.no-hover) {
+  &:not(.no-cursor):not(.no-hover) tbody tr:not(:first-child):not(.no-hover) {
     cursor: pointer;
   }
 
-  tr:not(:first-child):not(.no-hover):hover {
+  &:not(.no-hover) tr:not(:first-child):not(.no-hover):hover {
     background-color: #F5F5F5;
+    background-color: green;
+  }
+
+  &.no-padding tbody td, &.no-padding thead th:first-of-type {
+    padding-left: 0;
   }
 }
 
