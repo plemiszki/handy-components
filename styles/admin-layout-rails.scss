@@ -84,7 +84,7 @@ body.admin {
     width: 17px;
     height: 17px;
     cursor: pointer;
-    background-image: url('#{imgpath}/x.svg');
+    background-image: image-url('handy-components/images/x.svg');
     background-size: 17px;
     background-position: 50%;
     background-repeat: no-repeat;
@@ -136,7 +136,7 @@ body.admin {
 
 .spinner {
   position: absolute;
-  background-image: url('#{imgpath}/ajax-loader.svg');
+  background-image: image-url('handy-components/images/ajax-loader.svg');
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.75;
@@ -274,7 +274,7 @@ a.upload {
 
 .select-from-modal {
   margin-top: 35px;
-  background-image: url('#{imgpath}/open-modal.png');
+  background-image: image-url('handy-components/images/open-modal.png');
   cursor: pointer;
   height: 50px;
 }
