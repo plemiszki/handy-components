@@ -1,10 +1,11 @@
-import React from 'react';
-import Modal from 'react-modal';
-import HandyTools from 'handy-tools';
-import MatchHeight from 'jquery-match-height';
-import ChangeCase from 'change-case';
-import ModalSelect from '../modal-select.jsx';
-import Common from './common.js';
+import $ from 'jquery'
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import MatchHeight from 'jquery-match-height'
+import ChangeCase from 'change-case'
+import ModalSelect from '../modal-select.jsx'
+import Common from './common.js'
 
 let Details = {
 
