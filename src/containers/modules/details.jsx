@@ -55,7 +55,7 @@ let Details = {
     });
   },
 
-  clickDelete(callback) {
+  clickDelete(args) {
     this.setState({
       deleteModalOpen: false,
       fetching: true
@@ -64,7 +64,7 @@ let Details = {
     this.props.deleteEntity({
       directory: urlSections[urlSections.length - 2],
       id: urlSections[urlSections.length - 1],
-      callback
+      callback: args.callback
     });
   },
 
