@@ -50,7 +50,8 @@ export function updateEntity(args) {
   }
 }
 
-export function deleteEntity(directory, id, callback) {
+export function deleteEntity(args) {
+  let { directory, id, callback } = args;
   return (dispatch) => {
     return $.ajax({
       method: 'DELETE',

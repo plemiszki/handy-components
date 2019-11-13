@@ -61,7 +61,11 @@ let Details = {
       fetching: true
     });
     let urlSections = window.location.pathname.split('/');
-    this.props.deleteEntity(urlSections[urlSections.length - 2], urlSections[urlSections.length - 1], callback);
+    this.props.deleteEntity({
+      directory: urlSections[urlSections.length - 2],
+      id: urlSections[urlSections.length - 1],
+      callback
+    });
   },
 
   errorClass: function(stateErrors, fieldErrors) {
