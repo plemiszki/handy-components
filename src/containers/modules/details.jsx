@@ -78,33 +78,6 @@ let Details = {
     return '';
   },
 
-  fetchEntity() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: this.props.entityName
-    }, this.props.entityName).then(() => {
-      let newState = {
-        fetching: false,
-        [this.props.entityName]: this.props[this.props.entityName],
-        [`${this.props.entityName}Saved`]: HandyTools.deepCopy(this.props[this.props.entityName]),
-        changesToSave: false
-      };
-      if (this.props.array1Name) {
-        Object.assign(newState, { [this.props.array1Name]: this.props[this.props.array1Name] });
-      }
-      if (this.props.array2Name) {
-        Object.assign(newState, { [this.props.array2Name]: this.props[this.props.array2Name] });
-      }
-      if (this.props.array3Name) {
-        Object.assign(newState, { [this.props.array3Name]: this.props[this.props.array3Name] });
-      }
-      this.setState(newState, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
-      });
-    });
-  },
-
   getColumnHeader(args) {
     return args.columnHeader || ChangeCase.titleCase(args.property);
   },

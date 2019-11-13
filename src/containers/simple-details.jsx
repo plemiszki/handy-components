@@ -142,7 +142,7 @@ class SimpleDetails extends React.Component {
         </div>
         { this.renderCopyModal.call(this, children) }
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName={ this.props.entityName } confirmDelete={ Details.clickDelete.bind(this, (this.props.customDeletePath ? this.deleteCallback.bind(this) : null)) } closeModal={ Common.closeModals.bind(this) } />
+          <ConfirmDelete entityName={ this.props.entityName } confirmDelete={ Details.clickDelete.bind(this, { callback: (this.props.customDeletePath ? this.deleteCallback.bind(this) : null) }) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );
