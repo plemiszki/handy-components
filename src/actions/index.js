@@ -1,5 +1,7 @@
 import HandyTools from 'handy-tools'
-import $ from 'jquery'
+if (!$) {
+  $ = require('jquery');
+}
 
 export function fetchEntities(directory, arrayName) {
   return (dispatch) => {

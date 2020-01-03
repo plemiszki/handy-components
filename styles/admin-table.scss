@@ -86,7 +86,7 @@ table.admin-table {
     }
   }
 
-  &:not(.no-cursor):not(.no-hover) tbody tr:not(:first-child):not(.no-hover) {
+  &:not(.no-cursor):not(.no-links) tbody tr:not(:first-child):not(.no-links) {
     cursor: pointer;
   }
 
