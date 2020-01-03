@@ -223,9 +223,14 @@ body.admin {
     margin: 0;
     height: 100%;
 
+    #admin-sidebar-background {
+      position: fixed;
+      height: 100%;
+      background-color: white;
+    }
+
     #admin-sidebar {
       background-color: white;
-      min-height: 100%;
       padding: 36px 32px;
 
       .sidebar-button {
