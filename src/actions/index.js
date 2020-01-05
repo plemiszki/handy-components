@@ -1,6 +1,13 @@
 import HandyTools from 'handy-tools'
-if (!$) {
-  $ = require('jquery');
+import $ from 'jquery'
+
+let getHeaders = (args) => {
+  let headers;
+  if (args.csrfToken) {
+    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    headers = { 'x-csrf-token': csrfToken };
+  }
+  return headers;
 }
 
 export function fetchEntities(directory, arrayName) {
@@ -32,10 +39,12 @@ export function fetchEntity(args) {
 }
 
 export function updateEntity(args) {
+  let headers = getHeaders(args);
   return (dispatch) => {
     return $.ajax({
       method: 'PATCH',
       url: `/api/${args.directory}/${args.id}`,
+      headers,
       data: {
         [HandyTools.convertToUnderscore(args.entityName)]: HandyTools.convertObjectKeysToUnderscore(args.entity)
       }
@@ -54,10 +63,12 @@ export function updateEntity(args) {
 
 export function deleteEntity(args) {
   let { directory, id, callback } = args;
+  let headers = getHeaders(args);
   return (dispatch) => {
     return $.ajax({
       method: 'DELETE',
-      url: `/api/${directory}/${id}`
+      url: `/api/${directory}/${id}`,
+      headers
     }).then(
       (response) => {
         if (callback) {

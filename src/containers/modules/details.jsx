@@ -64,7 +64,8 @@ let Details = {
     this.props.deleteEntity({
       directory: urlSections[urlSections.length - 2],
       id: urlSections[urlSections.length - 1],
-      callback: args.callback
+      callback: args.callback,
+      csrfToken: args.csrfToken
     });
   },
 

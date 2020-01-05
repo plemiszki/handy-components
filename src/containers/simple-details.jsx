@@ -76,7 +76,8 @@ class SimpleDetails extends React.Component {
         id: pathDirectories[pathDirectories.length - 1],
         directory: pathDirectories[pathDirectories.length - 2],
         entityName: this.props.entityName,
-        entity: this.state[this.props.entityName]
+        entity: this.state[this.props.entityName],
+        csrfToken: this.props.csrfToken
       }).then(() => {
         this.setState({
           fetching: false,
@@ -142,7 +143,7 @@ class SimpleDetails extends React.Component {
         </div>
         { this.renderCopyModal.call(this, children) }
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName={ this.props.entityName } confirmDelete={ Details.clickDelete.bind(this, { callback: (this.props.customDeletePath ? this.deleteCallback.bind(this) : null) }) } closeModal={ Common.closeModals.bind(this) } />
+          <ConfirmDelete entityName={ this.props.entityName } confirmDelete={ Details.clickDelete.bind(this, { callback: (this.props.customDeletePath ? this.deleteCallback.bind(this) : null), csrfToken: this.props.csrfToken }) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );
