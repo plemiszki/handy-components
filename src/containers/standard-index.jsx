@@ -148,10 +148,6 @@ class StandardIndex extends React.Component {
       return value;
     }
   }
-
-  componentDidUpdate() {
-    Common.matchColumnHeight();
-  }
 }
 
 const mapStateToProps = (reducers) => {
