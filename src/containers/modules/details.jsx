@@ -99,7 +99,7 @@ let Details = {
     function renderNoneOption(args) {
       if (args.optional) {
         return(
-          <option key={ -1 } value={ '' }>(None)</option>
+          <option key={ -1 } value="">(None)</option>
         );
       }
     }
@@ -125,7 +125,7 @@ let Details = {
     return(
       <div className={ `col-xs-${args.columnWidth} ` + (args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }>
         <h2>{ columnHeader }</h2>
-        <select className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "" } data-entity={ args.entity } data-field={ args.property }>
+        <select className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
           { renderNoneOption(args) }
           { renderOptions(args) }
         </select>

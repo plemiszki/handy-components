@@ -150,10 +150,13 @@ class SimpleDetails extends React.Component {
   }
 
   renderField(field) {
-    if (field.type == 'textbox') {
-      return Details.renderTextBox.bind(this)(field);
-    } else {
-      return Details.renderField.bind(this)(field);
+    switch (field.type) {
+      case 'textbox':
+        return Details.renderTextBox.bind(this)(field);
+      case 'dropdown':
+        return Details.renderDropDown.bind(this)(field);
+      default:
+        return Details.renderField.bind(this)(field);
     }
   }
 
