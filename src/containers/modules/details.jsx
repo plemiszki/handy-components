@@ -194,6 +194,7 @@ let Details = {
       return(
         <div className={ `col-xs-${args.columnWidth}` }>
           <h2>{ columnHeader }</h2>
+          { Details.renderSubheader(args) }
           <input className={ Details.errorClass(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } readOnly={ args.readOnly } />
           { Details.renderUploadLink(args.uploadLinkFunction) }
           { Details.renderFieldError(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) }
