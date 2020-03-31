@@ -125,6 +125,7 @@ let Details = {
     return(
       <div className={ `col-xs-${args.columnWidth} ` + (args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }>
         <h2>{ columnHeader }</h2>
+        { Details.renderSubheader(args) }
         <select className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
           { renderNoneOption(args) }
           { renderOptions(args) }
@@ -179,6 +180,7 @@ let Details = {
       return([
         <div key={ 1 } className={ `col-xs-${args.columnWidth - 1}` }>
           <h2>{ columnHeader }</h2>
+          { Details.renderSubheader(args) }
           <input className={ Details.errorClass(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } readOnly={ true } />
           { Details.renderFieldError(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) }
         </div>,
@@ -213,11 +215,20 @@ let Details = {
     );
   },
 
+  renderSubheader(args) {
+    if (args.subheader) {
+      return(
+        <p className="subheader">{ args.subheader }</p>
+      );
+    }
+  },
+
   renderTextBox(args) {
     let columnHeader = Details.getColumnHeader(args);
     return(
       <div className={ `col-xs-${args.columnWidth}` }>
         <h2>{ columnHeader }</h2>
+        { Details.renderSubheader(args) }
         <textarea rows={ args.rows } className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property }></textarea>
         { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
       </div>
