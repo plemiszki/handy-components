@@ -5,6 +5,7 @@ import Details from './containers/modules/details.jsx'
 import Index from './containers/modules/index.js'
 
 import ConfirmDelete from './containers/confirm-delete.jsx'
+import ModalMessage from './containers/modal-message.jsx'
 import Message from './containers/message.jsx'
 import ModalSelect from './containers/modal-select.jsx'
 import SimpleDetails from './containers/simple-details.jsx'
@@ -33,6 +34,7 @@ export {
   Details,
   Index,
   Message,
+  ModalMessage,
   ModalSelect,
   ModalSelectStyles,
   SimpleDetails,

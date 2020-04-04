@@ -70,6 +70,25 @@ export default {
     $('.match-height-layout').matchHeight();
   },
 
+  messageModalStyles() {
+    return {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: '#FFFFFF',
+        margin: 'auto',
+        maxWidth: 540,
+        height: 207,
+        border: 'solid 1px black',
+        borderRadius: '6px',
+        textAlign: 'center',
+        color: '#5F5F5F',
+        paddingTop: '36px'
+      }
+    }
+  },
+
   newEntityModalStyles(modalDimensions, rows) {
     let height;
     if (rows) {

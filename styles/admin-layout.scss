@@ -332,33 +332,6 @@ a.upload {
       display: none;
     }
   }
-
-  .confirm-delete {
-
-    h1 {
-      color: #2C2F33;
-      font-family: 'TeachableSans-SemiBold';
-      font-size: 20px;
-      line-height: 27px;
-      margin: auto;
-      margin-bottom: 10px;
-    }
-
-    .btn {
-      width: 124px;
-      padding-left: 0;
-      padding-right: 0;
-      margin-top: 30px;
-      margin-right: 20px;
-      margin-left: 20px;
-    }
-
-    p {
-      font-family: 'TeachableSans-SemiBold';
-      font-size: 14px;
-      color: black;
-    }
-  }
 }
 
 .ReactModalPortal {
@@ -383,6 +356,18 @@ a.upload {
       &:first-of-type {
         margin-right: 40px;
       }
+    }
+  }
+
+  .modal-message {
+
+    h1 {
+      color: #2C2F33;
+      font-family: 'TeachableSans-SemiBold';
+      font-size: 20px;
+      line-height: 27px;
+      margin: auto;
+      margin-bottom: 30px;
     }
   }
 }

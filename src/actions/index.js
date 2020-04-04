@@ -78,6 +78,9 @@ export function deleteEntity(args) {
           directories.pop()
           window.location.pathname = directories.join('/');
         }
+      },
+      (response) => {
+        dispatch({ deleteError: response.responseJSON, type: 'ERRORS' });
       }
     );
   }
