@@ -2,10 +2,13 @@ import HandyTools from 'handy-tools'
 import $ from 'jquery'
 
 let getHeaders = (args) => {
-  let headers;
+  let headers = {};
   if (args.csrfToken) {
-    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    headers = { 'x-csrf-token': csrfToken };
+    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMetaTag) {
+      const csrfToken = csrfMetaTag.getAttribute('content');
+      headers = { 'x-csrf-token': csrfToken };
+    }
   }
   return headers;
 }
@@ -53,10 +56,13 @@ export function updateEntity(args) {
         let obj = Object.assign(response, { type: 'UPDATE_ENTITY' });
         dispatch(obj);
       },
-      (response) => dispatch({
-        type: 'ERRORS',
-        errors: response
-      })
+      (response) => {
+        dispatch({
+          type: 'ERRORS',
+          errors: response
+        })
+        throw 'error';  // <-- not sure why this is necessary but failure callback isn't called without it
+      }
     );
   }
 }
