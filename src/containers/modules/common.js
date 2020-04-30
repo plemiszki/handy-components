@@ -66,10 +66,6 @@ export default {
     }
   },
 
-  matchColumnHeight() {
-    $('.match-height-layout').matchHeight();
-  },
-
   messageModalStyles() {
     return {
       overlay: {
