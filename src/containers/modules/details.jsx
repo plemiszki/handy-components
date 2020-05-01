@@ -9,10 +9,10 @@ import Common from './common.js'
 let Details = {
 
   changeField: function(changeFieldArgs, event) {
-    var key = event.target.dataset.field;
-    var entity = event.target.dataset.entity;
-    var saveKey;
-    var saveValue;
+    let key = event.target.dataset.field;
+    let entity = event.target.dataset.entity;
+    let saveKey;
+    let saveValue;
 
     let value;
     if ($(event.target).is('select')) {
@@ -24,7 +24,10 @@ let Details = {
     }
 
     if (entity) {
-      var newEntity = this.state[entity];
+      let newEntity = this.state[entity];
+      if (changeFieldArgs.beforeSave) {
+        changeFieldArgs.beforeSave.call(this, newEntity, key, value); // <-- will mutate newEntity if needed
+      }
       newEntity[key] = value;
       saveKey = entity;
       saveValue = newEntity;
@@ -34,12 +37,6 @@ let Details = {
     }
 
     Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, key);
-
-    if (changeFieldArgs.beforeSave) {
-      var beforeSaveResult = changeFieldArgs.beforeSave.call(this, saveKey, saveValue);
-      saveKey = beforeSaveResult.key;
-      saveValue = beforeSaveResult.value;
-    }
 
     this.setState({
       [saveKey]: saveValue,

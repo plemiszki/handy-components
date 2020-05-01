@@ -182,8 +182,14 @@ body.admin {
   }
 
   label.checkbox {
-    margin-top: 38px;
     display: inline-block;
+  }
+
+  .row:not(.checkboxes-only) {
+
+    label.checkbox {
+      margin-top: 38px;
+    }
   }
 
   .nice-select {
