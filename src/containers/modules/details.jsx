@@ -8,7 +8,7 @@ import Common from './common.js'
 
 let Details = {
 
-  changeField: function(changeFieldArgs, event) {
+  changeField(changeFieldArgs, event) {
     let key = event.target.dataset.field;
     let entity = event.target.dataset.entity;
     let saveKey;
@@ -65,7 +65,7 @@ let Details = {
     });
   },
 
-  errorClass: function(stateErrors, fieldErrors) {
+  errorClass(stateErrors, fieldErrors) {
     var i;
     for (i = 0; i < fieldErrors.length; i++) {
       if (stateErrors.indexOf(fieldErrors[i]) > -1) {
@@ -81,9 +81,6 @@ let Details = {
 
   removeFieldError(errors, errorsArray, fieldName) {
     if (errors[fieldName]) {
-      if (!errorsArray) {
-        console.log("no errors array!!!");
-      }
       errors[fieldName].forEach((message) => {
         HandyTools.removeFromArray(errorsArray, message);
       });
@@ -91,6 +88,7 @@ let Details = {
   },
 
   renderDropDown(args) {
+    const ALL_ERRORS = Details.getAllErrors.call(this);
 
     function renderNoneOption(args) {
       if (args.optional) {
@@ -122,11 +120,11 @@ let Details = {
       <div className={ `col-xs-${args.columnWidth} ` + (args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }>
         <h2>{ columnHeader }</h2>
         { Details.renderSubheader(args) }
-        <select className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
+        <select className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
           { renderNoneOption(args) }
           { renderOptions(args) }
         </select>
-        { Details.renderDropdownFieldError(this.state.errors, Errors[args.property] || []) }
+        { Details.renderDropdownFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
       </div>
     );
   },
@@ -145,6 +143,7 @@ let Details = {
   },
 
   renderCheckbox(args) {
+    const ALL_ERRORS = Details.getAllErrors.call(this);
     let columnHeader = Details.getColumnHeader(args);
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
@@ -152,13 +151,14 @@ let Details = {
       return(
         <div className={ `col-xs-${args.columnWidth}` }>
           <input id={ `${args.entity}-${args.property}` } className="checkbox" type="checkbox" onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } checked={ this.state[args.entity][args.property] || false } data-entity={ args.entity } data-field={ args.property } /><label className="checkbox" htmlFor={ `${args.entity}-${args.property}` }>{ columnHeader }</label>
-          { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
+          { Details.renderFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
         </div>
       );
     }
   },
 
   renderField(args) {
+    const ALL_ERRORS = Details.getAllErrors.call(this);
     let columnHeader = Details.getColumnHeader(args);
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
@@ -177,8 +177,8 @@ let Details = {
         <div key={ 1 } className={ `col-xs-${args.columnWidth - 1}` }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
-          <input className={ Details.errorClass(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } readOnly={ true } />
-          { Details.renderFieldError(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) }
+          <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } readOnly={ true } />
+          { Details.renderFieldError(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) }
         </div>,
         <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
         </div>,
@@ -191,9 +191,9 @@ let Details = {
         <div className={ `col-xs-${args.columnWidth}` }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
-          <input className={ Details.errorClass(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } readOnly={ args.readOnly } />
+          <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } readOnly={ args.readOnly } />
           { Details.renderUploadLink(args.uploadLinkFunction) }
-          { Details.renderFieldError(this.state.errors, Errors[(args.errorsProperty || args.property)] || []) }
+          { Details.renderFieldError(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) }
         </div>
       );
     }
@@ -221,13 +221,14 @@ let Details = {
   },
 
   renderTextBox(args) {
+    const ALL_ERRORS = Details.getAllErrors.call(this);
     let columnHeader = Details.getColumnHeader(args);
     return(
       <div className={ `col-xs-${args.columnWidth}` }>
         <h2>{ columnHeader }</h2>
         { Details.renderSubheader(args) }
-        <textarea rows={ args.rows } className={ Details.errorClass(this.state.errors, Errors[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property }></textarea>
-        { Details.renderFieldError(this.state.errors, Errors[args.property] || []) }
+        <textarea rows={ args.rows } className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property }></textarea>
+        { Details.renderFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
       </div>
     );
   },
@@ -279,6 +280,10 @@ let Details = {
         errors: this.props.errors
       });
     });
+  },
+
+  getAllErrors() {
+    return typeof Errors == 'undefined' ? this.changeFieldArgs().allErrors : Errors;
   }
 }
 
