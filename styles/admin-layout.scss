@@ -297,6 +297,10 @@ a.upload {
   height: 50px;
 }
 
+.horizontal-scroll {
+  overflow-x: scroll;
+}
+
 .admin-modal {
 
   &.component {

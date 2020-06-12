@@ -72,7 +72,7 @@ class TabbedIndex extends React.Component {
       }
     );
 
-    let filteredEntities = Index.filterSearchText(this.state[`entities${HandyTools.capitalize(this.state.tab)}`], this.state.searchText, this.state.searchProperty);
+    let filteredEntities = Index.filterSearchText({ entities: this.state[`entities${HandyTools.capitalize(this.state.tab)}`], text: this.state.searchText, property: this.state.searchProperty });
 
     return(
       <div className="component">

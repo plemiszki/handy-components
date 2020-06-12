@@ -177,7 +177,7 @@ let Details = {
         <div key={ 1 } className={ `col-xs-${args.columnWidth - 1}` }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
-          <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } readOnly={ true } />
+          <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } data-field={ args.property } readOnly={ true } />
           { Details.renderFieldError(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) }
         </div>,
         <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
@@ -246,15 +246,16 @@ let Details = {
   },
 
   selectModalOption(idEntity, entityName, e) {
+    const changeFieldArgs = this.changeFieldArgs();
     let entity = this.state[entityName];
     entity[`${idEntity}Id`] = e.target.dataset.id;
-    Details.removeFieldError(Errors, this.state.errors, 'film');
+    Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, `${idEntity}Id`);
     let obj = {
       [entityName]: entity,
       [`${idEntity}sModalOpen`]: false
     };
     if (this.changeFieldArgs().changesFunction) {
-      obj.changesToSave = this.changeFieldArgs().changesFunction();
+      obj.changesToSave = changeFieldArgs.changesFunction();
     }
     this.setState(obj);
   },

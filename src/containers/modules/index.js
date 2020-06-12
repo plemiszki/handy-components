@@ -6,20 +6,21 @@ export default {
     });
   },
 
-  filterSearchText(inputArray, searchText, property) {
-    if (searchText !== '') {
-      let re = new RegExp(searchText, 'i');
-      return inputArray.filter(function(entity) {
+  filterSearchText(args) {
+    const { entities, property, text } = args;
+    if (text !== '') {
+      let re = new RegExp(text, 'i');
+      return entities.filter((entity) => {
         return re.test(entity[property]);
       });
     } else {
-      return inputArray;
+      return entities;
     }
   },
 
   sortClass(property) {
-    let state = this.state.searchProperty;
-    return state === property ? 'sort-header-active' : 'sort-header-inactive';
+    const { searchColumn } = this.state;
+    return searchColumn.name === property ? 'sort-header-active' : 'sort-header-inactive';
   },
 
   sortDirection(sampleEntity) {

@@ -4,6 +4,14 @@
     float: none;
     width: 100%;
     margin-bottom: 10px;
+    background-image: url('#{$imgpath}/magnifying-glass.svg');
+    background-repeat: no-repeat;
+    background-position: 15px 15px;
+    border: 1px solid #E4E9ED;
+    border-radius: 100px;
+    padding: 15px 15px 15px 50px;
+    color: #5F5F5F;
+    letter-spacing: 1.08px;
   }
 
   li {

@@ -14,19 +14,30 @@ class StandardIndex extends React.Component {
   constructor(props) {
     super(props);
 
-    let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    let directory = ChangeCase.snakeCase(entityNamePlural);
-    let arrayName = ChangeCase.camelCase(entityNamePlural);
+    const entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    const directory = ChangeCase.snakeCase(entityNamePlural);
+    const arrayName = ChangeCase.camelCase(entityNamePlural);
 
-    let initialState = {
+    const columns = this.props.columns.map((column) => {
+      if (typeof column === 'string') {
+        return {
+          name: column
+        };
+      } else {
+        return column;
+      }
+    });
+
+    const initialState = {
       entityNamePlural,
       directory,
       arrayName,
       fetching: true,
       [arrayName]: [],
-      searchProperty: this.props.columns[0],
+      searchColumn: columns[0],
       searchText: '',
-      newEntityModalOpen: false
+      newEntityModalOpen: false,
+      columns
     }
 
     this.state = initialState;
@@ -48,6 +59,12 @@ class StandardIndex extends React.Component {
     });
   }
 
+  standardIndexSort(entity) {
+    const { searchColumn } = this.state;
+    const searchProperty = searchColumn.sortColumn || searchColumn.name;
+    return HandyTools.commonSort(searchProperty, entity);
+  }
+
   render() {
     const children = React.Children.map(
       this.props.children,
@@ -60,55 +77,58 @@ class StandardIndex extends React.Component {
       }
     );
 
-    let filteredEntities = Index.filterSearchText(this.state[this.state.arrayName], this.state.searchText, this.state.searchProperty);
+    const { fetching, columns, directory, searchColumn, arrayName, searchText, entityNamePlural } = this.state;
+    let filteredEntities = Index.filterSearchText({ entities: this.state[arrayName], text: searchText, property: searchColumn.name });
 
     return(
       <div className="component">
-        <h1>{ this.props.header || ChangeCase.titleCase(this.state.entityNamePlural) }</h1>
+        <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderButton() }
-        <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
+        <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ searchText } />
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className="admin-table sortable">
-            <thead>
-              <tr>
-                { this.props.columns.map((column, index) => {
+          { Common.renderSpinner(fetching) }
+          { Common.renderGrayedOut(fetching, -36, -32, 5) }
+          <div className="horizontal-scroll">
+            <table className="admin-table sortable">
+              <thead>
+                <tr>
+                  { columns.map((column, index) => {
+                    return(
+                      <th key={ index } style={ this.columnWidth(column) }>
+                        <div className={ Index.sortClass.bind(this)(column.name) } onClick={ Common.changeState.bind(this, 'searchColumn', column) }>
+                          { column.header || ChangeCase.titleCase(column.name) }
+                        </div>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  { columns.map((_, index) => {
+                    return(
+                      <td key={ index }></td>
+                    );
+                  })}
+                </tr>
+                { _.orderBy(filteredEntities, [this.standardIndexSort.bind(this)], searchColumn.sortDir || 'asc').map((entity, index) => {
                   return(
-                    <th key={ index } style={ this.columnWidth(index) }>
-                      <div className={ Index.sortClass.bind(this)(column) } onClick={ Common.changeState.bind(this, 'searchProperty', column) }>
-                        { this.props.columnHeaders && this.props.columnHeaders[index] ? this.props.columnHeaders[index] : HandyTools.capitalize(column) }
-                      </div>
-                    </th>
+                    <tr key={ index }>
+                      { columns.map((column, index) => {
+                        return(
+                          <td key={ index } className={ column.classes || '' }>
+                            <a href={ `${directory}/${entity.id}${column.links || ''}` }>
+                              { this.renderValue(entity[column.name], index) }
+                            </a>
+                          </td>
+                        );
+                      })}
+                    </tr>
                   );
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                { this.props.columns.map((_, index) => {
-                  return(
-                    <td key={ index }></td>
-                  );
-                })}
-              </tr>
-              { _.sortBy(filteredEntities, [HandyTools.commonSort.bind(this)]).map((entity, index) => {
-                return(
-                  <tr key={ index }>
-                    { this.props.columns.map((column, index) => {
-                      return(
-                        <td key={ index } className={ this.props.columnClasses ? this.props.columnClasses[index] : '' }>
-                          <a href={ `${this.state.directory}/${entity.id}${this.props.columnLinks && this.props.columnLinks[index] ? this.props.columnLinks[index] : ''}` }>
-                            { this.renderValue(entity[column], index) }
-                          </a>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
+                }) }
+              </tbody>
+            </table>
+          </div>
         </div>
         { this.renderModal.call(this, children) }
       </div>
@@ -133,17 +153,17 @@ class StandardIndex extends React.Component {
     }
   }
 
-  columnWidth(index) {
-    if (this.props.columnWidths && this.props.columnWidths[index]) {
+  columnWidth(column) {
+    if (column.width) {
       return {
-        width: +this.props.columnWidths[index]
+        minWidth: +column.width
       };
     }
   }
 
-  renderValue(value, index) {
-    if (this.props.ellipses && this.props.ellipses[index]) {
-      return HandyTools.ellipsis(value, this.props.ellipses[index]);
+  renderValue(value, column) {
+    if (column.ellipsis) {
+      return HandyTools.ellipsis(value, column.ellipsis);
     } else {
       return value;
     }

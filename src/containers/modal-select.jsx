@@ -13,11 +13,11 @@ class ModalSelect extends React.Component {
 
   render() {
     return(
-      <div className="modal-select">
+      <div className="modal-select handy-component">
         <input className="search-box" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } data-field="searchText" />
         <ul className="licensor-modal-list">
           { this.renderNoneOption() }
-          { Index.filterSearchText(this.props.options, this.state.searchText, this.props.property).map((option, index) => {
+          { Index.filterSearchText({ entities: this.props.options, text: this.state.searchText, property: this.props.property }).map((option, index) => {
             return(
               <li key={ index } onClick={ this.props.func } data-id={ option.id } data-type={ option.itemType }>{ option[this.props.property] }</li>
             );
