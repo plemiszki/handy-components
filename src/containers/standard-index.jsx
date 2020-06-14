@@ -66,18 +66,25 @@ class StandardIndex extends React.Component {
   }
 
   render() {
+    let fetching = this.state.fetching;
+    let columns = this.state.columns;
+    let directory = this.state.directory;
+    let searchColumn = this.state.searchColumn;
+    let arrayName = this.state.arrayName;
+    let searchText = this.state.searchText;
+    let entityNamePlural = this.state.entityNamePlural;
+
     const children = React.Children.map(
       this.props.children,
       (child) => {
         return React.cloneElement(child, {
           entityName: this.props.entityName,
-          entityNamePlural: this.state.entityNamePlural,
+          entityNamePlural,
           callback: this.updateIndex.bind(this)
         });
       }
     );
 
-    const { fetching, columns, directory, searchColumn, arrayName, searchText, entityNamePlural } = this.state;
     let filteredEntities = Index.filterSearchText({ entities: this.state[arrayName], text: searchText, property: searchColumn.name });
 
     return(
