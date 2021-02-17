@@ -9,7 +9,7 @@ import { fetchEntities } from '../actions/index'
 import Common from './modules/common.js'
 import Index from './modules/index.js'
 
-class StandardIndex extends React.Component {
+class FullIndex extends React.Component {
 
   constructor(props) {
     super(props);
@@ -185,4 +185,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ fetchEntities }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StandardIndex);
+export default connect(mapStateToProps, mapDispatchToProps)(FullIndex);

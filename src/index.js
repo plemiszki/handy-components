@@ -9,7 +9,7 @@ import ModalMessage from './containers/modal-message.jsx'
 import Message from './containers/message.jsx'
 import ModalSelect from './containers/modal-select.jsx'
 import SimpleDetails from './containers/simple-details.jsx'
-import StandardIndex from './containers/standard-index.jsx'
+import FullIndex from './containers/full-index.jsx'
 import TabbedIndex from './containers/tabbed-index.jsx'
 
 const ModalSelectStyles = {
@@ -32,12 +32,12 @@ export {
   Common,
   ConfirmDelete,
   Details,
+  FullIndex,
   Index,
   Message,
   ModalMessage,
   ModalSelect,
   ModalSelectStyles,
   SimpleDetails,
-  StandardIndex,
   TabbedIndex
 }
