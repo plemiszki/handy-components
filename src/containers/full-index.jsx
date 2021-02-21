@@ -44,7 +44,7 @@ class FullIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities(this.state.directory, this.state.arrayName).then(() => {
+    this.props.fetchEntities({ directory: this.state.directory }).then(() => {
       this.setState({
         fetching: false,
         [this.state.arrayName]: this.props[this.state.arrayName]

@@ -13,11 +13,17 @@ let getHeaders = (args) => {
   return headers;
 }
 
-export function fetchEntities(directory, arrayName) {
+export function fetchEntities(args) {
   return (dispatch) => {
     return $.ajax({
       method: 'GET',
-      url: `/api/${directory}`
+      url: `/api/${args.directory}`,
+      data: {
+        batch_size: args.batchSize,
+        page: args.page,
+        order_by: args.orderBy,
+        order_direction: args.orderDir
+      }
     }).then(
       (response) => {
         let obj = Object.assign(response, { type: 'FETCH_ENTITIES' });

@@ -38,7 +38,7 @@ class TabbedIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities(directory, arrayName).then(() => {
+    this.props.fetchEntities({ directory }).then(() => {
       let entityArray = `entities${HandyTools.capitalize(this.state.tab)}`;
       this.setState({
         fetching: false,
