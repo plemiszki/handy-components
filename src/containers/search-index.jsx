@@ -36,6 +36,7 @@ class SearchIndex extends React.Component {
       [arrayName]: [],
       orderByColumn: columns[0],
       newEntityModalOpen: false,
+      searchModalOpen: false,
       columns,
       page: 1,
       pages: []
@@ -93,6 +94,7 @@ class SearchIndex extends React.Component {
   clickHeader(column) {
     this.setState({
       fetching: true,
+      page: 1,
       orderByColumn: column
     }, () => {
       this.fetchEntities();
@@ -117,6 +119,7 @@ class SearchIndex extends React.Component {
       <div className="component">
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderButton() }
+        <div className="search-button" onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></div>
         <div className="white-box">
           <div className="top-section">
             { Common.renderSpinner(fetching) }
@@ -167,7 +170,23 @@ class SearchIndex extends React.Component {
           { this.renderPageLinks() }
         </div>
         { this.renderModal.call(this, children) }
+        { this.renderSearchModal.call(this, children) }
         <style jsx>{`
+            .search-button {
+              float: right;
+              width: 47px;
+              height: 47px;
+              background-color: white;
+              background-image: url('/assets/handy-components/images/magnifying-glass.svg');
+              background-repeat: no-repeat;
+              background-position: center;
+              border: 1px solid #E4E9ED;
+              border-radius: 100px;
+              cursor: pointer;
+            }
+            .search-button:hover {
+              border: 1px solid #CBD0D4;
+            }
             .white-box {
               padding: 0 !important;
             }
@@ -190,6 +209,14 @@ class SearchIndex extends React.Component {
         <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
       );
     }
+  }
+
+  renderSearchModal(children) {
+    return(
+      <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ {} }>
+        { children }
+      </Modal>
+    );
   }
 
   renderModal(children) {
