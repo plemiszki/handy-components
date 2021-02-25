@@ -35,7 +35,7 @@ class SearchIndex extends React.Component {
       fetching: true,
       [arrayName]: [],
       orderByColumn: columns[0],
-      newEntityModalOpen: false,
+      newModalOpen: false,
       searchModalOpen: false,
       columns,
       page: 1,
@@ -67,7 +67,7 @@ class SearchIndex extends React.Component {
 
   updateIndex(entities) {
     this.setState({
-      newEntityModalOpen: false,
+      newModalOpen: false,
       [this.state.arrayName]: entities
     });
   }
@@ -169,7 +169,7 @@ class SearchIndex extends React.Component {
           <hr />
           { this.renderPageLinks() }
         </div>
-        { this.renderModal.call(this, children) }
+        { this.renderNewModal.call(this, children) }
         { this.renderSearchModal.call(this, children) }
         <style jsx>{`
             .search-button {
@@ -213,16 +213,16 @@ class SearchIndex extends React.Component {
 
   renderSearchModal(children) {
     return(
-      <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ {} }>
+      <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.searchModalDimensions, this.props.searchModalRows) }>
         { children }
       </Modal>
     );
   }
 
-  renderModal(children) {
+  renderNewModal(children) {
     if (!this.props.hideNewButton) {
       return(
-        <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
+        <Modal isOpen={ this.state.newModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.newModalDimensions, this.props.newModalRows) }>
           { children }
         </Modal>
       );

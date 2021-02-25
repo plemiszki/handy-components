@@ -12,6 +12,7 @@ import SimpleDetails from './containers/simple-details.jsx'
 import FullIndex from './containers/full-index.jsx'
 import SearchIndex from './containers/search-index.jsx'
 import TabbedIndex from './containers/tabbed-index.jsx'
+import SearchCriteria from './containers/search-criteria.jsx'
 
 const ModalSelectStyles = {
   overlay: {
@@ -39,6 +40,7 @@ export {
   ModalMessage,
   ModalSelect,
   ModalSelectStyles,
+  SearchCriteria,
   SearchIndex,
   SimpleDetails,
   TabbedIndex

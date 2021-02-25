@@ -85,7 +85,7 @@ export default {
     }
   },
 
-  newEntityModalStyles(modalDimensions, rows) {
+  modalStyles(modalDimensions, rows) {
     let height;
     if (rows) {
       height = 121 + (rows * 119);
