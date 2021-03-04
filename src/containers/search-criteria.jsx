@@ -5,55 +5,61 @@ import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import Common from './modules/common.js'
 
-let entityNamePlural;
-let directory;
-
 class SearchCriteria extends React.Component {
   constructor(props) {
     super(props);
 
-    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    directory = ChangeCase.snakeCase(entityNamePlural);
-
     this.state = {
-      fetching: !!this.props.fetchData,
-      [this.props.entityName]: HandyTools.deepCopy(this.props.initialEntity),
-      errors: [],
-      films: [],
-      venues: []
+      criteria: {}
     };
   }
 
   componentDidMount() {
+    if (this.props.criteria) {
+      this.setState({
+        criteria: this.props.criteria
+      });
+    }
+  }
 
+  validateCriteria(criteria) {
+    const keys = Object.keys(criteria);
+    keys.forEach((key) => {
+      if (criteria[key].trim() === '') {
+        delete criteria[key];
+      }
+    });
+    return criteria;
   }
 
   clickSearch(e) {
     e.preventDefault();
-    // let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    // let directory = HandyTools.convertToUnderscore(entityNamePlural);
-    // this.setState({
-    //   fetching: true
-    // });
-    // this.props.createEntity({
-    //   directory,
-    //   entityName: this.props.entityName,
-    //   entity: this.state[this.props.entityName]
-    // }).then(() => {
-    //   this.props.callback(this.props[entityNamePlural]);
-    // }, () => {
-    //   this.setState({
-    //     fetching: false,
-    //     errors: this.props.errors
-    //   });
-    // });
+    let validatedCriteria = this.validateCriteria(this.state.criteria);
+    this.props.callback.call(this, validatedCriteria);
   }
 
-  changeFieldArgs() {
-    return {
-      allErrors: Errors,
-      errorsArray: this.state.errors
+  updateField(e) {
+    const field = e.target.dataset.field;
+    const value = e.target.value;
+    let { criteria } = this.state;
+    criteria[field] = value;
+    this.setState({
+      criteria
+    });
+  }
+
+  updateCheckbox(e) {
+    const field = e.target.dataset.field;
+    const checked = e.target.checked;
+    let { criteria } = this.state;
+    if (checked) {
+      criteria[field] = ''; // TODO: different default values for different field types
+    } else {
+      delete criteria[field];
     }
+    this.setState({
+      criteria
+    });
   }
 
   render() {
@@ -70,177 +76,41 @@ class SearchCriteria extends React.Component {
   }
 
   renderFields() {
-    switch (this.props.entityName) {
-      case 'alias':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'text' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }) }
-          </div>
-        ]);
-      case 'booker':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'name' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'email' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'phone' }) }
-          </div>
-        ]);
-      case 'country':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'country', property: 'name' }) }
-          </div>
-        ]);
-      case 'digitalRetailer':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'digitalRetailer', property: 'name' }) }
-          </div>
-        ]);
-      case 'dvdCustomer':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'name' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'discount', columnHeader: 'Discount or Price/Unit' }) }
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'consignment' }) }
-          </div>,
-          <div key="2" className={ `row${this.state.dvdCustomer.consignment ? ' placeholder' : ''}` }>
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'invoicesEmail' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'sageId', columnHeader: 'Sage ID' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'paymentTerms', columnHeader: 'Payment Terms (in days)' }) }
-          </div>,
-          <hr key="3" />,
-          <p key="4" className="section-header">Billing Address</p>,
-          <div key="5" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'dvdCustomer', property: 'billingName', columnHeader: 'Name' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'dvdCustomer', property: 'address1', columnHeader: 'Address 1' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'dvdCustomer', property: 'address2', columnHeader: 'Address 2' }) }
-          </div>,
-          <div key="6" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'city' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'state' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'zip' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'country' }) }
-          </div>
-        ]);
-      case 'format':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'format', property: 'name' }) }
-          </div>
-        ]);
-      case 'genre':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'genre', property: 'name' }) }
-          </div>
-        ]);
-      case 'giftbox':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'giftbox', property: 'name' }) }
-          </div>,
-          <div key="2" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'giftbox', property: 'upc', columnHeader: 'UPC' }) }
-          </div>
-        ]);
-      case 'language':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'language', property: 'name' }) }
-          </div>
-        ]);
-      case 'licensor':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'licensor', property: 'name' }) }
-          </div>
-        ]);
-      case 'merchandiseType':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'merchandiseType', property: 'name' }) }
-          </div>
-        ]);
-      case 'sublicensor':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'sublicensor', property: 'name' }) }
-          </div>
-        ]);
-      case 'territory':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'territory', property: 'name' }) }
-          </div>
-        ]);
-      case 'topic':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'topic', property: 'name' }) }
-          </div>
-        ]);
-      case 'user':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'user', property: 'name' }) }
-          </div>,
-          <div key="2" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'user', property: 'email' }) }
-          </div>,
-          <div key="3" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'user', property: 'password' }) }
-          </div>
-        ]);
-      case 'venue':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'venue', property: 'label' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'sageId', columnHeader: 'Sage ID' }) }
-            <div className="col-xs-3">
-              <h2>Type</h2>
-              <select onChange={ Details.changeField.bind(this, this.changeFieldArgs())} value={ this.state.venue.venueType } data-entity="venue" data-field="venueType">
-                <option value="Theater">Theater</option>
-                <option value="Non-Theatrical">Non-Theatrical</option>
-                <option value="Festival">Festival</option>
-              </select>
-            </div>
-          </div>
-        ]);
-      case 'alternateLength':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'alternateLength', property: 'length' }) }
-          </div>
-        ]);
-      case 'virtualBooking':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'filmId', columnHeader: 'Film', customType: 'modal', modalDisplayProperty: 'title' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'venueId', columnHeader: 'Venue', customType: 'modal', modalDisplayProperty: 'label' }) }
-          </div>,
-          <div key="2" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'startDate' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'endDate' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'terms' }) }
-            { Details.renderDropDown.bind(this)({ columnWidth: 3,
-              entity: 'virtualBooking',
-              property: 'host',
-              type: 'dropdown',
-              columnHeader: 'Hosted By',
-              options: [
-                { id: 'FM', text: 'FM' },
-                { id: 'Venue', text: 'Venue' }
-              ],
-              optionDisplayProperty: 'text'
-            }) }
-          </div>,
-          <div key="3" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'virtualBooking', property: 'url' }) }
-          </div>
-        ]);
-    }
+    return(
+      <div>
+        {
+          this.props.fields.map((field) => {
+            const columnHeader = field.columnHeader || ChangeCase.titleCase(field.name);
+            const keyExists = Object.keys(this.state.criteria).indexOf(field.name) > -1;
+            const disabled = !keyExists;
+            return(
+              <div key={ field.name } className={ disabled ? 'disabled' : '' }>
+                <div className="row">
+                  <div className="col-xs-1">
+                    <input type="checkbox" onChange={ this.updateCheckbox.bind(this) } data-field={ field.name } checked={ keyExists } />
+                  </div>
+                  <div className={ `col-xs-${field.columnWidth} `}>
+                    <h2>{ columnHeader }</h2>
+                    <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ this.state.criteria[field.name] || '' } disabled={ disabled } />
+                    <div className="no-field-error" />
+                  </div>
+                </div>
+                <style jsx>{`
+                    .disabled h2 {
+                      color: lightgray;
+                    }
+                    input[type="checkbox"] {
+                      display: block;
+                      margin: 0;
+                      margin-top: 45px;
+                    }
+                `}</style>
+              </div>
+            );
+          })
+        }
+      </div>
+    );
   }
 }
 

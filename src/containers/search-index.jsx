@@ -39,7 +39,8 @@ class SearchIndex extends React.Component {
       searchModalOpen: false,
       columns,
       page: 1,
-      pages: []
+      pages: [],
+      searchCriteria: {}
     }
 
     this.state = initialState;
@@ -102,15 +103,15 @@ class SearchIndex extends React.Component {
   }
 
   render() {
-    let { fetching, columns, directory, orderByColumn, arrayName, entityNamePlural } = this.state;
+    let { fetching, columns, directory, orderByColumn, arrayName, entityNamePlural, searchCriteria } = this.state;
+    const searchActive = Object.keys(searchCriteria).length > 0;
 
     const children = React.Children.map(
       this.props.children,
       (child) => {
         return React.cloneElement(child, {
-          entityName: this.props.entityName,
-          entityNamePlural,
-          callback: this.updateIndex.bind(this)
+          callback: this.updateSearchCriteria.bind(this),
+          criteria: this.state.searchCriteria
         });
       }
     );
@@ -118,8 +119,8 @@ class SearchIndex extends React.Component {
     return(
       <div className="component">
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
-        { this.renderButton() }
-        <div className="search-button" onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></div>
+        { this.renderNewButton() }
+        <div className={ 'search-button' + (searchActive ? ' active' : '') } onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></div>
         <div className="white-box">
           <div className="top-section">
             { Common.renderSpinner(fetching) }
@@ -187,6 +188,12 @@ class SearchIndex extends React.Component {
             .search-button:hover {
               border: 1px solid #CBD0D4;
             }
+            .search-button.active {
+              background-color: #01647C;
+            }
+            .search-button.active:hover {
+              background-color: #013b49;
+            }
             .white-box {
               padding: 0 !important;
             }
@@ -203,7 +210,7 @@ class SearchIndex extends React.Component {
     );
   }
 
-  renderButton() {
+  renderNewButton() {
     if (!this.props.hideNewButton) {
       return(
         <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
@@ -217,6 +224,13 @@ class SearchIndex extends React.Component {
         { children }
       </Modal>
     );
+  }
+
+  updateSearchCriteria(searchCriteria) {
+    this.setState({
+      searchCriteria,
+      searchModalOpen: false
+    });
   }
 
   renderNewModal(children) {
