@@ -22,7 +22,8 @@ export function fetchEntities(args) {
         batch_size: args.batchSize,
         page: args.page,
         order_by: args.orderBy,
-        order_direction: args.orderDir
+        order_direction: args.orderDir,
+        search_criteria: args.searchCriteria
       }
     }).then(
       (response) => {

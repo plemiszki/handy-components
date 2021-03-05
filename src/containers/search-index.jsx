@@ -51,17 +51,18 @@ class SearchIndex extends React.Component {
   }
 
   fetchEntities() {
-    const { orderByColumn } = this.state;
+    const { directory, page, orderByColumn, searchCriteria, arrayName } = this.state;
     this.props.fetchEntities({
-      directory: this.state.directory,
+      directory,
       batchSize: this.props.batchSize,
-      page: this.state.page,
+      page,
       orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
-      orderDir: orderByColumn.sortDir || 'asc'
+      orderDir: orderByColumn.sortDir || 'asc',
+      searchCriteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria)
     }).then(() => {
       this.setState({
         fetching: false,
-        [this.state.arrayName]: this.props[this.state.arrayName]
+        [arrayName]: this.props[arrayName]
       });
     });
   }
@@ -96,7 +97,20 @@ class SearchIndex extends React.Component {
     this.setState({
       fetching: true,
       page: 1,
+      [this.state.arrayName]: [],
       orderByColumn: column
+    }, () => {
+      this.fetchEntities();
+    });
+  }
+
+  updateSearchCriteria(searchCriteria) {
+    this.setState({
+      searchCriteria,
+      searchModalOpen: false,
+      fetching: true,
+      page: 1,
+      [this.state.arrayName]: []
     }, () => {
       this.fetchEntities();
     });
@@ -224,13 +238,6 @@ class SearchIndex extends React.Component {
         { children }
       </Modal>
     );
-  }
-
-  updateSearchCriteria(searchCriteria) {
-    this.setState({
-      searchCriteria,
-      searchModalOpen: false
-    });
   }
 
   renderNewModal(children) {
