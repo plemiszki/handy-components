@@ -10,7 +10,8 @@ class SearchCriteria extends React.Component {
     super(props);
 
     this.state = {
-      criteria: {}
+      criteria: {},
+      buttonText: (Object.keys(this.props.criteria).length > 0 ? 'Update Search' : 'Search')
     };
   }
 
@@ -18,14 +19,18 @@ class SearchCriteria extends React.Component {
     if (this.props.criteria) {
       this.setState({
         criteria: this.props.criteria
+      }, () => {
+        HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
       });
+    } else {
+      HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
     }
   }
 
   validateCriteria(criteria) {
     const keys = Object.keys(criteria);
     keys.forEach((key) => {
-      if (criteria[key].trim() === '') {
+      if (criteria[key].value.trim() === '') {
         delete criteria[key];
       }
     });
@@ -42,24 +47,36 @@ class SearchCriteria extends React.Component {
     const field = e.target.dataset.field;
     const value = e.target.value;
     let { criteria } = this.state;
-    criteria[field] = value;
+    criteria[field].value = value;
     this.setState({
       criteria
     });
   }
 
   updateCheckbox(e) {
-    const field = e.target.dataset.field;
+    const fieldName = e.target.dataset.field;
     const checked = e.target.checked;
     let { criteria } = this.state;
     if (checked) {
-      criteria[field] = ''; // TODO: different default values for different field types
+      criteria[fieldName] = this.initializeObject(fieldName);
     } else {
-      delete criteria[field];
+      delete criteria[fieldName];
     }
     this.setState({
       criteria
+    }, () => {
+      HandyTools.resetNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
     });
+  }
+
+  initializeObject(fieldName) {
+    const propsField = this.props.fields.filter((field) => field.name === fieldName)[0];
+    let result = {};
+    result.value = ''; // TODO: different default values for different field types
+    if (propsField.dbName) {
+      result.dbName = propsField.dbName;
+    }
+    return result;
   }
 
   render() {
@@ -69,7 +86,7 @@ class SearchCriteria extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderFields() }
-          <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value="Search" onClick={ this.clickSearch.bind(this) } />
+          <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
         </form>
       </div>
     );
@@ -80,7 +97,6 @@ class SearchCriteria extends React.Component {
       <div>
         {
           this.props.fields.map((field) => {
-            const columnHeader = field.columnHeader || ChangeCase.titleCase(field.name);
             const keyExists = Object.keys(this.state.criteria).indexOf(field.name) > -1;
             const disabled = !keyExists;
             return(
@@ -89,11 +105,7 @@ class SearchCriteria extends React.Component {
                   <div className="col-xs-1">
                     <input type="checkbox" onChange={ this.updateCheckbox.bind(this) } data-field={ field.name } checked={ keyExists } />
                   </div>
-                  <div className={ `col-xs-${field.columnWidth} `}>
-                    <h2>{ columnHeader }</h2>
-                    <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ this.state.criteria[field.name] || '' } disabled={ disabled } />
-                    <div className="no-field-error" />
-                  </div>
+                  { this.renderField.call(this, field, disabled) }
                 </div>
                 <style jsx>{`
                     .disabled h2 {
@@ -111,6 +123,41 @@ class SearchCriteria extends React.Component {
         }
       </div>
     );
+  }
+
+  renderField(field, disabled) {
+    const columnHeader = field.columnHeader || ChangeCase.titleCase(field.name);
+    const value = this.state.criteria[field.name] ? this.state.criteria[field.name].value : '';
+    switch (field.type) {
+      case 'static dropdown':
+        return(
+          <div className={ `col-xs-${field.columnWidth} `}>
+            <h2>{ columnHeader }</h2>
+            <select onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ disabled }>
+              { this.renderOptions(field.options) }
+            </select>
+            <div className="no-dropdown-field-error" />
+          </div>
+        );
+      default:
+        return(
+          <div className={ `col-xs-${field.columnWidth} `}>
+            <h2>{ columnHeader }</h2>
+            <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ disabled } />
+            <div className="no-field-error" />
+          </div>
+        );
+    }
+  }
+
+  renderOptions(options) {
+    return HandyTools.alphabetizeArrayOfObjects(options, 'text').map((option, index) => {
+      return(
+        <option key={ index } value={ option.value }>
+          { option.text }
+        </option>
+      );
+    })
   }
 }
 
