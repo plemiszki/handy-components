@@ -6,6 +6,7 @@ import HandyTools from 'handy-tools'
 import Common from './modules/common.js'
 
 class SearchCriteria extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -27,17 +28,20 @@ class SearchCriteria extends React.Component {
     }
   }
 
-  stringIsNumber(string) {
-    return !isNaN(string) && !isNaN(parseFloat(string));
-  }
-
   validateCriteria(criteria) {
     for (const [key, obj] of Object.entries(criteria)) {
       if (obj.minValue) { // number range
         let { minValue, maxValue } = obj;
-        if (this.stringIsNumber(minValue) == false || this.stringIsNumber(maxValue) == false) {
+        if (HandyTools.stringIsNumber(minValue) == false || HandyTools.stringIsNumber(maxValue) == false) {
           delete criteria[key];
         } else if (+maxValue < +minValue) {
+          delete criteria[key];
+        }
+      } else if (obj.startDate) { // date range
+        let { startDate, endDate } = obj;
+        if (HandyTools.stringIsDate(startDate) == false || HandyTools.stringIsDate(endDate) == false) {
+          delete criteria[key];
+        } else if (Date.parse(startDate) > Date.parse(endDate)) {
           delete criteria[key];
         }
       } else if (obj.value) { // string
@@ -67,7 +71,7 @@ class SearchCriteria extends React.Component {
     });
   }
 
-  updateNumberRangeField(m, e) {
+  updateRangeField(m, e) {
     const field = e.target.dataset.field;
     const value = e.target.value;
     let { criteria } = this.state;
@@ -100,6 +104,11 @@ class SearchCriteria extends React.Component {
         result.minValue = 0;
         result.maxValue = 1;
         break;
+      case 'date range':
+        const date = new Date();
+        result.startDate = HandyTools.stringifyDate(date);
+        result.endDate = HandyTools.stringifyDate(date);
+        break;
       default:
         result.value = '';
     }
@@ -115,6 +124,8 @@ class SearchCriteria extends React.Component {
     switch (field.type) {
       case 'number range':
         return keyExists && Object.keys(criteria[field.name]).indexOf('minValue') > -1;
+      case 'date range':
+        return keyExists && Object.keys(criteria[field.name]).indexOf('startDate') > -1;
       default:
         return keyExists && Object.keys(criteria[field.name]).indexOf('value') > -1;
     }
@@ -127,6 +138,7 @@ class SearchCriteria extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderFields() }
+          <hr />
           <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
         </form>
       </div>
@@ -134,34 +146,40 @@ class SearchCriteria extends React.Component {
   }
 
   renderFields() {
+    const rowHeight = 119;
     return(
-      <div>
-        {
-          this.props.fields.map((field) => {
-            const fieldActive = this.isFieldActive(field);
-            return(
-              <div key={ `${field.name}${field.type === 'number range' ? '-range' : ''}` } className={ fieldActive ? '' : 'disabled' }>
-                <div className="row">
-                  <div className="col-xs-1">
-                    <input type="checkbox" onChange={ this.updateCheckbox.bind(this, field) } data-field={ field.name } checked={ fieldActive } />
+      <>
+        <div className="fields-container" style={ { height: this.props.rows * rowHeight } }>
+          {
+            this.props.fields.map((field) => {
+              const fieldActive = this.isFieldActive(field);
+              return(
+                <div key={ `${field.name}${field.type === 'number range' ? '-range' : ''}` } className={ fieldActive ? '' : 'disabled' }>
+                  <div className="row">
+                    <div className="col-xs-1">
+                      <input type="checkbox" onChange={ this.updateCheckbox.bind(this, field) } data-field={ field.name } checked={ fieldActive } />
+                    </div>
+                    { this.renderField.call(this, field, fieldActive) }
                   </div>
-                  { this.renderField.call(this, field, fieldActive) }
                 </div>
-                <style jsx>{`
-                    .disabled h2 {
-                      color: lightgray;
-                    }
-                    input[type="checkbox"] {
-                      display: block;
-                      margin: 0;
-                      margin-top: 45px;
-                    }
-                `}</style>
-              </div>
-            );
-          })
-        }
-      </div>
+              );
+            })
+          }
+        </div>
+        <style jsx>{`
+          .fields-container {
+            overflow: scroll;
+          }
+          .disabled h2 {
+            color: lightgray;
+          }
+          input[type="checkbox"] {
+            display: block;
+            margin: 0;
+            margin-top: 45px;
+          }
+        `}</style>
+      </>
     );
   }
 
@@ -183,8 +201,8 @@ class SearchCriteria extends React.Component {
       case 'number range':
         const minValue = (criteria[field.name] && criteria[field.name].hasOwnProperty('minValue')) ? criteria[field.name].minValue : '';
         const maxValue = (criteria[field.name] && criteria[field.name].hasOwnProperty('maxValue')) ? criteria[field.name].maxValue : '';
-        const minValueIsNumber = this.stringIsNumber(minValue);
-        const maxValueIsNumber = this.stringIsNumber(maxValue);
+        const minValueIsNumber = HandyTools.stringIsNumber(minValue);
+        const maxValueIsNumber = HandyTools.stringIsNumber(maxValue);
         const invalidRange = minValueIsNumber && maxValueIsNumber && +minValue > +maxValue;
         const minValueRed = fieldActive && (!minValueIsNumber || invalidRange);
         const maxValueRed = fieldActive && (!maxValueIsNumber || invalidRange);
@@ -192,8 +210,37 @@ class SearchCriteria extends React.Component {
           <>
             <div className={ `col-xs-${field.columnWidth} `}>
               <h2>{ columnHeader }</h2>
-              Min: <input className={ `number-range min ${minValueRed ? 'red' : ''}` } onChange={ this.updateNumberRangeField.bind(this, 'minValue') } data-field={ field.name } value={ minValue } disabled={ !fieldActive } />
-              Max: <input className={ `number-range ${maxValueRed ? 'red' : ''}` } onChange={ this.updateNumberRangeField.bind(this, 'maxValue') } data-field={ field.name } value={ maxValue } disabled={ !fieldActive } />
+              Min: <input className={ `number-range min ${minValueRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'minValue') } data-field={ field.name } value={ minValue } disabled={ !fieldActive } />
+              Max: <input className={ `number-range ${maxValueRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'maxValue') } data-field={ field.name } value={ maxValue } disabled={ !fieldActive } />
+              <div className="no-field-error" />
+            </div>
+            <style jsx>{`
+                .number-range {
+                  width: 100px !important;
+                }
+                .min {
+                  margin-right: 15px;
+                }
+                .red {
+                  border: solid 1px red !important;
+                }
+            `}</style>
+          </>
+        );
+      case 'date range':
+        const startDate = (criteria[field.name] && criteria[field.name].hasOwnProperty('startDate')) ? criteria[field.name].startDate : '';
+        const endDate = (criteria[field.name] && criteria[field.name].hasOwnProperty('endDate')) ? criteria[field.name].endDate : '';
+        const startDateIsValid = HandyTools.stringIsDate(startDate);
+        const endDateIsValid = HandyTools.stringIsDate(endDate);
+        const invalidDateRange = startDateIsValid && endDateIsValid && (Date.parse(startDate) > Date.parse(endDate));
+        const startDateRed = fieldActive && (!startDateIsValid || invalidDateRange);
+        const endDateRed = fieldActive && (!endDateIsValid || invalidDateRange);
+        return(
+          <>
+            <div className={ `col-xs-${field.columnWidth} `}>
+              <h2>{ columnHeader }</h2>
+              Start Date: <input className={ `number-range min ${startDateRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'startDate') } data-field={ field.name } value={ startDate } disabled={ !fieldActive } />
+              End Date: <input className={ `number-range ${endDateRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'endDate') } data-field={ field.name } value={ endDate } disabled={ !fieldActive } />
               <div className="no-field-error" />
             </div>
             <style jsx>{`

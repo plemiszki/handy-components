@@ -85,10 +85,16 @@ export default {
     }
   },
 
-  modalStyles(modalDimensions, rows) {
+  newEntityModalStyles(modalDimensions, rows) {
+
+    const buttonHeight = 47;
+    const paddingHeight = 36;
+    const borderHeight = 1;
+    const constantHeight = buttonHeight + (paddingHeight * 2) + (borderHeight * 2);
+
     let height;
     if (rows) {
-      height = 121 + (rows * 119);
+      height = constantHeight + (rows * 119);
     } else {
       height = modalDimensions.height || 240;
     }
@@ -145,6 +151,35 @@ export default {
       return(
         React.createElement("div", { className: "spinner", style:  spinnerStyle })
       );
+    }
+  },
+
+  searchModalStyles(modalDimensions, rows) {
+
+    const rowHeight = 119;
+    const buttonHeight = 47;
+    const paddingHeight = 36;
+    const borderHeight = 1;
+    const hrHeight = 31;
+    const constantHeight = hrHeight + buttonHeight + (paddingHeight * 2) + (borderHeight * 2);
+
+    let height;
+    if (rows) {
+      height = constantHeight + (rows * rowHeight);
+    } else {
+      height = modalDimensions.height || 240;
+    }
+    return {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: 'white',
+        padding: 0,
+        margin: 'auto',
+        maxWidth: modalDimensions.width || 1000,
+        height: height
+      }
     }
   },
 

@@ -119,13 +119,13 @@ class SearchIndex extends React.Component {
   render() {
     let { fetching, columns, directory, orderByColumn, arrayName, entityNamePlural, searchCriteria } = this.state;
     const searchActive = Object.keys(searchCriteria).length > 0;
-
     const children = React.Children.map(
       this.props.children,
       (child) => {
         return React.cloneElement(child, {
           callback: this.updateSearchCriteria.bind(this),
-          criteria: this.state.searchCriteria
+          criteria: this.state.searchCriteria,
+          rows: this.props.searchModalRows
         });
       }
     );
@@ -225,7 +225,7 @@ class SearchIndex extends React.Component {
   }
 
   renderNewButton() {
-    if (!this.props.hideNewButton) {
+    if (this.props.showNewButton) {
       return(
         <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
       );
@@ -234,16 +234,16 @@ class SearchIndex extends React.Component {
 
   renderSearchModal(children) {
     return(
-      <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.searchModalDimensions, this.props.searchModalRows) }>
+      <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.searchModalStyles(this.props.searchModalDimensions, this.props.searchModalRows) }>
         { children }
       </Modal>
     );
   }
 
   renderNewModal(children) {
-    if (!this.props.hideNewButton) {
+    if (this.props.showNewButton) {
       return(
-        <Modal isOpen={ this.state.newModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.newModalDimensions, this.props.newModalRows) }>
+        <Modal isOpen={ this.state.newModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.newModalDimensions, this.props.newModalRows) }>
           { children }
         </Modal>
       );

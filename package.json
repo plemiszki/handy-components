@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "change-case": "3.1.0",
-    "handy-tools": "2.10.0",
+    "handy-tools": "2.11.0",
     "jquery": "3.5.0",
     "lodash": "4.17.19",
     "react": "16.8.4",
@@ -29,8 +29,5 @@
     "@babel/preset-react": "7.0.0",
     "babel-loader": "8.0.5",
     "webpack-cli": "^3.3.12"
-  },
-  "engines": {
-    "node": "10.16.3"
   }
 }
