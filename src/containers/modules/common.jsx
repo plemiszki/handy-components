@@ -1,7 +1,8 @@
 import $ from 'jquery'
 import React from 'react'
+import Modal from 'react-modal'
 
-export default {
+const Common = {
 
   changeState(property, value) {
     this.setState({
@@ -63,6 +64,47 @@ export default {
       return array[0][property];
     } else {
       return "";
+    }
+  },
+
+  jobModalStyles() {
+    return {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: 'white',
+        margin: 'auto',
+        maxWidth: 540,
+        height: 217,
+        border: 'solid 1px black',
+        borderRadius: '6px',
+        textAlign: 'center',
+        color: 'black',
+        fontSize: 18,
+        fontWeight: 'bold',
+        paddingTop: 130,
+        lineHeight: '30px'
+      }
+    }
+  },
+
+  jobErrorsModalStyles() {
+    return {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: '#FFFFFF',
+        margin: 'auto',
+        maxWidth: 800,
+        height: 550,
+        border: 'solid 1px #5F5F5F',
+        borderRadius: '6px',
+        textAlign: 'center',
+        color: '#5F5F5F',
+        padding: 20
+      }
     }
   },
 
@@ -139,6 +181,40 @@ export default {
     }
   },
 
+  renderJobModal: function(job) {
+    if (job) {
+      if (job.status === 'failed') {
+        return(
+          <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.jobErrorsModalStyles() }>
+            <div className="errors-modal">
+              <h1>{ this.state.job.first_line }</h1>
+              { this.state.job.errors_text.split("\n").map((error, index) => {
+                var greenClass = "";
+                if (error.substr(error.length - 3) === " :)") {
+                  greenClass = " green";
+                  error = error.substr(0, error.length - 3);
+                }
+                return(
+                  <div key={ index } className={ `import-error${greenClass}` }>{ error }</div>
+                );
+              }) }
+            </div>
+          </Modal>
+        )
+      } else {
+        return(
+          <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobModalStyles() }>
+            <div className="jobs-modal">
+              { Common.renderSpinner(true) }
+              <div className="first-line">{ job.first_line || job.firstLine }</div>
+              <div className={ "second-line" + ((job.second_line || job.secondLine) ? "" : " hidden") }>({ job.current_value || job.currentValue || 0 } of { job.total_value || job.totalValue })</div>
+            </div>
+          </Modal>
+        );
+      }
+    }
+  },
+
   renderSpinner: function(shouldIRender, spinnerSize) {
     spinnerSize = spinnerSize || 90;
     var spinnerStyle = {
@@ -199,5 +275,34 @@ export default {
         color: '#5F5F5F'
       }
     };
+  },
+
+  updateJobModal: function() {
+    if (this.state.jobModalOpen && this.state.job.status === 'running') {
+      window.setTimeout(() => {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: (response) => {
+            let newState = {
+              job: response
+            };
+            if (response.status === 'success') {
+              newState.jobModalOpen = false;
+            }
+            this.setState(newState);
+            if (response.status === 'success') {
+              window.location.href = response.metadata.url;
+            }
+          }
+        });
+      }, 1500)
+    }
   }
 }
+
+export default Common;

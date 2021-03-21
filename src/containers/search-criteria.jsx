@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
-import Common from './modules/common.js'
+import Common from './modules/common.jsx'
 
 class SearchCriteria extends React.Component {
 

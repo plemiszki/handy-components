@@ -5,8 +5,8 @@ import Modal from 'react-modal'
 import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import _ from 'lodash'
-import { fetchEntities } from '../actions/index'
-import Common from './modules/common.js'
+import { fetchEntities, sendRequest } from '../actions/index'
+import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 
 class SearchIndex extends React.Component {
@@ -48,6 +48,10 @@ class SearchIndex extends React.Component {
 
   componentDidMount() {
     this.fetchEntities();
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this);
   }
 
   fetchEntities() {
@@ -104,6 +108,29 @@ class SearchIndex extends React.Component {
     });
   }
 
+  clickExport() {
+    const { orderByColumn, searchCriteria } = this.state;
+    this.setState({
+      fetching: true
+    });
+    this.props.sendRequest({
+      url: '/api/invoices/export',
+      method: 'post',
+      csrfToken: true,
+      data: {
+        orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
+        orderDir: orderByColumn.sortDir || 'asc',
+        searchCriteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria)
+      }
+    }).then(() => {
+      this.setState({
+        job: this.props.job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
+  }
+
   updateSearchCriteria(searchCriteria) {
     this.setState({
       searchCriteria,
@@ -134,7 +161,8 @@ class SearchIndex extends React.Component {
       <div className="component">
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderNewButton() }
-        <div className={ 'search-button' + (searchActive ? ' active' : '') } onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></div>
+        { this.renderExportButton() }
+        <a className={ 'btn search-button' + Common.renderDisabledButtonClass(this.state.fetching) + (searchActive ? ' active' : '') } onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></a>
         <div className="white-box">
           <div className="top-section">
             { Common.renderSpinner(fetching) }
@@ -186,11 +214,13 @@ class SearchIndex extends React.Component {
         </div>
         { this.renderNewModal.call(this, children) }
         { this.renderSearchModal.call(this, children) }
+        { Common.renderJobModal.call(this, this.state.job) }
         <style jsx>{`
             .search-button {
               float: right;
               width: 47px;
               height: 47px;
+              padding: 0;
               background-color: white;
               background-image: url('/assets/handy-components/images/magnifying-glass.svg');
               background-repeat: no-repeat;
@@ -201,6 +231,9 @@ class SearchIndex extends React.Component {
             }
             .search-button:hover {
               border: 1px solid #CBD0D4;
+            }
+            .search-button:active {
+              box-shadow: none;
             }
             .search-button.active {
               background-color: #01647C;
@@ -228,6 +261,22 @@ class SearchIndex extends React.Component {
     if (this.props.showNewButton) {
       return(
         <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
+      );
+    }
+  }
+
+  renderExportButton() {
+    if (this.props.showExportButton) {
+      return(
+        <>
+          <a className={ "export-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
+          <style jsx>{`
+            .export-button {
+              float: right;
+              margin-left: 30px;
+            }
+          `}</style>
+        </>
       );
     }
   }
@@ -336,7 +385,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntities }, dispatch);
+  return bindActionCreators({ fetchEntities, sendRequest }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchIndex);

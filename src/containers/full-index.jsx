@@ -6,7 +6,7 @@ import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import _ from 'lodash'
 import { fetchEntities } from '../actions/index'
-import Common from './modules/common.js'
+import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 
 class FullIndex extends React.Component {

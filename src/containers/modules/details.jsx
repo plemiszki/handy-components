@@ -4,7 +4,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 import ModalSelect from '../modal-select.jsx'
-import Common from './common.js'
+import Common from './common.jsx'
 
 let Details = {
 

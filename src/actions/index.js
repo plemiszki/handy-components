@@ -1,16 +1,25 @@
 import HandyTools from 'handy-tools'
 import $ from 'jquery'
 
-let getHeaders = (args) => {
-  let headers = {};
-  if (args.csrfToken) {
-    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
-    if (csrfMetaTag) {
-      const csrfToken = csrfMetaTag.getAttribute('content');
-      headers = { 'x-csrf-token': csrfToken };
-    }
+export function sendRequest(args) {
+  let { url, method, data } = args;
+  let headers = getHeaders(args);
+  if (data) {
+    data = HandyTools.convertObjectKeysToUnderscore(data);
   }
-  return headers;
+  return (dispatch) => {
+    return $.ajax({
+      method: method.toUpperCase(),
+      headers,
+      url,
+      data
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'SEND_REQUEST' });
+        dispatch(obj);
+      }
+    );
+  }
 }
 
 export function fetchEntities(args) {
@@ -97,4 +106,16 @@ export function deleteEntity(args) {
       }
     );
   }
+}
+
+let getHeaders = (args) => {
+  let headers = {};
+  if (args.csrfToken) {
+    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMetaTag) {
+      const csrfToken = csrfMetaTag.getAttribute('content');
+      headers = { 'x-csrf-token': csrfToken };
+    }
+  }
+  return headers;
 }

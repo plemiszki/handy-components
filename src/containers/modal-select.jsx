@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Common from './modules/common.js'
+import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 
 class ModalSelect extends React.Component {
