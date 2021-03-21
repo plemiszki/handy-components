@@ -133,13 +133,13 @@ class SearchCriteria extends React.Component {
 
   render() {
     return(
-      <div className="component admin-modal">
+      <div className="search-criteria component admin-modal">
         <form className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderFields() }
           <hr />
-          <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
+          <input type="submit" className={ "submit-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
         </form>
       </div>
     );
@@ -154,7 +154,7 @@ class SearchCriteria extends React.Component {
             this.props.fields.map((field) => {
               const fieldActive = this.isFieldActive(field);
               return(
-                <div key={ `${field.name}${field.type === 'number range' ? '-range' : ''}` } className={ fieldActive ? '' : 'disabled' }>
+                <div key={ `${field.name}${field.type === 'number range' ? '-range' : ''}` } className={ fieldActive ? '' : 'disabled' } data-test-field={ field.name }>
                   <div className="row">
                     <div className="col-xs-1">
                       <input type="checkbox" onChange={ this.updateCheckbox.bind(this, field) } data-field={ field.name } checked={ fieldActive } />

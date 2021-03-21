@@ -137,7 +137,7 @@ class FullIndex extends React.Component {
             </table>
           </div>
         </div>
-        { this.renderModal.call(this, children) }
+        { this.renderNewEntityModal.call(this, children) }
       </div>
     );
   }
@@ -150,10 +150,10 @@ class FullIndex extends React.Component {
     }
   }
 
-  renderModal(children) {
+  renderNewEntityModal(children) {
     if (!this.props.hideNewButton) {
       return(
-        <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.modalDimensions, this.props.modalRows) }>
+        <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
           { children }
         </Modal>
       );
