@@ -109,6 +109,9 @@ class SearchCriteria extends React.Component {
         result.startDate = HandyTools.stringifyDate(date);
         result.endDate = HandyTools.stringifyDate(date);
         break;
+      case 'static dropdown':
+        result.value = field.options[0].value;
+        break;
       default:
         result.value = '';
     }

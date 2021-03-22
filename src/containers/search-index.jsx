@@ -35,7 +35,7 @@ class SearchIndex extends React.Component {
       fetching: true,
       [arrayName]: [],
       orderByColumn: columns[0],
-      newModalOpen: false,
+      newEntityModalOpen: false,
       searchModalOpen: false,
       columns,
       page: 1,
@@ -73,7 +73,7 @@ class SearchIndex extends React.Component {
 
   updateIndex(entities) {
     this.setState({
-      newModalOpen: false,
+      newEntityModalOpen: false,
       [this.state.arrayName]: entities
     });
   }
@@ -131,10 +131,15 @@ class SearchIndex extends React.Component {
     });
   }
 
+  newEntityCallback() {
+    this.updateSearchCriteria(this.state.searchCriteria);
+  }
+
   updateSearchCriteria(searchCriteria) {
     this.setState({
       searchCriteria,
       searchModalOpen: false,
+      newEntityModalOpen: false,
       fetching: true,
       page: 1,
       [this.state.arrayName]: []
@@ -146,14 +151,28 @@ class SearchIndex extends React.Component {
   render() {
     let { fetching, columns, directory, orderByColumn, arrayName, entityNamePlural, searchCriteria } = this.state;
     const searchActive = Object.keys(searchCriteria).length > 0;
-    const children = React.Children.map(
+    const searchCriteriaComponent = React.Children.map(
       this.props.children,
       (child) => {
-        return React.cloneElement(child, {
-          callback: this.updateSearchCriteria.bind(this),
-          criteria: this.state.searchCriteria,
-          rows: this.props.searchModalRows
-        });
+        if (child.props.fields) {
+          return React.cloneElement(child, {
+            callback: this.updateSearchCriteria.bind(this),
+            criteria: this.state.searchCriteria,
+            rows: this.props.searchModalRows
+          });
+        }
+      }
+    );
+    const newEntityComponent = React.Children.map(
+      this.props.children,
+      (child) => {
+        if (child.props.initialEntity) {
+          return React.cloneElement(child, {
+            entityName: this.props.entityName,
+            entityNamePlural,
+            callback: this.newEntityCallback.bind(this)
+          });
+        }
       }
     );
 
@@ -212,8 +231,8 @@ class SearchIndex extends React.Component {
           <hr />
           { this.renderPageLinks() }
         </div>
-        { this.renderNewModal.call(this, children) }
-        { this.renderSearchModal.call(this, children) }
+        { this.renderNewModal.call(this, newEntityComponent) }
+        { this.renderSearchModal.call(this, searchCriteriaComponent) }
         { Common.renderJobModal.call(this, this.state.job) }
         <style jsx>{`
             .search-button {
@@ -260,7 +279,15 @@ class SearchIndex extends React.Component {
   renderNewButton() {
     if (this.props.showNewButton) {
       return(
-        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
+        <>
+          <a className={ "new-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
+          <style jsx>{`
+            .new-button {
+              float: right;
+              margin-left: 30px;
+            }
+          `}</style>
+        </>
       );
     }
   }
@@ -281,19 +308,19 @@ class SearchIndex extends React.Component {
     }
   }
 
-  renderSearchModal(children) {
+  renderSearchModal(searchCriteriaComponent) {
     return(
       <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.searchModalStyles(this.props.searchModalDimensions, this.props.searchModalRows) }>
-        { children }
+        { searchCriteriaComponent }
       </Modal>
     );
   }
 
-  renderNewModal(children) {
+  renderNewModal(newEntityComponent) {
     if (this.props.showNewButton) {
       return(
-        <Modal isOpen={ this.state.newModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.newModalDimensions, this.props.newModalRows) }>
-          { children }
+        <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.newModalDimensions, this.props.newModalRows) }>
+          { newEntityComponent }
         </Modal>
       );
     }
