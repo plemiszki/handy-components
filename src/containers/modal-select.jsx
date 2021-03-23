@@ -19,7 +19,7 @@ class ModalSelect extends React.Component {
           { this.renderNoneOption() }
           { Index.filterSearchText({ entities: this.props.options, text: this.state.searchText, property: this.props.property }).map((option, index) => {
             return(
-              <li key={ index } onClick={ this.props.func } data-id={ option.id } data-type={ option.itemType }>{ option[this.props.property] }</li>
+              <li key={ index } onClick={ () => { this.props.func(option) } } data-id={ option.id } data-type={ option.itemType }>{ option[this.props.property] }</li>
             );
           }) }
         </ul>

@@ -183,7 +183,7 @@ let Details = {
         <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
         </div>,
         <Modal key={ 3 } isOpen={ this.state[`${idEntity}sModalOpen`] } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[`${idEntity}s`], args.modalDisplayProperty) } property={ args.modalDisplayProperty } func={ Details.selectModalOption.bind(this, idEntity, args.entity) } noneOption={ args.noneOption } />
+          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[`${idEntity}s`], args.modalDisplayProperty) } property={ args.modalDisplayProperty } func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args.entity) } } noneOption={ args.noneOption } />
         </Modal>
       ]);
     } else {
@@ -245,10 +245,10 @@ let Details = {
     return this.state.changesToSave ? 'Save' : (this.state.justSaved ? 'Saved' : 'No Changes');
   },
 
-  selectModalOption(idEntity, entityName, e) {
+  selectModalOption(option, idEntity, entityName) {
     const changeFieldArgs = this.changeFieldArgs();
     let entity = this.state[entityName];
-    entity[`${idEntity}Id`] = e.target.dataset.id;
+    entity[`${idEntity}Id`] = option.id;
     Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, `${idEntity}Id`);
     let obj = {
       [entityName]: entity,

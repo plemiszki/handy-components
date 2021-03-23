@@ -43,6 +43,20 @@ export function fetchEntities(args) {
   }
 }
 
+export function fetchDataForNew(args) {
+  return (dispatch) => {
+    return $.ajax({
+      method: 'GET',
+      url: `/api/${args.directory}/new`
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'NEW_ENTITY_DATA' });
+        dispatch(obj);
+      }
+    );
+  }
+}
+
 export function fetchEntity(args) {
   return (dispatch) => {
     return $.ajax({

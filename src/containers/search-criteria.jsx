@@ -1,9 +1,12 @@
 import React from 'react'
+import Modal from 'react-modal'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
+import ModalSelect from './modal-select.jsx'
 import Common from './modules/common.jsx'
+import { fetchDataForNew } from '../actions/index'
 
 class SearchCriteria extends React.Component {
 
@@ -26,6 +29,26 @@ class SearchCriteria extends React.Component {
     } else {
       HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
     }
+
+    const modalFields = this.props.fields.filter((field) => field.type === 'modal');
+    if (modalFields.length > 0) {
+      this.fetchDynamicData(modalFields);
+    }
+  }
+
+  fetchDynamicData(modalFields) {
+    this.setState({
+      fetching: true
+    });
+    this.props.fetchDataForNew({ directory: ChangeCase.snakeCase(this.props.entityNamePlural) }).then(() => {
+      let obj = { fetching: false };
+      modalFields.forEach((field) => {
+        obj[field.responseArrayName] = this.props[field.responseArrayName];
+      })
+      this.setState(obj, () => {
+        HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
+      });
+    });
   }
 
   validateCriteria(criteria) {
@@ -44,11 +67,12 @@ class SearchCriteria extends React.Component {
         } else if (Date.parse(startDate) > Date.parse(endDate)) {
           delete criteria[key];
         }
-      } else if (obj.value) { // string
-        if (criteria[key].value.trim() === '') {
+      } else if (obj.value) { // string (or id)
+        const trimmedValue = criteria[key].value.toString().trim();
+        if (trimmedValue === '') {
           delete criteria[key];
         } else {
-          criteria[key].value = criteria[key].value.trim();
+          criteria[key].value = trimmedValue;
         }
       }
     }
@@ -112,6 +136,11 @@ class SearchCriteria extends React.Component {
       case 'static dropdown':
         result.value = field.options[0].value;
         break;
+      case 'modal':
+        const option = this.state[field.responseArrayName][0];
+        result.value = option.value;
+        result.text = option[field.modalDisplayProperty];
+        break;
       default:
         result.value = '';
     }
@@ -132,6 +161,17 @@ class SearchCriteria extends React.Component {
       default:
         return keyExists && Object.keys(criteria[field.name]).indexOf('value') > -1;
     }
+  }
+
+  selectModalOption(field, option, modalOpenVar) {
+    let { criteria } = this.state;
+    criteria[field.name].value = option.id;
+    criteria[field.name].text = option[field.modalDisplayProperty]
+    let obj = {
+      criteria,
+      [modalOpenVar]: false
+    }
+    this.setState(obj);
   }
 
   render() {
@@ -190,6 +230,7 @@ class SearchCriteria extends React.Component {
     const { criteria } = this.state;
     const columnHeader = field.columnHeader || ChangeCase.titleCase(field.name);
     const value = (criteria[field.name] && criteria[field.name].hasOwnProperty('value')) ? criteria[field.name].value : '';
+    const text = (criteria[field.name] && criteria[field.name].hasOwnProperty('text')) ? criteria[field.name].text : '';
     switch (field.type) {
       case 'static dropdown':
         return(
@@ -200,6 +241,23 @@ class SearchCriteria extends React.Component {
             </select>
             <div className="no-dropdown-field-error" />
           </div>
+        );
+      case 'modal':
+        const modalOpenVar = `${field.name}sModalOpen`;
+        return(
+          <>
+            <div className={ `col-xs-${field.columnWidth} `}>
+              <h2>{ columnHeader }</h2>
+              <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ text } readOnly={ true } />
+              <div className="no-field-error" />
+            </div>
+            { fieldActive ? (
+              <div className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, modalOpenVar, true) }></div>
+            ) : null }
+            <Modal isOpen={ this.state[modalOpenVar] } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+              <ModalSelect options={ this.state[field.responseArrayName] } property={ field.modalDisplayProperty } func={ (option) => { this.selectModalOption(field, option, modalOpenVar) } } noneOption={ false } />
+            </Modal>
+          </>
         );
       case 'number range':
         const minValue = (criteria[field.name] && criteria[field.name].hasOwnProperty('minValue')) ? criteria[field.name].minValue : '';
@@ -286,7 +344,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ fetchDataForNew }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchCriteria);

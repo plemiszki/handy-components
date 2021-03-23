@@ -158,7 +158,8 @@ class SearchIndex extends React.Component {
           return React.cloneElement(child, {
             callback: this.updateSearchCriteria.bind(this),
             criteria: this.state.searchCriteria,
-            rows: this.props.searchModalRows
+            rows: this.props.searchModalRows,
+            entityNamePlural
           });
         }
       }
