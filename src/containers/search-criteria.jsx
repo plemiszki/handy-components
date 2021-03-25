@@ -67,8 +67,8 @@ class SearchCriteria extends React.Component {
         } else if (Date.parse(startDate) > Date.parse(endDate)) {
           delete criteria[key];
         }
-      } else if (obj.value) { // string (or id)
-        const trimmedValue = criteria[key].value.toString().trim();
+      } else if (obj.hasOwnProperty('value')) { // string (or id)
+        const trimmedValue = obj.value.toString().trim();
         if (trimmedValue === '') {
           delete criteria[key];
         } else {
