@@ -185,8 +185,8 @@ class SearchIndex extends React.Component {
         <a className={ 'btn search-button' + Common.renderDisabledButtonClass(this.state.fetching) + (searchActive ? ' active' : '') } onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></a>
         <div className="white-box">
           <div className="top-section">
-            { Common.renderSpinner(fetching) }
             { Common.renderGrayedOut(fetching, -36, -32, 5) }
+            { Common.renderSpinner(fetching) }
             <div className="horizontal-scroll">
               <table className="admin-table sortable">
                 <thead>

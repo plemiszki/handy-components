@@ -108,6 +108,25 @@ const Common = {
     }
   },
 
+  jobSuccessModalStyles() {
+    return {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: '#FFFFFF',
+        margin: 'auto',
+        maxWidth: 540,
+        height: 140,
+        border: 'solid 1px #5F5F5F',
+        borderRadius: '6px',
+        textAlign: 'center',
+        color: '#5F5F5F',
+        padding: 20
+      }
+    }
+  },
+
   messageModalStyles() {
     return {
       overlay: {
@@ -165,7 +184,6 @@ const Common = {
   renderGrayedOut: function(shouldIRender, marginTop, marginLeft, borderRadius) {
     var grayedOutStyle = {
       position: 'absolute',
-      zIndex: 100,
       backgroundColor: 'gray',
       opacity: 0.1,
       width: '100%',
@@ -183,7 +201,9 @@ const Common = {
 
   renderJobModal: function(job) {
     if (job) {
-      if (job.status === 'failed') {
+      const showErrorsModal = job.status === 'failed' || (job.status === 'success' && job.metadata.useErrorsModalOnSuccess);
+      const showSuccessMessageModal = job.status === 'success' && job.metadata.showSuccessMessageModal;
+      if (showErrorsModal) {
         return(
           <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.jobErrorsModalStyles() }>
             <div className="errors-modal">
@@ -201,6 +221,35 @@ const Common = {
             </div>
           </Modal>
         )
+      } else if (showSuccessMessageModal) {
+        return(
+          <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobSuccessModalStyles() }>
+            <div>
+              <h1>{ this.state.job.first_line }</h1>
+              <a className="orange-button" onClick={ Common.closeModals.bind(this) }>OK</a>
+            </div>
+            <style jsx>{`
+              h1 {
+                color: #2C2F33;
+                font-family: 'TeachableSans-SemiBold';
+                font-size: 20px;
+                line-height: 27px;
+                max-width: none;
+                margin: auto;
+                margin-bottom: 0;
+              }
+              .orange-button {
+                width: 124px;
+                padding-left: 0;
+                padding-right: 0;
+                margin-top: 20px;
+                margin-right: 20px;
+                margin-left: 20px;
+                user-select: none;
+              }
+            `}</style>
+          </Modal>
+        );
       } else {
         return(
           <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobModalStyles() }>
@@ -278,8 +327,8 @@ const Common = {
   },
 
   updateJobModal: function() {
-    if (this.state.jobModalOpen && this.state.job.status === 'running') {
-      window.setTimeout(() => {
+    if (this.state.job && this.state.job.status === 'running' && !this.state.updateJobInterval) {
+      const updateJobInterval = window.setInterval(() => {
         $.ajax({
           url: '/api/jobs/status',
           method: 'GET',
@@ -288,19 +337,27 @@ const Common = {
             time: this.state.job.job_id
           },
           success: (response) => {
-            let newState = {
-              job: response
-            };
-            if (response.status === 'success') {
-              newState.jobModalOpen = false;
-            }
-            this.setState(newState);
-            if (response.status === 'success') {
-              window.location.href = response.metadata.url;
+            const job = response;
+            let newState = { job };
+            const jobFinished = job.status != 'running';
+            if (jobFinished) {
+              clearInterval(this.state.updateJobInterval);
+              if (job.status === 'success' && !job.metadata.useErrorsModalOnSuccess && !job.metadata.showSuccessMessageModal) {
+                newState.jobModalOpen = false;
+              }
+              this.setState(newState);
+              if (job.status === 'success' && job.metadata.url) {
+                window.location.href = job.metadata.url;
+              }
+            } else {
+              this.setState(newState);
             }
           }
         });
-      }, 1500)
+      }, 1500);
+      this.setState({
+        updateJobInterval
+      });
     }
   }
 }
