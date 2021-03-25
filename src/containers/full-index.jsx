@@ -93,8 +93,8 @@ class FullIndex extends React.Component {
         { this.renderButton() }
         <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ searchText } />
         <div className="white-box">
-          { Common.renderSpinner(fetching) }
           { Common.renderGrayedOut(fetching, -36, -32, 5) }
+          { Common.renderSpinner(fetching) }
           <div className="horizontal-scroll">
             <table className="admin-table sortable">
               <thead>

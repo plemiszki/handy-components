@@ -116,8 +116,8 @@ class SimpleDetails extends React.Component {
       <div id="simple-details" className="component details-component">
         <h1>{ this.props.header || `${ChangeCase.titleCase(this.props.entityName)} Details` }</h1>
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
           {
             this.props.fields.map((row, index) => {
               return(

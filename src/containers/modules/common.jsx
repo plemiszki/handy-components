@@ -189,8 +189,8 @@ const Common = {
       width: '100%',
       height: '100%',
       borderRadius: borderRadius || 0,
-      marginTop: marginTop || 0,
-      marginLeft: marginLeft || 0
+      top: 0,
+      left: 0
     };
     if (shouldIRender) {
       return(

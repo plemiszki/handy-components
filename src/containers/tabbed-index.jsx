@@ -81,8 +81,6 @@ class TabbedIndex extends React.Component {
         <input className="search-box margin" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         { this.renderTopTabs() }
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className="admin-table sortable">
             <thead>
               <tr>
@@ -122,6 +120,8 @@ class TabbedIndex extends React.Component {
               })}
             </tbody>
           </table>
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
         </div>
         <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.modalDimensions, this.props.modalRows) }>
           { children }
