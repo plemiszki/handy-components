@@ -78,12 +78,6 @@ class SearchIndex extends React.Component {
     });
   }
 
-  standardIndexSort(entity) {
-    const { orderByColumn } = this.state;
-    const orderByProperty = orderByColumn.sortColumn || orderByColumn.name;
-    return HandyTools.commonSort(orderByProperty, entity);
-  }
-
   changePage(pageNumber) {
     this.setState({
       fetching: true,
@@ -94,18 +88,26 @@ class SearchIndex extends React.Component {
   }
 
   columnHeaderClass(column) {
-    return this.state.orderByColumn === column ? 'sort-header-active' : 'sort-header-inactive';
+    if (column.orderByDisabled) {
+      return '';
+    } else if (this.state.orderByColumn === column) {
+      return 'sort-header-active';
+    } else {
+      return 'sort-header-inactive';
+    }
   }
 
   clickHeader(column) {
-    this.setState({
-      fetching: true,
-      page: 1,
-      [this.state.arrayName]: [],
-      orderByColumn: column
-    }, () => {
-      this.fetchEntities();
-    });
+    if (!column.orderByDisabled) {
+      this.setState({
+        fetching: true,
+        page: 1,
+        [this.state.arrayName]: [],
+        orderByColumn: column
+      }, () => {
+        this.fetchEntities();
+      });
+    }
   }
 
   clickExport() {
@@ -210,7 +212,7 @@ class SearchIndex extends React.Component {
                       );
                     })}
                   </tr>
-                  { _.orderBy(this.state[arrayName], [this.standardIndexSort.bind(this)], orderByColumn.sortDir || 'asc').map((entity, index) => {
+                  { this.state[arrayName].map((entity, index) => {
                     return(
                       <tr key={ index }>
                         { columns.map((column, index) => {

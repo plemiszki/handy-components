@@ -248,7 +248,7 @@ class SearchCriteria extends React.Component {
           <>
             <div className={ `col-xs-${field.columnWidth} `}>
               <h2>{ columnHeader }</h2>
-              <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ text } readOnly={ true } />
+              <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ text } disabled={ !fieldActive } readOnly={ true } />
               <div className="no-field-error" />
             </div>
             { fieldActive ? (
