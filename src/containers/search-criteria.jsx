@@ -107,16 +107,22 @@ class SearchCriteria extends React.Component {
 
   updateCheckbox(field, e) {
     const checked = e.target.checked;
+    const fieldDropdownSelector = `div[data-test-field="${field.name}"] select`;
     let { criteria } = this.state;
     if (checked) {
       criteria[field.name] = this.initializeObject(field);
     } else {
+      let $dropDowns = $(fieldDropdownsSelector);
+      $dropDowns.niceSelect('destroy');
+      $dropDowns.unbind('change');
       delete criteria[field.name];
     }
     this.setState({
       criteria
     }, () => {
-      HandyTools.resetNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
+      if (checked) {
+        HandyTools.setUpNiceSelect({ selector: fieldDropdownSelector, func: this.updateField.bind(this) });
+      }
     });
   }
 
@@ -136,9 +142,12 @@ class SearchCriteria extends React.Component {
       case 'static dropdown':
         result.value = field.options[0].value;
         break;
+      case 'yes/no':
+        result.value = 'true';
+        break;
       case 'modal':
         const option = this.state[field.responseArrayName][0];
-        result.value = option.value;
+        result.value = option.id;
         result.text = option[field.modalDisplayProperty];
         break;
       default:
@@ -232,16 +241,51 @@ class SearchCriteria extends React.Component {
     const value = (criteria[field.name] && criteria[field.name].hasOwnProperty('value')) ? criteria[field.name].value : '';
     const text = (criteria[field.name] && criteria[field.name].hasOwnProperty('text')) ? criteria[field.name].text : '';
     switch (field.type) {
+      case 'yes/no':
+        if (fieldActive) {
+          return(
+            <div className={ `col-xs-${field.columnWidth}`}>
+              <h2>{ columnHeader }</h2>
+              <select onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive }>
+                <option value="t">
+                  Yes
+                </option>
+                <option value="f">
+                  No
+                </option>
+              </select>
+              <div className="no-dropdown-field-error" />
+            </div>
+          );
+        } else {
+          return(
+            <div className={ `col-xs-${field.columnWidth} `}>
+              <h2>{ columnHeader }</h2>
+              <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive } />
+              <div className="no-field-error" />
+            </div>
+          );
+        }
       case 'static dropdown':
-        return(
-          <div className={ `col-xs-${field.columnWidth} `}>
-            <h2>{ columnHeader }</h2>
-            <select onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive }>
-              { this.renderOptions(field.options) }
-            </select>
-            <div className="no-dropdown-field-error" />
-          </div>
-        );
+        if (fieldActive) {
+          return(
+            <div className={ `col-xs-${field.columnWidth}` }>
+              <h2>{ columnHeader }</h2>
+              <select onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive }>
+                { this.renderOptions(field.options) }
+              </select>
+              <div className="no-dropdown-field-error" />
+            </div>
+          );
+        } else {
+          return(
+            <div className={ `col-xs-${field.columnWidth} `}>
+              <h2>{ columnHeader }</h2>
+              <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive } />
+              <div className="no-field-error" />
+            </div>
+          );
+        }
       case 'modal':
         const modalOpenVar = `${field.name}sModalOpen`;
         return(
@@ -329,7 +373,7 @@ class SearchCriteria extends React.Component {
   }
 
   renderOptions(options) {
-    return HandyTools.alphabetizeArrayOfObjects(options, 'text').map((option, index) => {
+    return options.map((option, index) => {
       return(
         <option key={ index } value={ option.value }>
           { option.text }
