@@ -116,8 +116,6 @@ class SimpleDetails extends React.Component {
       <div id="simple-details" className="component details-component">
         <h1>{ this.props.header || `${ChangeCase.titleCase(this.props.entityName)} Details` }</h1>
         <div className="white-box">
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          { Common.renderSpinner(this.state.fetching) }
           {
             this.props.fields.map((row, index) => {
               return(
@@ -140,6 +138,8 @@ class SimpleDetails extends React.Component {
             { this.renderDeleteButton.call(this) }
             { this.renderCopyButton.call(this) }
           </div>
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
         </div>
         { this.renderCopyModal.call(this, children) }
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

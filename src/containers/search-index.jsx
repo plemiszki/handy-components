@@ -219,7 +219,7 @@ class SearchIndex extends React.Component {
                           return(
                             <td key={ index } className={ column.classes || '' }>
                               <a href={ `${directory}/${entity.id}${column.links || ''}` }>
-                                { this.renderValue(entity[column.name], index) }
+                                { entity[column.name] }
                               </a>
                             </td>
                           );
@@ -238,6 +238,18 @@ class SearchIndex extends React.Component {
         { this.renderSearchModal.call(this, searchCriteriaComponent) }
         { Common.renderJobModal.call(this, this.state.job) }
         <style jsx>{`
+            table {
+              table-layout: fixed;
+            }
+            td {
+              overflow: hidden;
+              white-space: nowrap;
+            }
+            td a {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
             .search-button {
               float: right;
               width: 47px;
@@ -396,16 +408,8 @@ class SearchIndex extends React.Component {
   columnWidth(column) {
     if (column.width) {
       return {
-        minWidth: +column.width
+        width: +column.width
       };
-    }
-  }
-
-  renderValue(value, column) {
-    if (column.ellipsis) {
-      return HandyTools.ellipsis(value, column.ellipsis);
-    } else {
-      return value;
     }
   }
 }

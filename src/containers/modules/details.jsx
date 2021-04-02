@@ -75,6 +75,15 @@ let Details = {
     return '';
   },
 
+  hasError(stateErrors, fieldErrors) {
+    for (let i = 0; i < fieldErrors.length; i++) {
+      if (stateErrors.indexOf(fieldErrors[i]) > -1) {
+        return true;
+      }
+    }
+    return false;
+  },
+
   getColumnHeader(args) {
     return args.columnHeader || ChangeCase.titleCase(args.property);
   },
@@ -116,16 +125,25 @@ let Details = {
     }
 
     let columnHeader = Details.getColumnHeader(args);
+    const hasError = Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []);
     return(
-      <div className={ `col-xs-${args.columnWidth} ` + (args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }>
-        <h2>{ columnHeader }</h2>
-        { Details.renderSubheader(args) }
-        <select className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
-          { renderNoneOption(args) }
-          { renderOptions(args) }
-        </select>
-        { Details.renderDropdownFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
-      </div>
+      <>
+        <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
+          <h2>{ columnHeader }</h2>
+          { Details.renderSubheader(args) }
+          <select onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
+            { renderNoneOption(args) }
+            { renderOptions(args) }
+          </select>
+          { Details.renderDropdownFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
+        </div>
+        <style jsx>{`
+          .has-error .nice-select {
+            border-color: red;
+            transition: none;
+          }
+        `}</style>
+      </>
     );
   },
 
