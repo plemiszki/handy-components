@@ -112,7 +112,7 @@ class SearchCriteria extends React.Component {
     if (checked) {
       criteria[field.name] = this.initializeObject(field);
     } else {
-      let $dropDowns = $(fieldDropdownsSelector);
+      let $dropDowns = $(fieldDropdownSelector);
       $dropDowns.niceSelect('destroy');
       $dropDowns.unbind('change');
       delete criteria[field.name];
@@ -345,7 +345,7 @@ class SearchCriteria extends React.Component {
             <div className={ `col-xs-${field.columnWidth} `}>
               <h2>{ columnHeader }</h2>
               Start Date: <input className={ `number-range min ${startDateRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'startDate') } data-field={ field.name } value={ startDate } disabled={ !fieldActive } />
-              End Date: <input className={ `number-range ${endDateRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'endDate') } data-field={ field.name } value={ endDate } disabled={ !fieldActive } />
+              End Date: <input className={ `number-range max ${endDateRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'endDate') } data-field={ field.name } value={ endDate } disabled={ !fieldActive } />
               <div className="no-field-error" />
             </div>
             <style jsx>{`
@@ -365,7 +365,7 @@ class SearchCriteria extends React.Component {
         return(
           <div className={ `col-xs-${field.columnWidth} `}>
             <h2>{ columnHeader }</h2>
-            <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive } />
+            <input className="test-input-field" onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive } />
             <div className="no-field-error" />
           </div>
         );
