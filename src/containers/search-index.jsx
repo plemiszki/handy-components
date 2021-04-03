@@ -111,14 +111,12 @@ class SearchIndex extends React.Component {
   }
 
   clickExport() {
-    const { orderByColumn, searchCriteria } = this.state;
+    const { orderByColumn, searchCriteria, directory } = this.state;
     this.setState({
       fetching: true
     });
     this.props.sendRequest({
-      url: '/api/invoices/export',
-      method: 'post',
-      csrfToken: true,
+      url: `/api/${directory}/export`,
       data: {
         orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
         orderDir: orderByColumn.sortDir || 'asc',

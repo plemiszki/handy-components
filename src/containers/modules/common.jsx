@@ -207,8 +207,8 @@ const Common = {
         return(
           <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.jobErrorsModalStyles() }>
             <div className="errors-modal">
-              <h1>{ this.state.job.first_line }</h1>
-              { this.state.job.errors_text.split("\n").map((error, index) => {
+              <h1>{ this.state.job.firstLine }</h1>
+              { this.state.job.errorsText.split("\n").map((error, index) => {
                 var greenClass = "";
                 if (error.substr(error.length - 3) === " :)") {
                   greenClass = " green";
@@ -225,7 +225,7 @@ const Common = {
         return(
           <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobSuccessModalStyles() }>
             <div>
-              <h1>{ this.state.job.first_line }</h1>
+              <h1>{ this.state.job.firstLine }</h1>
               <a className="orange-button" onClick={ Common.closeModals.bind(this) }>OK</a>
             </div>
             <style jsx>{`
@@ -255,8 +255,8 @@ const Common = {
           <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobModalStyles() }>
             <div className="jobs-modal">
               { Common.renderSpinner(true) }
-              <div className="first-line">{ job.first_line || job.firstLine }</div>
-              <div className={ "second-line" + ((job.second_line || job.secondLine) ? "" : " hidden") }>({ job.current_value || job.currentValue || 0 } of { job.total_value || job.totalValue })</div>
+              <div className="first-line">{ job.firstLine }</div>
+              <div className={ "second-line" + (job.secondLine ? "" : " hidden") }>({ job.currentValue || 0 } of { job.totalValue || 0 })</div>
             </div>
           </Modal>
         );

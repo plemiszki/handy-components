@@ -316,7 +316,7 @@ class SearchCriteria extends React.Component {
             <div className={ `col-xs-${field.columnWidth} `}>
               <h2>{ columnHeader }</h2>
               Min: <input className={ `number-range min ${minValueRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'minValue') } data-field={ field.name } value={ minValue } disabled={ !fieldActive } />
-              Max: <input className={ `number-range ${maxValueRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'maxValue') } data-field={ field.name } value={ maxValue } disabled={ !fieldActive } />
+              Max: <input className={ `number-range max ${maxValueRed ? 'red' : ''}` } onChange={ this.updateRangeField.bind(this, 'maxValue') } data-field={ field.name } value={ maxValue } disabled={ !fieldActive } />
               <div className="no-field-error" />
             </div>
             <style jsx>{`

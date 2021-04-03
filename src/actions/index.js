@@ -9,7 +9,7 @@ export function sendRequest(args) {
   }
   return (dispatch) => {
     return $.ajax({
-      method: method.toUpperCase(),
+      method: (method ? method.toUpperCase() : 'GET'),
       headers,
       url,
       data
