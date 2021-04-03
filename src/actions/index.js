@@ -1,26 +1,56 @@
 import HandyTools from 'handy-tools'
 import $ from 'jquery'
 
-let getHeaders = (args) => {
-  let headers = {};
-  if (args.csrfToken) {
-    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
-    if (csrfMetaTag) {
-      const csrfToken = csrfMetaTag.getAttribute('content');
-      headers = { 'x-csrf-token': csrfToken };
-    }
+export function sendRequest(args) {
+  let { url, method, data } = args;
+  let headers = getHeaders(args);
+  if (data) {
+    data = HandyTools.convertObjectKeysToUnderscore(data);
   }
-  return headers;
+  return (dispatch) => {
+    return $.ajax({
+      method: (method ? method.toUpperCase() : 'GET'),
+      headers,
+      url,
+      data
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'SEND_REQUEST' });
+        dispatch(obj);
+      }
+    );
+  }
 }
 
-export function fetchEntities(directory, arrayName) {
+export function fetchEntities(args) {
   return (dispatch) => {
     return $.ajax({
       method: 'GET',
-      url: `/api/${directory}`
+      url: `/api/${args.directory}`,
+      data: {
+        batch_size: args.batchSize,
+        page: args.page,
+        order_by: args.orderBy,
+        order_direction: args.orderDir,
+        search_criteria: args.searchCriteria
+      }
     }).then(
       (response) => {
         let obj = Object.assign(response, { type: 'FETCH_ENTITIES' });
+        dispatch(obj);
+      }
+    );
+  }
+}
+
+export function fetchDataForNew(args) {
+  return (dispatch) => {
+    return $.ajax({
+      method: 'GET',
+      url: `/api/${args.directory}/new`
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'NEW_ENTITY_DATA' });
         dispatch(obj);
       }
     );
@@ -90,4 +120,16 @@ export function deleteEntity(args) {
       }
     );
   }
+}
+
+let getHeaders = (args) => {
+  let headers = {};
+  if (args.csrfToken) {
+    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMetaTag) {
+      const csrfToken = csrfMetaTag.getAttribute('content');
+      headers = { 'x-csrf-token': csrfToken };
+    }
+  }
+  return headers;
 }

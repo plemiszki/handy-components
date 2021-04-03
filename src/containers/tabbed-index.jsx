@@ -6,7 +6,7 @@ import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import _ from 'lodash'
 import { fetchEntities } from '../actions/index'
-import Common from './modules/common.js'
+import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 
 let arrayName;
@@ -38,7 +38,7 @@ class TabbedIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities(directory, arrayName).then(() => {
+    this.props.fetchEntities({ directory }).then(() => {
       let entityArray = `entities${HandyTools.capitalize(this.state.tab)}`;
       this.setState({
         fetching: false,
@@ -81,8 +81,6 @@ class TabbedIndex extends React.Component {
         <input className="search-box margin" onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ this.state.searchText } />
         { this.renderTopTabs() }
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className="admin-table sortable">
             <thead>
               <tr>
@@ -122,8 +120,10 @@ class TabbedIndex extends React.Component {
               })}
             </tbody>
           </table>
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
         </div>
-        <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
+        <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.modalDimensions, this.props.modalRows) }>
           { children }
         </Modal>
       </div>

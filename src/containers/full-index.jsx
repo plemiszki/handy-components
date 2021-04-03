@@ -6,10 +6,10 @@ import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import _ from 'lodash'
 import { fetchEntities } from '../actions/index'
-import Common from './modules/common.js'
+import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 
-class StandardIndex extends React.Component {
+class FullIndex extends React.Component {
 
   constructor(props) {
     super(props);
@@ -44,7 +44,7 @@ class StandardIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities(this.state.directory, this.state.arrayName).then(() => {
+    this.props.fetchEntities({ directory: this.state.directory }).then(() => {
       this.setState({
         fetching: false,
         [this.state.arrayName]: this.props[this.state.arrayName]
@@ -93,8 +93,8 @@ class StandardIndex extends React.Component {
         { this.renderButton() }
         <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ searchText } />
         <div className="white-box">
-          { Common.renderSpinner(fetching) }
           { Common.renderGrayedOut(fetching, -36, -32, 5) }
+          { Common.renderSpinner(fetching) }
           <div className="horizontal-scroll">
             <table className="admin-table sortable">
               <thead>
@@ -137,7 +137,7 @@ class StandardIndex extends React.Component {
             </table>
           </div>
         </div>
-        { this.renderModal.call(this, children) }
+        { this.renderNewEntityModal.call(this, children) }
       </div>
     );
   }
@@ -150,7 +150,7 @@ class StandardIndex extends React.Component {
     }
   }
 
-  renderModal(children) {
+  renderNewEntityModal(children) {
     if (!this.props.hideNewButton) {
       return(
         <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
@@ -185,4 +185,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ fetchEntities }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StandardIndex);
+export default connect(mapStateToProps, mapDispatchToProps)(FullIndex);

@@ -4,7 +4,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 import ModalSelect from '../modal-select.jsx'
-import Common from './common.js'
+import Common from './common.jsx'
 
 let Details = {
 
@@ -75,6 +75,15 @@ let Details = {
     return '';
   },
 
+  hasError(stateErrors, fieldErrors) {
+    for (let i = 0; i < fieldErrors.length; i++) {
+      if (stateErrors.indexOf(fieldErrors[i]) > -1) {
+        return true;
+      }
+    }
+    return false;
+  },
+
   getColumnHeader(args) {
     return args.columnHeader || ChangeCase.titleCase(args.property);
   },
@@ -116,16 +125,25 @@ let Details = {
     }
 
     let columnHeader = Details.getColumnHeader(args);
+    const hasError = Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []);
     return(
-      <div className={ `col-xs-${args.columnWidth} ` + (args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }>
-        <h2>{ columnHeader }</h2>
-        { Details.renderSubheader(args) }
-        <select className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
-          { renderNoneOption(args) }
-          { renderOptions(args) }
-        </select>
-        { Details.renderDropdownFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
-      </div>
+      <>
+        <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
+          <h2>{ columnHeader }</h2>
+          { Details.renderSubheader(args) }
+          <select onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
+            { renderNoneOption(args) }
+            { renderOptions(args) }
+          </select>
+          { Details.renderDropdownFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
+        </div>
+        <style jsx>{`
+          .has-error .nice-select {
+            border-color: red;
+            transition: none;
+          }
+        `}</style>
+      </>
     );
   },
 
@@ -163,12 +181,13 @@ let Details = {
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
     } else if (args.customType === 'modal') {
-      let idEntity = args.property.slice(0, -2);
+      const idEntity = args.property.slice(0, -2);
+      const optionsArrayName = args.optionsArrayName || `${idEntity}s`;
       let selectedId = this.state[args.entity][`${idEntity}Id`];
       let value = '';
-      if (this.state[`${idEntity}s`] && selectedId) {
+      if (this.state[optionsArrayName] && selectedId) {
         value = HandyTools.pluckFromObjectsArray({
-          array: this.state[`${idEntity}s`],
+          array: this.state[optionsArrayName],
           property: 'id',
           value: +selectedId
         })[args.modalDisplayProperty];
@@ -183,7 +202,7 @@ let Details = {
         <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
         </div>,
         <Modal key={ 3 } isOpen={ this.state[`${idEntity}sModalOpen`] } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[`${idEntity}s`], args.modalDisplayProperty) } property={ args.modalDisplayProperty } func={ Details.selectModalOption.bind(this, idEntity, args.entity) } noneOption={ args.noneOption } />
+          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[optionsArrayName], args.modalDisplayProperty) } property={ args.modalDisplayProperty } func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args.entity) } } noneOption={ args.noneOption } />
         </Modal>
       ]);
     } else {
@@ -245,10 +264,10 @@ let Details = {
     return this.state.changesToSave ? 'Save' : (this.state.justSaved ? 'Saved' : 'No Changes');
   },
 
-  selectModalOption(idEntity, entityName, e) {
+  selectModalOption(option, idEntity, entityName) {
     const changeFieldArgs = this.changeFieldArgs();
     let entity = this.state[entityName];
-    entity[`${idEntity}Id`] = e.target.dataset.id;
+    entity[`${idEntity}Id`] = option.id;
     Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, `${idEntity}Id`);
     let obj = {
       [entityName]: entity,

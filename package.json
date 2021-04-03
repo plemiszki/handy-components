@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "change-case": "3.1.0",
-    "handy-tools": "2.8.3",
+    "handy-tools": "2.11.0",
     "jquery": "3.5.0",
     "lodash": "4.17.19",
     "react": "16.8.4",
@@ -21,6 +21,7 @@
     "react-redux": "6.0.1",
     "redux": "4.0.1",
     "redux-thunk": "2.3.0",
+    "styled-jsx": "^3.4.4",
     "webpack": "4.29.6"
   },
   "devDependencies": {
@@ -28,8 +29,5 @@
     "@babel/preset-react": "7.0.0",
     "babel-loader": "8.0.5",
     "webpack-cli": "^3.3.12"
-  },
-  "engines": {
-    "node": "10.16.3"
   }
 }

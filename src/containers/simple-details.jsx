@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
-import Common from './modules/common.js'
+import Common from './modules/common.jsx'
 import Details from './modules/details.jsx'
 import ConfirmDelete from './confirm-delete.jsx'
 import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
@@ -116,8 +116,6 @@ class SimpleDetails extends React.Component {
       <div id="simple-details" className="component details-component">
         <h1>{ this.props.header || `${ChangeCase.titleCase(this.props.entityName)} Details` }</h1>
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           {
             this.props.fields.map((row, index) => {
               return(
@@ -140,6 +138,8 @@ class SimpleDetails extends React.Component {
             { this.renderDeleteButton.call(this) }
             { this.renderCopyButton.call(this) }
           </div>
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
         </div>
         { this.renderCopyModal.call(this, children) }
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
@@ -187,7 +187,7 @@ class SimpleDetails extends React.Component {
   renderCopyModal(children) {
     if (this.props.children) {
       return(
-        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.modalStyles(this.props.modalDimensions, this.props.modalRows) }>
           { children }
         </Modal>
       );
