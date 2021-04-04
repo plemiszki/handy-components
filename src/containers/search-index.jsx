@@ -178,7 +178,7 @@ class SearchIndex extends React.Component {
     );
 
     return(
-      <div className="component">
+      <div className="search-index component">
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderNewButton() }
         { this.renderExportButton() }
@@ -254,7 +254,7 @@ class SearchIndex extends React.Component {
               height: 47px;
               padding: 0;
               background-color: white;
-              background-image: url('/assets/handy-components/images/magnifying-glass.svg');
+              // background-image: url('/assets/handy-components/images/magnifying-glass.svg');
               background-repeat: no-repeat;
               background-position: center;
               border: 1px solid #E4E9ED;
