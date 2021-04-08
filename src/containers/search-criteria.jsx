@@ -152,6 +152,9 @@ class SearchCriteria extends React.Component {
         break;
       default:
         result.value = '';
+        if (field.fuzzy) {
+          result.fuzzy = true;
+        }
     }
     if (dbName) {
       result.dbName = dbName;
