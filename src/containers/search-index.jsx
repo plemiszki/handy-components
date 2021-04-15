@@ -217,7 +217,7 @@ class SearchIndex extends React.Component {
                         { columns.map((column, index) => {
                           return(
                             <td key={ index } className={ column.classes || '' }>
-                              <a href={ `${directory}/${entity.id}${column.links || ''}` }>
+                              <a href={ `/${directory}/${entity.id}${column.links || ''}` }>
                                 { entity[column.name] }
                               </a>
                             </td>
