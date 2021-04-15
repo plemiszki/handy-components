@@ -67,6 +67,10 @@ class SearchCriteria extends React.Component {
         } else if (Date.parse(startDate) > Date.parse(endDate)) {
           delete criteria[key];
         }
+      } else if (Array.isArray(obj.value)) { // checkboxes array
+        if (obj.value.length === 0) {
+          delete criteria[key];
+        }
       } else if (obj.hasOwnProperty('value')) { // string (or id)
         const trimmedValue = obj.value.toString().trim();
         if (trimmedValue === '') {
@@ -126,6 +130,20 @@ class SearchCriteria extends React.Component {
     });
   }
 
+  updateOptionCheckbox(field, option, e) {
+    const checked = e.target.checked;
+    let { criteria } = this.state;
+    let array = criteria[field.name].value;
+    if (checked) {
+      array.push(option.value);
+    } else {
+      HandyTools.removeFromArray(array, option.value);
+    }
+    this.setState({
+      criteria
+    });
+  }
+
   initializeObject(field) {
     const { name, dbName } = field;
     let result = {};
@@ -141,6 +159,9 @@ class SearchCriteria extends React.Component {
         break;
       case 'static dropdown':
         result.value = field.options[0].value;
+        break;
+      case 'checkboxes':
+        result.value = []
         break;
       case 'yes/no':
         result.value = 'true';
@@ -289,6 +310,36 @@ class SearchCriteria extends React.Component {
             </div>
           );
         }
+      case 'checkboxes':
+        if (fieldActive) {
+          return(
+            <>
+              <div className={ `col-xs-${field.columnWidth}` }>
+                <h2>{ columnHeader }</h2>
+                <div className="checkboxes-container">
+                  { this.renderCheckboxes(field) }
+                </div>
+                <div className="no-field-error" />
+              </div>
+              <style jsx>{`
+                  .checkboxes-container {
+                    border: 1px solid #E4E9ED;
+                    border-radius: 3px;
+                    padding: 10px;
+                    padding-bottom: 2px;
+                  }
+              `}</style>
+            </>
+          );
+        } else {
+          return(
+            <div className={ `col-xs-${field.columnWidth} `}>
+              <h2>{ columnHeader }</h2>
+              <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive } />
+              <div className="no-field-error" />
+            </div>
+          );
+        }
       case 'modal':
         const modalOpenVar = `${field.name}sModalOpen`;
         return(
@@ -381,6 +432,36 @@ class SearchCriteria extends React.Component {
         <option key={ index } value={ option.value }>
           { option.text }
         </option>
+      );
+    })
+  }
+
+  renderCheckboxes(field) {
+    return field.options.map((option, index) => {
+      const checkboxId = `box-${field.id}-${index}`
+      return(
+        <div key={ index }>
+          <div className="checkbox-container">
+            <input id={ checkboxId } type="checkbox" onChange={ this.updateOptionCheckbox.bind(this, field, option) } checked={ this.state.criteria[field.name].value.indexOf(option.value) > -1 } />
+            <label htmlFor={ checkboxId }>{ option.text }</label>
+          </div>
+          <style jsx>{`
+              .checkbox-container {
+                margin-bottom: 8px;
+              }
+              input, label {
+                display: inline-block;
+                vertical-align: middle;
+              }
+              label {
+                user-select: none;
+              }
+              input {
+                margin: 0 !important;
+                margin-right: 10px !important;
+              }
+          `}</style>
+        </div>
       );
     })
   }
