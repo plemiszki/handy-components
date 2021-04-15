@@ -56,13 +56,14 @@ class SearchIndex extends React.Component {
 
   fetchEntities() {
     const { directory, page, orderByColumn, searchCriteria, arrayName } = this.state;
+    const serverSearchCriteria = Object.assign({}, searchCriteria, this.props.staticSearchCriteria || {});
     this.props.fetchEntities({
       directory,
       batchSize: this.props.batchSize,
       page,
       orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
       orderDir: orderByColumn.sortDir || 'asc',
-      searchCriteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria)
+      searchCriteria: HandyTools.convertObjectKeysToUnderscore(serverSearchCriteria)
     }).then(() => {
       this.setState({
         fetching: false,
@@ -247,6 +248,7 @@ class SearchIndex extends React.Component {
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
+              padding-right: 20px;
             }
             .search-button {
               float: right;
@@ -254,7 +256,7 @@ class SearchIndex extends React.Component {
               height: 47px;
               padding: 0;
               background-color: white;
-              // background-image: url('/assets/handy-components/images/magnifying-glass.svg');
+              background-image: url('/assets/handy-components/images/magnifying-glass.svg');
               background-repeat: no-repeat;
               background-position: center;
               border: 1px solid #E4E9ED;
@@ -293,7 +295,7 @@ class SearchIndex extends React.Component {
     if (this.props.showNewButton) {
       return(
         <>
-          <a className={ "new-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
+          <a className={ "new-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>{ this.props.newButtonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` }</a>
           <style jsx>{`
             .new-button {
               float: right;
