@@ -47,8 +47,9 @@ class SearchIndex extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.preserveSearchCriteria) {
-      const searchCriteria = JSON.parse(localStorage.getItem(`${this.state.entityNamePlural}SearchCriteria`));
+    const storage = localStorage.getItem(`${this.state.entityNamePlural}SearchCriteria`);
+    if (this.props.preserveSearchCriteria && storage) {
+      const searchCriteria = JSON.parse(storage);
       this.setState({
         searchCriteria
       }, () => {
