@@ -325,8 +325,8 @@ class SearchCriteria extends React.Component {
                   .checkboxes-container {
                     border: 1px solid #E4E9ED;
                     border-radius: 3px;
-                    padding: 10px;
-                    padding-bottom: 2px;
+                    padding: 15px;
+                    padding-bottom: 7px;
                   }
               `}</style>
             </>

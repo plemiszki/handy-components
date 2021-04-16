@@ -47,7 +47,16 @@ class SearchIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchEntities();
+    if (this.props.preserveSearchCriteria) {
+      const searchCriteria = JSON.parse(localStorage.getItem(`${this.state.entityNamePlural}SearchCriteria`));
+      this.setState({
+        searchCriteria
+      }, () => {
+        this.fetchEntities();
+      });
+    } else {
+      this.fetchEntities();
+    }
   }
 
   componentDidUpdate() {
@@ -147,6 +156,9 @@ class SearchIndex extends React.Component {
     }, () => {
       this.fetchEntities();
     });
+    if (this.props.preserveSearchCriteria) {
+      localStorage.setItem(`${this.state.entityNamePlural}SearchCriteria`, JSON.stringify(searchCriteria));
+    }
   }
 
   render() {
