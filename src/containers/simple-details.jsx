@@ -72,11 +72,13 @@ class SimpleDetails extends React.Component {
       justSaved: true
     }, () => {
       let pathDirectories = window.location.pathname.split('/');
+      let entity = this.state[this.props.entityName];
+      entity = this.removeFinanceSymbols(entity);
       this.props.updateEntity({
         id: pathDirectories[pathDirectories.length - 1],
         directory: pathDirectories[pathDirectories.length - 2],
         entityName: this.props.entityName,
-        entity: this.state[this.props.entityName],
+        entity,
         csrfToken: this.props.csrfToken
       }).then(() => {
         this.setState({
@@ -92,6 +94,15 @@ class SimpleDetails extends React.Component {
         });
       });
     });
+  }
+
+  removeFinanceSymbols(entity) {
+    this.props.fields.flat().forEach((field) => {
+      if (field.removeFinanceSymbols) {
+        entity[field.property] = HandyTools.removeFinanceSymbols(entity[field.property]);
+      }
+    });
+    return entity;
   }
 
   clickCopy() {
@@ -150,6 +161,7 @@ class SimpleDetails extends React.Component {
   }
 
   renderField(field) {
+    field.entity = this.props.entityName;
     switch (field.type) {
       case 'textbox':
         return Details.renderTextBox.bind(this)(field);

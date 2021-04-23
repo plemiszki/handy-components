@@ -107,14 +107,14 @@ let Details = {
       }
     }
 
-    function renderOptions(args) {
+    function renderOptions(args, options) {
       if (args.boolean) {
         return([
           <option key={ 0 } value="t">Yes</option>,
           <option key={ 1 } value="f">No</option>
         ]);
       } else {
-        { return HandyTools.alphabetizeArrayOfObjects(args.options, args.optionDisplayProperty).map((option, index) => {
+        { return HandyTools.alphabetizeArrayOfObjects(options, args.optionDisplayProperty).map((option, index) => {
           return(
             <option key={ index } value={ args.optionValueProperty || option.id }>
               { option[args.optionDisplayProperty] }
@@ -126,6 +126,7 @@ let Details = {
 
     let columnHeader = Details.getColumnHeader(args);
     const hasError = Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []);
+    const options = args.options || this.state[args.optionsArrayName];
     return(
       <>
         <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
@@ -133,7 +134,7 @@ let Details = {
           { Details.renderSubheader(args) }
           <select onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
             { renderNoneOption(args) }
-            { renderOptions(args) }
+            { renderOptions(args, options) }
           </select>
           { Details.renderDropdownFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
         </div>
