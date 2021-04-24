@@ -181,7 +181,7 @@ let Details = {
     let columnHeader = Details.getColumnHeader(args);
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
-    } else if (args.customType === 'modal') {
+    } else if (args.type === 'modal') {
       const idEntity = args.property.slice(0, -2);
       const optionsArrayName = args.optionsArrayName || `${idEntity}s`;
       let selectedId = this.state[args.entity][`${idEntity}Id`];

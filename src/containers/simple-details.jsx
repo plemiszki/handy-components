@@ -154,7 +154,18 @@ class SimpleDetails extends React.Component {
         </div>
         { this.renderCopyModal.call(this, children) }
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName={ this.props.entityName } confirmDelete={ Details.clickDelete.bind(this, { callback: (this.props.customDeletePath ? this.deleteCallback.bind(this) : null), csrfToken: this.props.csrfToken }) } closeModal={ Common.closeModals.bind(this) } />
+          <ConfirmDelete
+            entityName={ this.props.entityName }
+            confirmDelete={
+              Details.clickDelete.bind(this,
+                {
+                  callback: ((this.props.customDeletePath || this.props.deleteCallback) ? this.deleteCallback.bind(this) : null),
+                  csrfToken: this.props.csrfToken
+                }
+              )
+            }
+            closeModal={ Common.closeModals.bind(this) }
+          />
         </Modal>
       </div>
     );
@@ -183,7 +194,12 @@ class SimpleDetails extends React.Component {
   }
 
   deleteCallback() {
-    window.location.pathname = this.props.customDeletePath;
+    const { deleteCallback, customDeletePath } = this.props;
+    if (deleteCallback) {
+      deleteCallback.call(this);
+    } else {
+      window.location.pathname = customDeletePath;
+    }
   }
 
   renderDeleteButton() {
