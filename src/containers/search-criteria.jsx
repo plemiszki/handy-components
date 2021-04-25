@@ -169,7 +169,7 @@ class SearchCriteria extends React.Component {
       case 'modal':
         const option = this.state[field.responseArrayName][0];
         result.value = option.id;
-        result.text = option[field.modalDisplayProperty];
+        result.text = option[field.optionDisplayProperty];
         break;
       default:
         result.value = '';
@@ -199,7 +199,7 @@ class SearchCriteria extends React.Component {
   selectModalOption(field, option, modalOpenVar) {
     let { criteria } = this.state;
     criteria[field.name].value = option.id;
-    criteria[field.name].text = option[field.modalDisplayProperty]
+    criteria[field.name].text = option[field.optionDisplayProperty]
     let obj = {
       criteria,
       [modalOpenVar]: false
@@ -353,7 +353,7 @@ class SearchCriteria extends React.Component {
               <div className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, modalOpenVar, true) }></div>
             ) : null }
             <Modal isOpen={ this.state[modalOpenVar] } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-              <ModalSelect options={ this.state[field.responseArrayName] } property={ field.modalDisplayProperty } func={ (option) => { this.selectModalOption(field, option, modalOpenVar) } } noneOption={ false } />
+              <ModalSelect options={ this.state[field.responseArrayName] } property={ field.optionDisplayProperty } func={ (option) => { this.selectModalOption(field, option, modalOpenVar) } } noneOption={ false } />
             </Modal>
           </>
         );
