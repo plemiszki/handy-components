@@ -21,7 +21,7 @@
     "react-redux": "6.0.1",
     "redux": "4.0.1",
     "redux-thunk": "2.3.0",
-    "styled-jsx": "^3.4.4",
+    "styled-jsx": "^3.4.7",
     "webpack": "4.29.6"
   },
   "devDependencies": {
