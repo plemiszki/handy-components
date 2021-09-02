@@ -370,6 +370,14 @@ let Details = {
 
   getAllErrors() {
     return typeof Errors == 'undefined' ? this.changeFieldArgs().allErrors : Errors;
+  },
+
+  removeFinanceSymbolsFromEntity(args) {
+    let result = HandyTools.deepCopy(args.entity);
+    args.fields.forEach((field) => {
+      result[field] = HandyTools.removeFinanceSymbols(args.entity[field]);
+    });
+    return result;
   }
 }
 
