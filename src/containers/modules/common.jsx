@@ -345,6 +345,16 @@ const Common = {
               if (job.status === 'success' && !job.metadata.useErrorsModalOnSuccess && !job.metadata.showSuccessMessageModal) {
                 newState.jobModalOpen = false;
               }
+              if (job.metadata && job.metadata.updateEntity) {
+                if (job.metadata.entityName) {
+                  let newEntity = Object.assign(this.state[job.metadata.entityName], job.metadata.updateEntity);
+                  let newEntitySaved = Object.assign(this.state[`${job.metadata.entityName}Saved`], job.metadata.updateEntity);
+                  newState[job.metadata.entityName] = newEntity;
+                  newState[`${job.metadata.entityName}Saved`] = newEntitySaved;
+                } else {
+                  throw 'entityName key missing in job metadata';
+                }
+              }
               this.setState(newState);
               if (job.status === 'success' && job.metadata.url) {
                 window.location.href = job.metadata.url;
