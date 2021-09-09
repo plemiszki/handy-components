@@ -355,6 +355,7 @@ const Common = {
                   throw 'entityName key missing in job metadata';
                 }
               }
+              newState.updateJobInterval = null;
               this.setState(newState);
               if (job.status === 'success' && job.metadata.url) {
                 window.location.href = job.metadata.url;
