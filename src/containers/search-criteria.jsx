@@ -232,8 +232,14 @@ class SearchCriteria extends React.Component {
               return(
                 <div key={ `${field.name}${field.type === 'number range' ? '-range' : ''}` } className={ fieldActive ? '' : 'disabled' } data-test-field={ field.name }>
                   <div className="row">
-                    <div className="col-xs-1">
-                      <input type="checkbox" onChange={ this.updateCheckbox.bind(this, field) } data-field={ field.name } checked={ fieldActive } />
+                    <div className="col-xs-2">
+                      <div className="switch-container">
+                        { Common.renderSwitchComponent({
+                          onChange: this.updateCheckbox.bind(this, field),
+                          checked: fieldActive,
+                          property: field.name
+                        }) }
+                      </div>
                     </div>
                     { this.renderField.call(this, field, fieldActive) }
                   </div>
@@ -249,10 +255,8 @@ class SearchCriteria extends React.Component {
           .disabled h2 {
             color: lightgray;
           }
-          input[type="checkbox"] {
-            display: block;
-            margin: 0;
-            margin-top: 45px;
+          .switch-container {
+            margin-top: 33px;
           }
         `}</style>
       </>
