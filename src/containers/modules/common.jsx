@@ -279,6 +279,61 @@ const Common = {
     }
   },
 
+  renderSwitchComponent(args = {}) {
+    return(
+      <>
+        <label>
+          <input type="checkbox" onChange={ args.onChange } checked={ args.checked } data-entity={ args.entity } data-field={ args.property } />
+          <div className="oval"></div>
+        </label>
+        <style jsx>{`
+          label {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            width: 60px;
+            height: 34px;
+          }
+          input {
+            display: none !important;
+          }
+          input:checked + div.oval {
+            background-color: #01647C;
+          }
+          input:checked + div.oval:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+          }
+          div.oval {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: gray;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+          }
+          div.oval:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+          }
+        `}</style>
+      </>
+    );
+  },
+
   searchModalStyles(modalDimensions, rows) {
 
     const rowHeight = 119;
