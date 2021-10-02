@@ -24,7 +24,7 @@ table.admin-table {
     display: inline;
 
     &.sort-header-active {
-      cursor: default;
+      cursor: pointer;
       color: $highlight-color;
       font-family: 'TeachableSans-ExtraBold';
     }

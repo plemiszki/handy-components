@@ -35,6 +35,7 @@ class SearchIndex extends React.Component {
       fetching: true,
       [arrayName]: [],
       orderByColumn: columns[0],
+      orderByDir: columns[0].sortDir || 'asc',
       newEntityModalOpen: false,
       searchModalOpen: false,
       columns,
@@ -72,7 +73,7 @@ class SearchIndex extends React.Component {
       batchSize: this.props.batchSize,
       page,
       orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
-      orderDir: orderByColumn.sortDir || 'asc',
+      orderDir: this.state.orderByDir,
       searchCriteria: HandyTools.convertObjectKeysToUnderscore(serverSearchCriteria)
     }).then(() => {
       this.setState({
@@ -110,11 +111,18 @@ class SearchIndex extends React.Component {
 
   clickHeader(column) {
     if (!column.orderByDisabled) {
+      let orderByDir;
+      if (this.state.orderByColumn.name === column.name) {
+        orderByDir = (this.state.orderByDir === 'asc' ? 'desc' : 'asc');
+      } else {
+        orderByDir = column.sortDir || 'asc';
+      }
       this.setState({
         fetching: true,
         page: 1,
         [this.state.arrayName]: [],
-        orderByColumn: column
+        orderByColumn: column,
+        orderByDir
       }, () => {
         this.fetchEntities();
       });
