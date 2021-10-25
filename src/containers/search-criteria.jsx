@@ -209,15 +209,24 @@ class SearchCriteria extends React.Component {
 
   render() {
     return(
-      <div className="search-criteria component admin-modal">
-        <form className="white-box">
-          { this.renderFields() }
-          <hr />
-          <input type="submit" className={ "submit-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
-        </form>
-        { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-        { Common.renderSpinner(this.state.fetching) }
-      </div>
+      <>
+        <div className="search-criteria component admin-modal">
+          <form className="white-box">
+            { this.renderFields() }
+            <hr />
+            <input type="submit" className={ "submit-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
+          </form>
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+        </div>
+        <style jsx>{`
+          hr {
+            margin-left: -32px;
+            width: calc(100% + 64px);
+            margin-bottom: 30px;
+          }
+        `}</style>
+      </>
     );
   }
 

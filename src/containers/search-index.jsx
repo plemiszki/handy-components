@@ -291,10 +291,10 @@ class SearchIndex extends React.Component {
               box-shadow: none;
             }
             .search-button.active {
-              background-color: #01647C;
+              background-color: var(--button-color);
             }
             .search-button.active:hover {
-              background-color: #013b49;
+              background-color: var(--highlight-color);
             }
             .white-box {
               padding: 0 !important;

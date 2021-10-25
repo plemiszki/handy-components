@@ -298,7 +298,7 @@ const Common = {
             display: none !important;
           }
           input:checked + div.oval {
-            background-color: #01647C;
+            background-color: var(--button-color);
           }
           input:checked + div.oval:before {
             -webkit-transform: translateX(26px);
