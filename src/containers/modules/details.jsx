@@ -226,6 +226,31 @@ let Details = {
           <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[optionsArrayName], args.optionDisplayProperty) } property={ args.optionDisplayProperty } func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args.entity) } } noneOption={ args.noneOption } />
         </Modal>
       ]);
+    } else if (args.type === 'json') {
+      return(
+        <div className={ `col-xs-${args.columnWidth}` }>
+          <h2>{ columnHeader }</h2>
+          { Details.renderSubheader(args) }
+          <>
+            <textarea
+              rows={ args.rows }
+              className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) }
+              onChange={ Details.changeField.bind(this, this.changeFieldArgs()) }
+              value={ this.state[args.entity][args.property] || "" }
+              data-entity={ args.entity }
+              data-field={ args.property }
+              data-json={ true }
+            />
+            <style jsx>{`
+              textarea {
+                font-family: monospace;
+                font-size: 14px;
+              }
+            `}</style>
+          </>
+          { Details.renderFieldError(this.state.errors, []) }
+        </div>
+      );
     } else {
       return(
         <div className={ `col-xs-${args.columnWidth}` }>
@@ -298,6 +323,14 @@ let Details = {
       obj.changesToSave = changeFieldArgs.changesFunction();
     }
     this.setState(obj);
+  },
+
+  stringifyJSONFields(args) {
+    const { entity, jsonFields } = args;
+    jsonFields.forEach((field) => {
+      entity[field] = JSON.stringify(entity[field], null, 2);
+    });
+    return entity;
   },
 
   updateEntity() {
