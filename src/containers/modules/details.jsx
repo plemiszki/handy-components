@@ -202,6 +202,9 @@ let Details = {
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
     } else if (args.type === 'modal') {
+      if (args.optionDisplayProperty == null) {
+        throw `missing optionDisplayProperty on modal field: ${args.property}`;
+      }
       const idEntity = args.property.slice(0, -2);
       const optionsArrayName = args.optionsArrayName || `${idEntity}s`;
       let selectedId = this.state[args.entity][`${idEntity}Id`];
