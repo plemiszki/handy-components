@@ -289,6 +289,15 @@ a.upload {
   color: #95949B;
 }
 
+a.link {
+  margin-top: 10px;
+  display: inline-block;
+  font-size: 10px;
+  cursor: pointer;
+  color: #95949B;
+  text-decoration: underline;
+}
+
 .select-from-modal {
   margin-top: 35px;
   background-image: url('#{$imgpath}/open-modal.png');

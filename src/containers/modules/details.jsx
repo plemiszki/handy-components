@@ -221,6 +221,7 @@ let Details = {
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
           <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } data-field={ args.property } readOnly={ true } />
+          { Details.renderLink(args) }
           { Details.renderFieldError(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) }
         </div>,
         <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
@@ -251,6 +252,7 @@ let Details = {
               }
             `}</style>
           </>
+          { Details.renderLink(args) }
           { Details.renderFieldError(this.state.errors, []) }
         </div>
       );
@@ -261,6 +263,7 @@ let Details = {
           { Details.renderSubheader(args) }
           <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } readOnly={ args.readOnly } />
           { Details.renderUploadLink(args.uploadLinkFunction) }
+          { Details.renderLink(args) }
           { Details.renderFieldError(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) }
         </div>
       );
@@ -305,6 +308,15 @@ let Details = {
     if (func) {
       return(
         <a className="upload" onClick={ func }>Upload Image</a>
+      );
+    }
+  },
+
+  renderLink(args) {
+    const { linkText, linkUrl } = args;
+    if (linkText) {
+      return(
+        <a className="link" href={ linkUrl }>{ linkText }</a>
       );
     }
   },
