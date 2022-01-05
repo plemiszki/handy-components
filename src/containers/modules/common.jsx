@@ -397,6 +397,7 @@ const Common = {
             const jobFinished = job.status != 'running';
             if (jobFinished) {
               clearInterval(this.state.updateJobInterval);
+              // TODO: check for metadata presence
               if (job.status === 'success' && !job.metadata.useErrorsModalOnSuccess && !job.metadata.showSuccessMessageModal) {
                 newState.jobModalOpen = false;
               }
