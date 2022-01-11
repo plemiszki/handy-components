@@ -126,12 +126,15 @@ let Details = {
     const ALL_ERRORS = Details.getAllErrors.call(this);
     const value = args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property];
 
-    if (!args.options && !args.optionsArrayName) {
-      throw `missing 'options' or 'optionsArrayName' argument (rendering ${args.property} field)`;
+    if (!args.boolean) {
+      if (!args.options && !args.optionsArrayName) {
+        throw `render dropdown - missing 'options' or 'optionsArrayName' argument (rendering ${args.property} field)`;
+      }
+      if (!args.options && this.state[args.optionsArrayName] === undefined) {
+        throw `render dropdown - this.state.${optionsArrayName} does not exist (rendering ${args.property} field)`;
+      }
     }
-    if (!args.options && this.state[args.optionsArrayName] === undefined) {
-      throw `this.state.${optionsArrayName} does not exist (rendering ${args.property} field)`;
-    }
+
     const options = args.options || this.state[args.optionsArrayName];
 
     if (args.readOnly) {
