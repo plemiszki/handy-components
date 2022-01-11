@@ -155,7 +155,7 @@ const Common = {
 
     let height;
     if (rows) {
-      height = constantHeight + (rows * 119);
+      height = constantHeight + (rows * 119.33);
     } else {
       height = modalDimensions.height || 240;
     }
