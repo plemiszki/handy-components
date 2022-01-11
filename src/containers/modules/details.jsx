@@ -97,7 +97,6 @@ let Details = {
   },
 
   renderDropDown(args) {
-    const ALL_ERRORS = Details.getAllErrors.call(this);
 
     function renderNoneOption(args) {
       if (args.optional) {
@@ -114,7 +113,7 @@ let Details = {
           <option key={ 1 } value="f">No</option>
         ]);
       } else {
-        { return HandyTools.alphabetizeArrayOfObjects(options, args.optionDisplayProperty).map((option, index) => {
+        { return HandyTools.alphabetizeArrayOfObjects(options, args.optionSortProperty || args.optionDisplayProperty).map((option, index) => {
           return(
             <option key={ index } value={ args.optionValueProperty || option.id }>
               { option[args.optionDisplayProperty] }
@@ -124,15 +123,30 @@ let Details = {
       }
     }
 
+    const ALL_ERRORS = Details.getAllErrors.call(this);
+    const value = args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property];
+
+    if (!args.options && !args.optionsArrayName) {
+      throw `missing 'options' or 'optionsArrayName' argument (rendering ${args.property} field)`;
+    }
+    if (!args.options && this.state[args.optionsArrayName] === undefined) {
+      throw `this.state.${optionsArrayName} does not exist (rendering ${args.property} field)`;
+    }
+    const options = args.options || this.state[args.optionsArrayName];
+
+    if (args.readOnly) {
+      const option = options.find(option => option[args.optionValueProperty || 'id'] == value);
+      return Details.renderField.call(this, Object.assign(args, { value: option[args.optionDisplayProperty] }));
+    }
+
     let columnHeader = Details.getColumnHeader(args);
     const hasError = Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []);
-    const options = args.options || this.state[args.optionsArrayName];
     return(
       <>
         <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
-          <select onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] } data-entity={ args.entity } data-field={ args.property }>
+          <select onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } data-entity={ args.entity } data-field={ args.property }>
             { renderNoneOption(args) }
             { renderOptions(args, options) }
           </select>
@@ -203,10 +217,13 @@ let Details = {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
     } else if (args.type === 'modal') {
       if (args.optionDisplayProperty == null) {
-        throw `missing optionDisplayProperty on modal field: ${args.property}`;
+        throw `missing optionDisplayProperty (rendering ${args.property} field)`;
       }
       const idEntity = args.property.slice(0, -2);
       const optionsArrayName = args.optionsArrayName || `${idEntity}s`;
+      if (this.state[optionsArrayName] === undefined) {
+        throw `this.state.${optionsArrayName} does not exist (rendering ${args.property} field)`;
+      }
       let selectedId = this.state[args.entity][`${idEntity}Id`];
       let value = '';
       if (this.state[optionsArrayName] && selectedId) {
@@ -240,7 +257,7 @@ let Details = {
               rows={ args.rows }
               className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) }
               onChange={ Details.changeField.bind(this, this.changeFieldArgs()) }
-              value={ this.state[args.entity][args.property] || "" }
+              value={ args.value || this.state[args.entity][args.property] || "" }
               data-entity={ args.entity }
               data-field={ args.property }
               data-json={ true }
@@ -261,7 +278,7 @@ let Details = {
         <div className={ `col-xs-${args.columnWidth}` }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
-          <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } readOnly={ args.readOnly } />
+          <input className={ Details.errorClass(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ args.value || this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property } placeholder={ args.placeholder } readOnly={ args.readOnly } />
           { Details.renderUploadLink(args.uploadLinkFunction) }
           { Details.renderLink(args) }
           { Details.renderFieldError(this.state.errors, ALL_ERRORS[(args.errorsProperty || args.property)] || []) }
@@ -295,13 +312,49 @@ let Details = {
     const ALL_ERRORS = Details.getAllErrors.call(this);
     let columnHeader = Details.getColumnHeader(args);
     return(
-      <div className={ `col-xs-${args.columnWidth}` }>
-        <h2>{ columnHeader }</h2>
-        { Details.renderSubheader(args) }
-        <textarea rows={ args.rows } className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[args.entity][args.property] || "" } data-entity={ args.entity } data-field={ args.property }></textarea>
-        { Details.renderFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
-      </div>
+      <>
+        <div className={ `textbox-field col-xs-${args.columnWidth}` }>
+          <h2>{ columnHeader }</h2>
+          { Details.renderSubheader(args) }
+          <textarea
+            rows={ args.rows }
+            className={ Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []) }
+            onChange={ Details.changeField.bind(this, this.changeFieldArgs()) }
+            value={ this.state[args.entity][args.property] || "" }
+            data-entity={ args.entity }
+            data-field={ args.property }
+          ></textarea>
+          { Details.renderFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
+          { Details.renderCharacterCount.call(this, args) }
+        </div>
+        <style jsx>{`
+          textarea {
+            vertical-align: top;
+          }
+          .textbox-field {
+            position: relative;
+          }
+        `}</style>
+      </>
     );
+  },
+
+  renderCharacterCount(args) {
+    if (args.characterCount) {
+      const count = this.state.film[args.property] ? this.state.film[args.property].length : 0;
+      return(
+        <>
+          <div className="character-count">({ count } characters)</div>
+          <style jsx>{`
+              position: absolute;
+              font-size: 11px;
+              text-align: right;
+              bottom: 10px;
+              right: 15px;
+          `}</style>
+        </>
+      );
+    }
   },
 
   renderUploadLink(func) {

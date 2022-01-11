@@ -381,7 +381,10 @@ const Common = {
     };
   },
 
-  updateJobModal: function() {
+  updateJobModal: function(args) {
+    if (args) {
+      const { successCallback } = args;
+    }
     if (this.state.job && this.state.job.status === 'running' && !this.state.updateJobInterval) {
       const updateJobInterval = window.setInterval(() => {
         $.ajax({
@@ -413,8 +416,12 @@ const Common = {
               }
               newState.updateJobInterval = null;
               this.setState(newState);
-              if (job.status === 'success' && job.metadata.url) {
-                window.location.href = job.metadata.url;
+              if (job.status === 'success') {
+                if (job.metadata.url) {
+                  window.location.href = job.metadata.url;
+                } else if (successCallback) {
+                  successCallback.call(this, job);
+                }
               }
             } else {
               this.setState(newState);
