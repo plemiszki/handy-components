@@ -113,10 +113,10 @@ let Details = {
           <option key={ 1 } value="f">No</option>
         ]);
       } else {
-        { return HandyTools.alphabetizeArrayOfObjects(options, args.optionSortProperty || args.optionDisplayProperty).map((option, index) => {
+        { return HandyTools.alphabetizeArrayOfObjects(options, args.optionSortProperty || args.optionDisplayProperty || 'text').map((option, index) => {
           return(
-            <option key={ index } value={ args.optionValueProperty || option.id }>
-              { option[args.optionDisplayProperty] }
+            <option key={ index } value={ args.optionValueProperty || option.value || option.id }>
+              { option[args.optionDisplayProperty || 'text'] }
             </option>
           );
         })}
@@ -124,7 +124,7 @@ let Details = {
     }
 
     const ALL_ERRORS = Details.getAllErrors.call(this);
-    const value = args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property];
+    let value = args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] || '';
 
     if (!args.boolean) {
       if (!args.options && !args.optionsArrayName) {
@@ -138,8 +138,11 @@ let Details = {
     const options = args.options || this.state[args.optionsArrayName];
 
     if (args.readOnly) {
-      const option = options.find(option => option[args.optionValueProperty || 'id'] == value);
-      return Details.renderField.call(this, Object.assign(args, { value: option[args.optionDisplayProperty] }));
+      if (value !== '') {
+        const option = options.find(option => (args.optionValueProperty ? option[args.optionValueProperty] : (option['value'] || option['id']) ) == value);
+        value = option[args.optionDisplayProperty];
+      }
+      return Details.renderField.call(this, Object.assign(args, { value }));
     }
 
     let columnHeader = Details.getColumnHeader(args);
