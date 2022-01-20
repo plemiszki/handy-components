@@ -382,56 +382,78 @@ const Common = {
   },
 
   updateJobModal: function(args) {
-    if (args) {
-      const { successCallback } = args;
-    }
-    if (this.state.job && this.state.job.status === 'running' && !this.state.updateJobInterval) {
-      const updateJobInterval = window.setInterval(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: (response) => {
-            const job = response;
-            let newState = { job };
-            const jobFinished = job.status != 'running';
-            if (jobFinished) {
-              clearInterval(this.state.updateJobInterval);
-              // TODO: check for metadata presence
-              if (job.status === 'success' && !job.metadata.useErrorsModalOnSuccess && !job.metadata.showSuccessMessageModal) {
-                newState.jobModalOpen = false;
+    args = args || {}
+    const { job, processedFinishedJob } = this.state;
+    if (job) {
+      if (job.status === 'running' && !this.state.updateJobInterval) {
+        const updateJobInterval = window.setInterval(() => {
+          $.ajax({
+            url: '/api/jobs/status',
+            method: 'GET',
+            data: {
+              id: job.id,
+              time: job.job_id
+            },
+            success: (response) => {
+              const job = response;
+              const jobFinished = job.status != 'running';
+              if (jobFinished) {
+                clearInterval(this.state.updateJobInterval);
+                Common.finishJob.call(this, Object.assign(args, { job }));
+              } else {
+                this.setState({
+                  processedFinishedJob: false,
+                  job
+                });
               }
-              if (job.metadata && job.metadata.updateEntity) {
-                if (job.metadata.entityName) {
-                  let newEntity = Object.assign(this.state[job.metadata.entityName], job.metadata.updateEntity);
-                  let newEntitySaved = Object.assign(this.state[`${job.metadata.entityName}Saved`], job.metadata.updateEntity);
-                  newState[job.metadata.entityName] = newEntity;
-                  newState[`${job.metadata.entityName}Saved`] = newEntitySaved;
-                } else {
-                  throw 'entityName key missing in job metadata';
-                }
-              }
-              newState.updateJobInterval = null;
-              this.setState(newState);
-              if (job.status === 'success') {
-                if (job.metadata.url) {
-                  window.location.href = job.metadata.url;
-                } else if (successCallback) {
-                  successCallback.call(this, job);
-                }
-              }
-            } else {
-              this.setState(newState);
             }
-          }
+          });
+        }, 1500);
+        this.setState({
+          updateJobInterval
         });
-      }, 1500);
-      this.setState({
-        updateJobInterval
-      });
+      } else if ((job.status === 'success' || job.status === 'failed') && !processedFinishedJob) {
+        Common.finishJob.call(this, Object.assign(args, { job }));
+      }
+    }
+  },
+
+  finishJob: function(args) {
+    const { job, successCallback, ensureCallback } = args;
+    let newState = {
+      processedFinishedJob: true,
+      updateJobInterval: null,
+      job
+    };
+    if (job.status === 'success') {
+      if (job.metadata) {
+        if (!job.metadata.useErrorsModalOnSuccess && !job.metadata.showSuccessMessageModal) {
+          newState.jobModalOpen = false;
+        }
+      } else {
+        newState.jobModalOpen = false;
+      }
+    }
+    if (job.metadata && job.metadata.updateEntity) {
+      if (job.metadata.entityName) {
+        let newEntity = Object.assign(this.state[job.metadata.entityName], job.metadata.updateEntity);
+        let newEntitySaved = Object.assign(this.state[`${job.metadata.entityName}Saved`], job.metadata.updateEntity);
+        newState[job.metadata.entityName] = newEntity;
+        newState[`${job.metadata.entityName}Saved`] = newEntitySaved;
+      } else {
+        throw 'entityName key missing in job metadata';
+      }
+    }
+    this.setState(newState);
+    if (job.status === 'success') {
+      if (job.metadata.url) {
+        window.location.href = job.metadata.url;
+      } else if (successCallback) {
+        successCallback.call(this, job);
+      }
+    }
+    if (ensureCallback) {
+      ensureCallback.call(this, job);
     }
   }
 }
