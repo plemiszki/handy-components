@@ -419,7 +419,7 @@ const Common = {
   },
 
   finishJob: function(args) {
-    const { job, successCallback, ensureCallback } = args;
+    const { job, successCallback, failureCallback, ensureCallback } = args;
     let newState = {
       processedFinishedJob: true,
       updateJobInterval: null,
@@ -451,6 +451,9 @@ const Common = {
       } else if (successCallback) {
         successCallback.call(this, job);
       }
+    }
+    if (job.status === 'failed' && failureCallback) {
+      failureCallback.call(this, job);
     }
     if (ensureCallback) {
       ensureCallback.call(this, job);
