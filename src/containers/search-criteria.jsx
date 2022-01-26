@@ -24,16 +24,26 @@ class SearchCriteria extends React.Component {
       this.setState({
         criteria: this.props.criteria
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
+        this.setupNiceSelectIfNeeded();
       });
     } else {
-      HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
+      this.setupNiceSelectIfNeeded();
     }
 
     const modalFields = this.props.fields.filter((field) => field.type === 'modal');
     if (modalFields.length > 0) {
       this.fetchDynamicData(modalFields);
     }
+  }
+
+  setupNiceSelectIfNeeded() {
+    if (this.niceSelectRequired()) {
+      HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
+    }
+  }
+
+  niceSelectRequired() {
+    return this.props.fields.filter((field) => ['static dropdown', 'yes/no'].indexOf(field.type) > -1 ).count > 0;
   }
 
   fetchDynamicData(modalFields) {
@@ -46,7 +56,7 @@ class SearchCriteria extends React.Component {
         obj[field.responseArrayName] = this.props[field.responseArrayName];
       })
       this.setState(obj, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
+        this.setupNiceSelectIfNeeded();
       });
     });
   }
@@ -116,16 +126,20 @@ class SearchCriteria extends React.Component {
     if (checked) {
       criteria[field.name] = this.initializeObject(field);
     } else {
-      let $dropDowns = $(fieldDropdownSelector);
-      $dropDowns.niceSelect('destroy');
-      $dropDowns.unbind('change');
+      if (this.niceSelectRequired()) {
+        let $dropDowns = $(fieldDropdownSelector);
+        $dropDowns.niceSelect('destroy');
+        $dropDowns.unbind('change');
+      }
       delete criteria[field.name];
     }
     this.setState({
       criteria
     }, () => {
       if (checked) {
-        HandyTools.setUpNiceSelect({ selector: fieldDropdownSelector, func: this.updateField.bind(this) });
+        if (this.niceSelectRequired()) {
+          HandyTools.setUpNiceSelect({ selector: fieldDropdownSelector, func: this.updateField.bind(this) });
+        }
       }
     });
   }
