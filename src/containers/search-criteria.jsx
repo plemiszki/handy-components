@@ -43,7 +43,7 @@ class SearchCriteria extends React.Component {
   }
 
   niceSelectRequired() {
-    return this.props.fields.filter((field) => ['static dropdown', 'yes/no'].indexOf(field.type) > -1 ).count > 0;
+    return this.props.fields.filter((field) => ['static dropdown', 'yes/no'].indexOf(field.type) > -1 ).length > 0;
   }
 
   fetchDynamicData(modalFields) {
