@@ -382,20 +382,16 @@ const Common = {
   },
 
   updateJobModal: function(args) {
-    args = args || {}
+    args = args || {};
     const { job, processedFinishedJob } = this.state;
     if (job) {
       if (job.status === 'running' && !this.state.updateJobInterval) {
         const updateJobInterval = window.setInterval(() => {
           $.ajax({
-            url: '/api/jobs/status',
+            url: `/api/jobs/${job.id}`,
             method: 'GET',
-            data: {
-              id: job.id,
-              time: job.job_id
-            },
             success: (response) => {
-              const job = response;
+              const { job } = response;
               const jobFinished = job.status != 'running';
               if (jobFinished) {
                 clearInterval(this.state.updateJobInterval);
@@ -403,14 +399,14 @@ const Common = {
               } else {
                 this.setState({
                   processedFinishedJob: false,
-                  job
+                  job,
                 });
               }
             }
           });
         }, 1500);
         this.setState({
-          updateJobInterval
+          updateJobInterval,
         });
       } else if ((job.status === 'success' || job.status === 'failed') && !processedFinishedJob) {
         Common.finishJob.call(this, Object.assign(args, { job }));
@@ -423,7 +419,7 @@ const Common = {
     let newState = {
       processedFinishedJob: true,
       updateJobInterval: null,
-      job
+      job,
     };
     if (job.status === 'success') {
       if (job.metadata) {
