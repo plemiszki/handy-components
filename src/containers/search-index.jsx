@@ -234,15 +234,25 @@ class SearchIndex extends React.Component {
                   </tr>
                   { this.state[arrayName].map((entity, index) => {
                     return(
-                      <tr key={ index }>
+                      <tr key={ index } className={ !this.props.useLinks ? 'no-links' : '' }>
                         { columns.map((column, index) => {
-                          return(
-                            <td key={ index } className={ column.classes || '' }>
-                              <a href={ `/${directory}/${entity.id}${column.links || ''}` }>
-                                { entity[column.name] }
-                              </a>
-                            </td>
-                          );
+                          if (this.props.useLinks === false) {
+                            return(
+                              <td key={ index } className={ column.classes || '' }>
+                                <a>
+                                  { entity[column.name] }
+                                </a>
+                              </td>
+                            );
+                          } else {
+                            return(
+                              <td key={ index } className={ column.classes || '' }>
+                                <a href={ `/${directory}/${entity.id}${column.links || ''}` }>
+                                  { entity[column.name] }
+                                </a>
+                              </td>
+                            );
+                          }
                         })}
                       </tr>
                     );
