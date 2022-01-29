@@ -247,7 +247,7 @@ class SearchIndex extends React.Component {
                           } else {
                             return(
                               <td key={ index } className={ column.classes || '' }>
-                                <a href={ `/${directory}/${entity.id}${column.links || ''}` }>
+                                <a href={ `/${directory}/${entity.id}${column.links || ''}` } target={ this.props.openNewTabs ? '_blank' : '_self' }>
                                   { entity[column.name] }
                                 </a>
                               </td>
