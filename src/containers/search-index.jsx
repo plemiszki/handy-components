@@ -243,11 +243,13 @@ class SearchIndex extends React.Component {
                     return(
                       <tr key={ index } className={ !this.props.useLinks ? 'no-links' : '' }>
                         { columns.map((column, index) => {
+                          const value = entity[column.name];
+                          const displayedValue = column.convertToLocalTime ? HandyTools.stringifyFullDate(new Date(value * 1000)) : value;
                           if (this.props.useLinks === false) {
                             return(
                               <td key={ index } className={ column.classes || '' }>
                                 <a>
-                                  { entity[column.name] }
+                                  { displayedValue }
                                 </a>
                               </td>
                             );
@@ -255,7 +257,7 @@ class SearchIndex extends React.Component {
                             return(
                               <td key={ index } className={ column.classes || '' }>
                                 <a href={ `/${directory}/${entity.id}${column.links || ''}` } target={ this.props.openNewTabs ? '_blank' : '_self' }>
-                                  { entity[column.name] }
+                                  { displayedValue }
                                 </a>
                               </td>
                             );
