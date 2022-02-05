@@ -275,6 +275,10 @@ class SearchCriteria extends React.Component {
           .fields-container {
             overflow: scroll;
           }
+          .row {
+            margin-left: 0;
+            margin-right: 0;
+          }
           .disabled h2 {
             color: lightgray;
           }
