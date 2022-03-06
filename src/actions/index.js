@@ -136,8 +136,9 @@ let getHeaders = (args) => {
 }
 
 let getUrl = (args) => {
+  const { namespace } = args;
   let url = '';
-  if (args.namespace) {
+  if (namespace) {
     url = `/${namespace}`;
   }
   url = `${url}/api/${args.directory}`;
