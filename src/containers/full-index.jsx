@@ -44,8 +44,8 @@ class FullIndex extends React.Component {
   }
 
   componentDidMount() {
-    const { directory, namespace } = this.props;
-    const { arrayName } = this.state;
+    const { namespace } = this.props;
+    const { arrayName, directory } = this.state;
     this.props.fetchEntities({ directory, namespace }).then(() => {
       this.setState({
         spinner: false,
