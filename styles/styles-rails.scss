@@ -127,7 +127,7 @@ input.search-box, .search-button {
 
           &.sort-header-active {
             cursor: pointer;
-            color: #0385a4;
+            color: var(--handy_components_highlight_color, #fff)
             font-family: 'TeachableSans-ExtraBold';
           }
 
