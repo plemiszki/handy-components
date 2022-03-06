@@ -44,7 +44,9 @@ class FullIndex extends React.Component {
   }
 
   componentDidMount() {
+    console.log('comp did mount');
     this.props.fetchEntities({ directory: this.state.directory }).then(() => {
+      console.log('fetch entities callback');
       this.setState({
         fetching: false,
         [this.state.arrayName]: this.props[this.state.arrayName]
@@ -178,6 +180,7 @@ class FullIndex extends React.Component {
 }
 
 const mapStateToProps = (reducers) => {
+  console.log('reducers: ', reducers);
   return reducers.standardReducer;
 };
 
