@@ -87,8 +87,16 @@ class FullIndex extends React.Component {
 
     let filteredEntities = Index.filterSearchText({ entities: this.state[arrayName], text: searchText, property: searchColumn.name });
 
+    let componentClasses = ["component"];
+    if (this.props.includeLinks) {
+      componentClasses.push("include-links");
+    }
+    if (this.props.includeHover) {
+      componentClasses.push("include-hover");
+    }
+
     return(
-      <div className="component">
+      <div className={ componentClasses.join(" ") }>
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderButton() }
         <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ searchText } />
@@ -122,13 +130,23 @@ class FullIndex extends React.Component {
                   return(
                     <tr key={ index }>
                       { columns.map((column, index) => {
-                        return(
-                          <td key={ index } className={ column.classes || '' }>
-                            <a href={ `${directory}/${entity.id}${column.links || ''}` }>
-                              { this.renderValue(entity[column.name], index) }
-                            </a>
-                          </td>
-                        );
+                        if (this.props.includeLinks) {
+                          return(
+                            <td key={ index } className={ column.classes || '' }>
+                              <a href={ `${directory}/${entity.id}${column.links || ''}` }>
+                                { this.renderValue(entity[column.name], index) }
+                              </a>
+                            </td>
+                          );
+                        } else {
+                          return(
+                            <td key={ index } className={ column.classes || '' }>
+                              <div className="link-padding">
+                                { this.renderValue(entity[column.name], index) }
+                              </div>
+                            </td>
+                          );
+                        }
                       })}
                     </tr>
                   );
