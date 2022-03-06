@@ -26,7 +26,7 @@ export function fetchEntities(args) {
   return (dispatch) => {
     return $.ajax({
       method: 'GET',
-      url: `/api/${args.directory}`,
+      url: `/staff/api/${args.directory}`,
       data: {
         batch_size: args.batchSize,
         page: args.page,
