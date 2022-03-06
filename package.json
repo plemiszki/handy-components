@@ -10,13 +10,15 @@
     "start": "webpack --watch",
     "build": "webpack"
   },
+  "peerDependencies": {
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
   "dependencies": {
     "change-case": "3.1.0",
     "handy-tools": "2.13.2",
     "jquery": "3.5.0",
     "lodash": "4.17.19",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
     "react-modal": "3.8.1",
     "react-redux": "7.2.6",
     "redux": "4.1.2",
