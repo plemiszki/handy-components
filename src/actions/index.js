@@ -36,7 +36,10 @@ export function fetchEntities(args) {
       }
     }).then(
       (response) => {
+        console.log('response: ', response);
         let obj = Object.assign(response, { type: 'FETCH_ENTITIES' });
+        console.log('obj: ', obj);
+        console.log('dispatch: ', dispatch);
         dispatch(obj);
       }
     );
