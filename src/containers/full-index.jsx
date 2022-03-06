@@ -16,6 +16,7 @@ class FullIndex extends React.Component {
 
     const entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
     const directory = ChangeCase.snakeCase(entityNamePlural);
+    console.log(directory);
     const arrayName = ChangeCase.camelCase(entityNamePlural);
 
     const columns = this.props.columns.map((column) => {
@@ -46,6 +47,7 @@ class FullIndex extends React.Component {
   componentDidMount() {
     const { namespace } = this.props;
     const { arrayName, directory } = this.state;
+    console.log('directory: ', directory);
     this.props.fetchEntities({ directory, namespace }).then(() => {
       this.setState({
         spinner: false,
