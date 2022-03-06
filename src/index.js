@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Reducer from './reducer/reducer.js'
+
 import Common from './containers/modules/common.jsx'
 import Details from './containers/modules/details.jsx'
 import Index from './containers/modules/index.js'
@@ -40,6 +42,7 @@ export {
   ModalMessage,
   ModalSelect,
   ModalSelectStyles,
+  Reducer,
   SearchCriteria,
   SearchIndex,
   SimpleDetails,
