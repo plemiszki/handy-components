@@ -158,7 +158,7 @@ class FullIndex extends React.Component {
   }
 
   renderButton() {
-    if (includeNewButton) {
+    if (this.props.includeNewButton) {
       return(
         <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
       );
@@ -166,7 +166,7 @@ class FullIndex extends React.Component {
   }
 
   renderNewEntityModal(children) {
-    if (includeNewButton) {
+    if (this.props.includeNewButton) {
       return(
         <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
           { children }
