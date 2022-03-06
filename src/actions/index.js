@@ -23,10 +23,11 @@ export function sendRequest(args) {
 }
 
 export function fetchEntities(args) {
+  let url = getUrl(args);
   return (dispatch) => {
     return $.ajax({
       method: 'GET',
-      url: `/staff/api/${args.directory}`,
+      url,
       data: {
         batch_size: args.batchSize,
         page: args.page,
@@ -132,4 +133,13 @@ let getHeaders = (args) => {
     }
   }
   return headers;
+}
+
+let getUrl = (args) => {
+  let url = '';
+  if (args.namespace) {
+    url = `/${namespace}`;
+  }
+  url = `${url}/api/${args.directory}`;
+  return url;
 }

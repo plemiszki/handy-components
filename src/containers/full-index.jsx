@@ -32,7 +32,7 @@ class FullIndex extends React.Component {
       entityNamePlural,
       directory,
       arrayName,
-      fetching: true,
+      spinner: true,
       [arrayName]: [],
       searchColumn: columns[0],
       searchText: '',
@@ -44,10 +44,12 @@ class FullIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities({ directory: this.state.directory }).then(() => {
+    const { directory, namespace } = this.props;
+    const { arrayName } = this.state;
+    this.props.fetchEntities({ directory, namespace }).then(() => {
       this.setState({
-        fetching: false,
-        [this.state.arrayName]: this.props[this.state.arrayName]
+        spinner: false,
+        [arrayName]: this.props[arrayName]
       });
     });
   }
@@ -66,13 +68,8 @@ class FullIndex extends React.Component {
   }
 
   render() {
-    let fetching = this.state.fetching;
-    let columns = this.state.columns;
-    let directory = this.state.directory;
-    let searchColumn = this.state.searchColumn;
-    let arrayName = this.state.arrayName;
-    let searchText = this.state.searchText;
-    let entityNamePlural = this.state.entityNamePlural;
+    const { includeNewButton, includeLinks, includeHover } = this.props;
+    const { spinner, columns, directory, searchColumn, arrayName, searchText, entityNamePlural } = this.state;
 
     const children = React.Children.map(
       this.props.children,
@@ -88,10 +85,10 @@ class FullIndex extends React.Component {
     let filteredEntities = Index.filterSearchText({ entities: this.state[arrayName], text: searchText, property: searchColumn.name });
 
     let componentClasses = ["component"];
-    if (this.props.includeLinks) {
+    if (includeLinks) {
       componentClasses.push("include-links");
     }
-    if (this.props.includeHover) {
+    if (includeHover) {
       componentClasses.push("include-hover");
     }
 
@@ -99,10 +96,10 @@ class FullIndex extends React.Component {
       <div className={ componentClasses.join(" ") }>
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderButton() }
-        <input className={ `search-box${this.props.hideNewButton ? '' : ' margin'}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ searchText } />
+        <input className={ `search-box${includeNewButton ? ' margin' : ''}` } onChange={ Common.changeStateToTarget.bind(this, 'searchText') } value={ searchText } />
         <div className="white-box">
-          { Common.renderGrayedOut(fetching, -36, -32, 5) }
-          { Common.renderSpinner(fetching) }
+          { Common.renderGrayedOut(spinner, -36, -32, 5) }
+          { Common.renderSpinner(spinner) }
           <div className="horizontal-scroll">
             <table className="admin-table sortable">
               <thead>
@@ -130,7 +127,7 @@ class FullIndex extends React.Component {
                   return(
                     <tr key={ index }>
                       { columns.map((column, index) => {
-                        if (this.props.includeLinks) {
+                        if (includeLinks) {
                           return(
                             <td key={ index } className={ column.classes || '' }>
                               <a href={ `${directory}/${entity.id}${column.links || ''}` }>
@@ -161,15 +158,15 @@ class FullIndex extends React.Component {
   }
 
   renderButton() {
-    if (!this.props.hideNewButton) {
+    if (includeNewButton) {
       return(
-        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
+        <a className={ "btn float-button" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Index.clickNew.bind(this) }>Add { ChangeCase.titleCase(this.props.entityName) }</a>
       );
     }
   }
 
   renderNewEntityModal(children) {
-    if (!this.props.hideNewButton) {
+    if (includeNewButton) {
       return(
         <Modal isOpen={ this.state.newEntityModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles(this.props.modalDimensions, this.props.modalRows) }>
           { children }
