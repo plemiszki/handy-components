@@ -88,11 +88,10 @@ export function updateEntity(args) {
         dispatch(obj);
       },
       (response) => {
-        dispatch({
-          type: 'ERRORS',
-          errors: response
-        })
-        throw 'error';  // <-- not sure why this is necessary but failure callback isn't called without it
+        let responseJSON = response.responseJSON;
+        let obj = Object.assign(responseJSON, { type: 'ERRORS' });
+        dispatch(obj);
+        throw 'error'; // <-- not sure why this is necessary but failure callback isn't called without it
       }
     );
   }

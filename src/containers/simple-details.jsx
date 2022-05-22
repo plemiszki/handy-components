@@ -49,15 +49,13 @@ class SimpleDetails extends React.Component {
         })
       }
       this.setState(obj, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
 
   changeFieldArgs() {
     return {
-      allErrors: Errors,
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this)
     }
   }

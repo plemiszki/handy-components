@@ -8,45 +8,96 @@ import Common from './common.jsx'
 
 let Details = {
 
-  changeField(changeFieldArgs, event) {
-    const { errors } = this.state;
-    let key = event.target.dataset.field;
-    let entity = event.target.dataset.entity;
-    let saveKey;
-    let saveValue;
+  getErrors(args) {
+    const { errorsKey } = args;
+    const { errors: stateErrors } = this.state;
+    const { defaultErrorsKey } = this.changeFieldArgs();
+    if (errorsKey && Array.isArray(errorsKey)) {
+      let obj = stateErrors;
+      errorsKey.forEach((key) => {
+        obj = obj[key] || {};
+      });
+      return obj;
+    }
+    if (errorsKey) {
+      return stateErrors[errorsKey] || {};
+    }
+    if (defaultErrorsKey) {
+      return stateErrors[defaultErrorsKey] || {};
+    }
+    return stateErrors;
+  },
 
-    let value;
-    if ($(event.target).is('select')) {
-      value = HandyTools.convertTFStringsToBoolean(event.target.value);
-    } else if (event.target.type === 'checkbox') {
-      value = event.target.checked;
+  changeDropdownField(event) {
+    console.log('cddf');
+    console.log(event);
+    // due to limitations with Nice Select, arguments to changeField must be pulled from the DOM
+    // TODO: what about other arguments (entities, entitiesIndex, errorsProperty)?
+    const dataset = event.target.dataset;
+    const { entity, field: property } = dataset;
+    Details.changeField.call(this, { entity, property }, event);
+  },
+
+  changeField(args, event) {
+    // set up
+    const {
+      entities,
+      entitiesIndex,
+      entity,
+      errorsProperty,
+      property,
+    } = args;
+    const changeFieldArgs = this.changeFieldArgs();
+    const errors = Details.getErrors.call(this, args);
+    const input = event.target;
+
+    // remove field error
+    Details.removeFieldError(errors, errorsProperty || property);
+
+    // what is the new value of the property?
+    let newValue;
+    if ($(input).is('select')) {
+      newValue = HandyTools.convertTFStringsToBoolean(input.value);
+    } else if (input.type === 'checkbox') {
+      newValue = input.checked;
     } else {
-      value = event.target.value;
+      newValue = input.value;
     }
 
+    // what is the object to update?
+    let obj;
     if (entity) {
-      let newEntity = this.state[entity];
-      if (changeFieldArgs.beforeSave) {
-        changeFieldArgs.beforeSave.call(this, newEntity, key, value); // <-- will mutate newEntity if needed
-      }
-      newEntity[key] = value;
-      saveKey = entity;
-      saveValue = newEntity;
-    } else {
-      saveKey = key;
-      saveValue = value;
+      obj = this.state[entity];
+    } else if (entities) {
+      obj = this.state[entities][entitiesIndex];
     }
 
-    Details.removeFieldError(errors, key);
+    // update the object
+    obj[property] = newValue;
 
-    this.setState({
-      [saveKey]: saveValue,
-      justSaved: false
-    }, () => {
+    // update any other relevant properties
+    if (changeFieldArgs.beforeSave) {
+      changeFieldArgs.beforeSave.call(this, obj, property, newValue); // <-- will mutate obj if needed
+    }
+
+    // create a new state object
+    let newStateObj = {
+      justSaved: false,
+    };
+    if (entity) {
+      newStateObj[entity] = obj;
+    } else if (entities) {
+      let entitiesArray = this.state[entities];
+      entitiesArray[entitiesIndex] = obj;
+      newStateObj[entities] = entitiesArray;
+    }
+
+    // update component state
+    this.setState(newStateObj, () => {
       if (changeFieldArgs.changesFunction) {
-        var changesToSave = changeFieldArgs.changesFunction.call();
+        const changesToSave = changeFieldArgs.changesFunction.call();
         this.setState({
-          changesToSave: changesToSave
+          changesToSave
         });
       }
     });
@@ -90,8 +141,27 @@ let Details = {
     return args.columnHeader || ChangeCase.titleCase(args.property);
   },
 
+  getValue(args) {
+    const { value, entity, entities, entitiesIndex, property } = args;
+    if (value) {
+      return value || '';
+    }
+    if (entity) {
+      return this.state[entity][property] || '';
+    }
+    if (entities) {
+      return this.state[entities][entitiesIndex][property] || '';
+    }
+  },
+
   removeFieldError(errors, key) {
     delete errors[key];
+  },
+
+  removeFieldErrors(errors, keys) {
+    keys.forEach((key) => {
+      this.removeFieldError(errors, key);
+    });
   },
 
   renderDropDown(args) {
@@ -99,7 +169,7 @@ let Details = {
     function renderNoneOption(args) {
       if (args.optional) {
         return(
-          <option key={ -1 } value="">(None)</option>
+          <option key={ -1 } value={ args.noneValue || "" }>(None)</option>
         );
       }
     }
@@ -121,7 +191,11 @@ let Details = {
       }
     }
 
-    const ALL_ERRORS = Details.getAllErrors.call(this);
+    const columnHeader = Details.getColumnHeader(args);
+    const { errors } = this.state;
+    const { property, errorsProperty } = args;
+    const hasError = Details.fieldHasError(errors, errorsProperty || property);
+    const errorText = Details.errorText(errors, errorsProperty || property);
     let value = args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] || '';
 
     if (!args.boolean) {
@@ -143,18 +217,16 @@ let Details = {
       return Details.renderField.call(this, Object.assign(args, { value }));
     }
 
-    let columnHeader = Details.getColumnHeader(args);
-    const hasError = Details.errorClass(this.state.errors, ALL_ERRORS[args.property] || []);
     return(
       <>
         <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
-          <select onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } data-entity={ args.entity } data-field={ args.property }>
+          <select onChange={ Details.changeDropdownField.bind(this, args) } value={ value } data-entity={ args.entity } data-field={ args.property }>
             { renderNoneOption(args) }
             { renderOptions(args, options) }
           </select>
-          { Details.renderDropdownFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
+          { Details.renderDropdownFieldError(errorText) }
         </div>
         <style jsx>{`
           .has-error .nice-select {
@@ -166,29 +238,37 @@ let Details = {
     );
   },
 
-  renderDropdownFieldError(stateErrors, fieldErrors) {
-    for (var i = 0; i < fieldErrors.length; i++) {
-      if (stateErrors.indexOf(fieldErrors[i]) > -1) {
-        return(
-          React.createElement("div", { className: "yes-dropdown-field-error" }, fieldErrors[i])
-        );
-      }
+  renderDropdownFieldError(errorText) {
+    if (errorText) {
+      return React.createElement("div", { className: "yes-dropdown-field-error" }, errorText);
+    } else {
+      return React.createElement("div", { className: "no-dropdown-field-error" });
     }
-    return(
-      React.createElement("div", { className: "no-dropdown-field-error" })
-    );
   },
 
   renderCheckbox(args) {
-    const ALL_ERRORS = Details.getAllErrors.call(this);
-    let columnHeader = Details.getColumnHeader(args);
+    const columnHeader = Details.getColumnHeader(args);
+    const { errors } = this.state;
+    const { property, errorsProperty } = args;
+    const hasError = Details.fieldHasError(errors, errorsProperty || property);
+    const errorText = Details.errorText(errors, errorsProperty || property);
+
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
     } else {
       return(
         <div className={ `col-xs-${args.columnWidth}` }>
-          <input id={ `${args.entity}-${args.property}` } className="checkbox" type="checkbox" onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } checked={ this.state[args.entity][args.property] || false } data-entity={ args.entity } data-field={ args.property } /><label className="checkbox" htmlFor={ `${args.entity}-${args.property}` }>{ columnHeader }</label>
-          { Details.renderFieldError(this.state.errors, ALL_ERRORS[args.property] || []) }
+          <input
+            id={ `${args.entity}-${args.property}` }
+            className="checkbox"
+            type="checkbox"
+            onChange={ Details.changeField.bind(this, args) }
+            checked={ this.state[args.entity][args.property] || false }
+            data-entity={ args.entity }
+            data-field={ args.property }
+          />
+          <label className="checkbox" htmlFor={ `${args.entity}-${args.property}` }>{ columnHeader }</label>
+          { Details.renderFieldError(errorText) }
         </div>
       );
     }
@@ -204,7 +284,7 @@ let Details = {
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
           { Common.renderSwitchComponent({
-            onChange: Details.changeField.bind(this, this.changeFieldArgs()),
+            onChange: Details.changeField.bind(this, args),
             checked: this.state[args.entity][args.property] || false,
             entity: args.entity,
             property: args.property
@@ -215,90 +295,140 @@ let Details = {
   },
 
   renderField(args) {
-    const columnHeader = Details.getColumnHeader(args);
-    const { errors } = this.state;
-    const { property, errorsProperty } = args;
+    const {
+      columnOffset,
+      columnWidth,
+      entities,
+      entitiesIndex,
+      entity,
+      errorsProperty,
+      hidden,
+      leftLabel,
+      noneOption,
+      optionDisplayProperty,
+      optionsArrayName,
+      placeholder,
+      property,
+      readOnly,
+      rows,
+      showErrorText,
+      showFieldError,
+      type,
+      uploadLinkFunction,
+    } = args;
+
+    const containerClass = columnOffset ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}` : `col-xs-${columnWidth}`;
+
+    if (hidden) {
+      return <div className={ containerClass }></div>;
+    }
+
+    const changeFieldArgs = this.changeFieldArgs();
+    const errors = Details.getErrors.call(this, args);
     const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
-    if (args.hidden) {
-      return <div className={ `col-xs-${args.columnWidth}` }></div>;
-    } else if (args.type === 'modal') {
-      if (args.optionDisplayProperty == null) {
-        throw `missing optionDisplayProperty (rendering ${args.property} field)`;
-      }
-      const idEntity = args.property.slice(0, -2);
-      const optionsArrayName = args.optionsArrayName || `${idEntity}s`;
-      if (this.state[optionsArrayName] === undefined) {
-        throw `this.state.${optionsArrayName} does not exist (rendering ${args.property} field)`;
-      }
-      let selectedId = this.state[args.entity][`${idEntity}Id`];
-      let value = '';
-      if (this.state[optionsArrayName] && selectedId) {
-        value = HandyTools.pluckFromObjectsArray({
-          array: this.state[optionsArrayName],
-          property: 'id',
-          value: +selectedId
-        })[args.optionDisplayProperty];
-      }
-      return([
-        <div key={ 1 } className={ `col-xs-${args.columnWidth - 1}` }>
-          <h2>{ columnHeader }</h2>
-          { Details.renderSubheader(args) }
-          <input className={ Details.inputClassName(hasError) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ value } placeholder={ args.placeholder } data-field={ args.property } readOnly={ true } />
-          { Details.renderLink(args) }
-          { Details.renderFieldError(errorText) }
-        </div>,
-        <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
-        </div>,
-        <Modal key={ 3 } isOpen={ this.state[`${idEntity}sModalOpen`] } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state[optionsArrayName], args.optionDisplayProperty) } property={ args.optionDisplayProperty } func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args.entity) } } noneOption={ args.noneOption } />
-        </Modal>
-      ]);
-    } else if (args.type === 'json') {
-      return(
-        <div className={ `col-xs-${args.columnWidth}` }>
-          <h2>{ columnHeader }</h2>
-          { Details.renderSubheader(args) }
-          <>
-            <textarea
-              rows={ args.rows }
+    let value;
+
+    switch (type) {
+      case 'modal':
+        if (optionDisplayProperty == null) {
+          throw `missing optionDisplayProperty (rendering ${property} field)`;
+        }
+        const idEntity = property.slice(0, -2);
+        const calculatedOptionsArrayName = optionsArrayName || `${idEntity}s`;
+        if (this.state[calculatedOptionsArrayName] === undefined) {
+          throw `this.state.${calculatedOptionsArrayName} does not exist (rendering ${property} field)`;
+        }
+        let selectedId = this.state[entity][`${idEntity}Id`];
+        value = '';
+        if (this.state[calculatedOptionsArrayName] && selectedId) {
+          value = HandyTools.pluckFromObjectsArray({
+            array: this.state[calculatedOptionsArrayName],
+            property: 'id',
+            value: +selectedId
+          })[optionDisplayProperty];
+        }
+        return([
+          <div key={ 1 } className={ `col-xs-${columnWidth - 1}` }>
+            { Details.renderHeader(args) }
+            <input
               className={ Details.inputClassName(hasError) }
-              onChange={ Details.changeField.bind(this, this.changeFieldArgs()) }
-              value={ args.value || this.state[args.entity][args.property] || "" }
-              data-entity={ args.entity }
-              data-field={ args.property }
-              data-json={ true }
+              onChange={ Details.changeField.bind(this, args) }
+              value={ value }
+              placeholder={ placeholder }
+              data-field={ property }
+              readOnly={ true }
             />
-            <style jsx>{`
-              textarea {
-                font-family: monospace;
-                font-size: 14px;
-              }
-            `}</style>
-          </>
-          { Details.renderLink(args) }
-          { Details.renderFieldError('') }
-        </div>
-      );
-    } else {
-      return(
-        <div className={ `col-xs-${args.columnWidth}` }>
-          <h2>{ columnHeader }</h2>
-          { Details.renderSubheader(args) }
-          <input
-            className={ Details.inputClassName(hasError) }
-            onChange={ Details.changeField.bind(this, this.changeFieldArgs()) }
-            value={ args.value || this.state[args.entity][args.property] || "" }
-            data-entity={ args.entity }
-            data-field={ args.property }
-            placeholder={ args.placeholder }
-            readOnly={ args.readOnly }
-          />
-          { Details.renderUploadLink(args.uploadLinkFunction) }
-          { Details.renderLink(args) }
-          { Details.renderFieldError(errorText) }
-        </div>
-      );
+            { Details.renderLink(args) }
+            { Details.renderWarning(args) }
+            { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+          </div>,
+          <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
+          </div>,
+          <Modal
+            key={ 3 }
+            isOpen={ this.state[`${idEntity}sModalOpen`] }
+            onRequestClose={ Common.closeModals.bind(this) }
+            contentLabel="Modal"
+            style={ Common.selectModalStyles() }
+          >
+            <ModalSelect
+              options={ HandyTools.alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
+              property={ optionDisplayProperty }
+              func={ (option) => { Details.selectModalOption.call(this, option, idEntity, entity) } }
+              noneOption={ noneOption }
+            />
+          </Modal>
+        ]);
+      case 'json':
+        value = Details.getValue.call(this, args);
+        return(
+          <div className={ containerClass }>
+            { Details.renderHeader(args) }
+            <>
+              <textarea
+                rows={ rows }
+                className={ Details.inputClassName(hasError) }
+                onChange={ Details.changeField.bind(this, args) }
+                value={ value }
+                data-entity={ entity }
+                data-field={ property }
+                data-json={ true }
+              />
+              <style jsx>{`
+                textarea {
+                  font-family: monospace;
+                  font-size: 14px;
+                }
+              `}</style>
+            </>
+            { Details.renderLink(args) }
+            { Details.renderWarning(args) }
+            { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+          </div>
+        );
+      default:
+        value = Details.getValue.call(this, args);
+        return(
+          <div className={ containerClass }>
+            { Details.renderHeader(args) }
+            { Details.renderLeftLabel(args) }
+            <input
+              className={ Details.inputClassName(hasError) }
+              onChange={ Details.changeField.bind(this, args) }
+              value={ value }
+              data-entity={ entity }
+              data-field={ property }
+              placeholder={ placeholder }
+              readOnly={ readOnly }
+              data-test-index={ entitiesIndex }
+            />
+            { Details.renderUploadLink(uploadLinkFunction) }
+            { Details.renderLink(args) }
+            { Details.renderWarning(args) }
+            { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+          </div>
+        );
     }
   },
 
@@ -308,6 +438,41 @@ let Details = {
     } else {
       return React.createElement("div", { className: "no-field-error" });
     }
+  },
+
+  renderHeader(args) {
+    const { columnHeader, hideHeader, property, redHeader, subheader } = args;
+    if (hideHeader) {
+      return null;
+    }
+    return(
+      <>
+        <h2 style={ redHeader ? { color: 'red' } : null }>{ columnHeader || ChangeCase.titleCase(property) }</h2>
+        { subheader ? (<p className="subheader">{ subheader }</p>) : null }
+      </>
+    );
+  },
+
+  renderLeftLabel(args) {
+    const { leftLabel } = args;
+    if (!leftLabel) {
+      return null;
+    }
+    return(
+      <>
+        <label>{ leftLabel }</label>
+        <style jsx>{`
+          position: absolute;
+          right: 100%;
+          width: 300px;
+          text-align: right;
+          margin-top: 10px;
+          font-family: 'TeachableSans-Medium';
+          font-size: 12px;
+          color: #2C2F33;
+        `}</style>
+      </>
+    );
   },
 
   renderSubheader(args) {
@@ -321,7 +486,7 @@ let Details = {
   renderTextBox(args) {
     const columnHeader = Details.getColumnHeader(args);
     const { errors } = this.state;
-    const { property, errorsProperty } = args;
+    const { property, errorsProperty, showFieldError, showErrorText } = args;
     const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
     return(
@@ -332,12 +497,12 @@ let Details = {
           <textarea
             rows={ args.rows }
             className={ Details.inputClassName(hasError) }
-            onChange={ Details.changeField.bind(this, this.changeFieldArgs()) }
+            onChange={ Details.changeField.bind(this, args) }
             value={ this.state[args.entity][args.property] || "" }
             data-entity={ args.entity }
             data-field={ args.property }
           ></textarea>
-        { Details.renderFieldError(errorText) }
+          { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
           { Details.renderCharacterCount.call(this, args) }
         </div>
         <style jsx>{`
@@ -387,17 +552,46 @@ let Details = {
     }
   },
 
+  renderWarning(args) {
+    const { warnIf, warning } = args;
+    if (warnIf) {
+      return(
+        <>
+          <p>{ warning }</p>
+          <style jsx>{`
+            margin-top: 10px;
+            background-color: lightyellow;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'TeachableSans-Bold';
+          `}</style>
+        </>
+      );
+    }
+  },
+
   fieldHasError(errors, property) {
+    if (!errors) {
+      throw `missing errors for ${property} field!`;
+    }
     return Object.keys(errors).includes(property);
   },
 
   errorText(errors, property) {
+    if (!errors) {
+      throw `missing errors for ${property} field!`;
+    }
     const errorsArray = errors[property];
     return errorsArray ? errorsArray[0] : '';
   },
 
   inputClassName(hasError) {
     return hasError ? 'error' : '';
+  },
+
+  inputClassNameFromErrors(errors, property) {
+    const hasError = Details.fieldHasError(errors, property);
+    return Details.inputClassName(hasError);
   },
 
   saveButtonText() {
@@ -408,7 +602,7 @@ let Details = {
     const changeFieldArgs = this.changeFieldArgs();
     let entity = this.state[entityName];
     entity[`${idEntity}Id`] = option.id;
-    Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, `${idEntity}Id`);
+    // Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, `${idEntity}Id`); TODO
     let obj = {
       [entityName]: entity,
       [`${idEntity}sModalOpen`]: false
