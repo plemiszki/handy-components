@@ -29,8 +29,6 @@ let Details = {
   },
 
   changeDropdownField(event) {
-    console.log('cddf');
-    console.log(event);
     // due to limitations with Nice Select, arguments to changeField must be pulled from the DOM
     // TODO: what about other arguments (entities, entitiesIndex, errorsProperty)?
     const dataset = event.target.dataset;
