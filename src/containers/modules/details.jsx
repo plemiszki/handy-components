@@ -378,6 +378,33 @@ let Details = {
             />
           </Modal>
         ]);
+      case 'textbox':
+        value = Details.getValue.call(this, args);
+        return(
+          <>
+            <div className={ `textbox-field ${containerClass}` }>
+              { Details.renderHeader(args) }
+              <textarea
+                rows={ rows }
+                className={ Details.inputClassName(hasError) }
+                onChange={ Details.changeField.bind(this, args) }
+                value={ value }
+                data-entity={ entity }
+                data-field={ property }
+              ></textarea>
+              { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+              { Details.renderCharacterCount.call(this, args) }
+            </div>
+            <style jsx>{`
+              textarea {
+                vertical-align: top;
+              }
+              .textbox-field {
+                position: relative;
+              }
+            `}</style>
+          </>
+        );
       case 'json':
         value = Details.getValue.call(this, args);
         return(
@@ -479,40 +506,6 @@ let Details = {
         <p className="subheader">{ args.subheader }</p>
       );
     }
-  },
-
-  renderTextBox(args) {
-    const columnHeader = Details.getColumnHeader(args);
-    const { errors } = this.state;
-    const { property, errorsProperty, showFieldError, showErrorText } = args;
-    const hasError = Details.fieldHasError(errors, errorsProperty || property);
-    const errorText = Details.errorText(errors, errorsProperty || property);
-    return(
-      <>
-        <div className={ `textbox-field col-xs-${args.columnWidth}` }>
-          <h2>{ columnHeader }</h2>
-          { Details.renderSubheader(args) }
-          <textarea
-            rows={ args.rows }
-            className={ Details.inputClassName(hasError) }
-            onChange={ Details.changeField.bind(this, args) }
-            value={ this.state[args.entity][args.property] || "" }
-            data-entity={ args.entity }
-            data-field={ args.property }
-          ></textarea>
-          { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
-          { Details.renderCharacterCount.call(this, args) }
-        </div>
-        <style jsx>{`
-          textarea {
-            vertical-align: top;
-          }
-          .textbox-field {
-            position: relative;
-          }
-        `}</style>
-      </>
-    );
   },
 
   renderCharacterCount(args) {

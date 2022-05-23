@@ -172,8 +172,6 @@ class SimpleDetails extends React.Component {
   renderField(field) {
     field.entity = this.props.entityName;
     switch (field.type) {
-      case 'textbox':
-        return Details.renderTextBox.bind(this)(field);
       case 'dropdown':
         return Details.renderDropDown.bind(this)(field);
       default:
