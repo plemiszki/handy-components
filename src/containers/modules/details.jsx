@@ -357,9 +357,7 @@ let Details = {
               data-field={ property }
               readOnly={ true }
             />
-            { Details.renderLink(args) }
-            { Details.renderWarning(args) }
-            { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+            { Details.renderTagsBelowField(args, errorText) }
           </div>,
           <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
           </div>,
@@ -392,7 +390,7 @@ let Details = {
                 data-entity={ entity }
                 data-field={ property }
               ></textarea>
-              { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+              { Details.renderTagsBelowField(args, errorText) }
               { Details.renderCharacterCount.call(this, args) }
             </div>
             <style jsx>{`
@@ -427,9 +425,7 @@ let Details = {
                 }
               `}</style>
             </>
-            { Details.renderLink(args) }
-            { Details.renderWarning(args) }
-            { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+            { Details.renderTagsBelowField(args, errorText) }
           </div>
         );
       default:
@@ -448,13 +444,22 @@ let Details = {
               readOnly={ readOnly }
               data-test-index={ entitiesIndex }
             />
-            { Details.renderUploadLink(uploadLinkFunction) }
-            { Details.renderLink(args) }
-            { Details.renderWarning(args) }
-            { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+            { Details.renderTagsBelowField(args, errorText) }
           </div>
         );
     }
+  },
+
+  renderTagsBelowField(args, errorText) {
+    const { uploadLinkFunction, showErrorText, showFieldError } = args;
+    return(
+      <>
+        { Details.renderUploadLink(uploadLinkFunction) }
+        { Details.renderLink(args) }
+        { Details.renderWarning(args) }
+        { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+      </>
+    );
   },
 
   renderFieldError(errorText) {
