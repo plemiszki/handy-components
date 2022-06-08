@@ -174,6 +174,8 @@ class SimpleDetails extends React.Component {
     switch (field.type) {
       case 'dropdown':
         return Details.renderDropDown.bind(this)(field);
+      case 'switch':
+        return Details.renderSwitch.bind(this)(field);
       default:
         return Details.renderField.bind(this)(field);
     }

@@ -191,10 +191,18 @@ let Details = {
 
     const columnHeader = Details.getColumnHeader(args);
     const { errors } = this.state;
-    const { property, errorsProperty } = args;
+    const { entity, property, errorsProperty } = args;
     const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
-    let value = args.boolean ? (HandyTools.convertBooleanToTFString(this.state[args.entity][args.property]) || "") : this.state[args.entity][args.property] || '';
+
+    let value;
+    if (args.boolean && args.readOnly) {
+      value = this.state[entity][property] ? 'Yes' : 'No';
+    } else if (args.boolean) {
+      value = HandyTools.convertBooleanToTFString(this.state[entity][property]) || "";
+    } else {
+      value = this.state[entity][property] || '';
+    }
 
     if (!args.boolean) {
       if (!args.options && !args.optionsArrayName) {
@@ -208,7 +216,7 @@ let Details = {
     const options = args.options || this.state[args.optionsArrayName];
 
     if (args.readOnly) {
-      if (value !== '') {
+      if (!args.boolean && value !== '') {
         const option = options.find(option => (args.optionValueProperty ? option[args.optionValueProperty] : (option['value'] || option['id']) ) == value);
         value = option[args.optionDisplayProperty];
       }
@@ -285,7 +293,8 @@ let Details = {
             onChange: Details.changeField.bind(this, args),
             checked: this.state[args.entity][args.property] || false,
             entity: args.entity,
-            property: args.property
+            property: args.property,
+            readOnly: args.readOnly,
           }) }
         </div>
       );

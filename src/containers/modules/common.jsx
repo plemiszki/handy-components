@@ -283,7 +283,14 @@ const Common = {
     return(
       <>
         <label>
-          <input type="checkbox" onChange={ args.onChange } checked={ args.checked } data-entity={ args.entity } data-field={ args.property } />
+          <input
+            type="checkbox"
+            onChange={ args.onChange }
+            checked={ args.checked }
+            data-entity={ args.entity }
+            data-field={ args.property }
+            disabled={ args.readOnly }
+          />
           <div className="oval"></div>
         </label>
         <style jsx>{`
