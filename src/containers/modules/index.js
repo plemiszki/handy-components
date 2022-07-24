@@ -18,8 +18,7 @@ export default {
     }
   },
 
-  sortClass(property) {
-    const { searchColumn } = this.state;
+  sortClass(property, searchColumn) {
     return searchColumn.name === property ? 'sort-header-active' : 'sort-header-inactive';
   },
 
