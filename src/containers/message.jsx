@@ -1,49 +1,33 @@
-import React, { Component } from 'react'
-import Common from './modules/common.jsx'
+import React, { useState, useEffect } from 'react'
 
-class Message extends React.Component {
+export default function Message() {
 
-  constructor(props) {
-    super(props);
+  const [message, setMessage] = useState('')
+  const [color, setColor] = useState('')
 
-    let initialState = {
-      message: '',
-      color: ''
+  useEffect(() => {
+    const storedMessage = localStorage.getItem('message');
+    if (storedMessage) {
+      setMessage(storedMessage)
+      setColor(localStorage.getItem('message-color'))
+      localStorage.removeItem('message')
+      localStorage.removeItem('message-color')
     }
+  }, [])
 
-    this.state = initialState;
-  }
-
-  componentDidMount() {
-    let message = localStorage.getItem('message');
-    if (message) {
-      this.setState({
-        message,
-        color: localStorage.getItem('message-color')
-      }, () => {
-        localStorage.removeItem('message');
-        localStorage.removeItem('message-color');
-      });
-    }
-  }
-
-  render() {
-    if (this.state.message) {
-      let lines = this.state.message.split("\n");
-      return(
-        <div className={ `message-box${ this.state.color ? ` ${this.state.color}` : ''}` }>
-          <div className="message-close" onClick={ Common.changeState.bind(this, 'message', '') }></div>
-          { lines.map((line, index) => {
-            return(
-              <p key={ index }>{ line }</p>
-            );
-          }) }
-        </div>
-      );
-    } else {
-      return null;
-    }
+  if (message) {
+    const lines = message.split("\n");
+    return(
+      <div className={ `message-box${ color ? ` ${color}` : ''}` }>
+        <div className="message-close" onClick={ () => { setMessage('')} }></div>
+        { lines.map((line, index) => {
+          return(
+            <p key={ index }>{ line }</p>
+          );
+        }) }
+      </div>
+    );
+  } else {
+    return null;
   }
 }
-
-export default Message;
