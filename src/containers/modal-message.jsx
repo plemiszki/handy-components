@@ -1,20 +1,16 @@
 import React from 'react'
 
-class ModalMessage extends React.Component {
+export default function ModalMessage(props) {
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  const {
+    memo,
+    message,
+  } = props
 
-  render() {
-    return(
-      <div className="modal-message">
-        <h1>{ this.props.message }</h1>
-        { this.props.memo && (<p>{ this.props.memo }</p>) }
-      </div>
-    );
-  }
+  return(
+    <div className="modal-message">
+      <h1>{ message }</h1>
+      { memo && (<p>{ memo }</p>) }
+    </div>
+  )
 }
-
-export default ModalMessage;
