@@ -102,18 +102,29 @@ let Details = {
   },
 
   clickDelete(args) {
+    const { csrfToken, callback } = args;
     this.setState({
       deleteModalOpen: false,
       fetching: true
     });
-    let urlSections = window.location.pathname.split('/');
-    this.props.deleteEntity({
-      directory: urlSections[urlSections.length - 2],
-      id: urlSections[urlSections.length - 1],
-      redirectToIndex: args.callback ? null : true,
-      callback: args.callback,
-      csrfToken: args.csrfToken,
-    });
+    const urlSections = window.location.pathname.split('/');
+    const id = urlSections[urlSections.length - 1]
+    const directory = urlSections[urlSections.length - 2]
+    fetch(`/api/${directory}/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'x-csrf-token': csrfToken,
+      },
+    })
+      .then(async (unprocessedResponse) => {
+        const response = await unprocessedResponse.json();
+        if (callback) {
+          callback.call({}, response);
+        } else {
+          urlSections.pop()
+          window.location.pathname = urlSections.join('/');
+        }
+      })
   },
 
   errorClass(stateErrors, fieldErrors) {

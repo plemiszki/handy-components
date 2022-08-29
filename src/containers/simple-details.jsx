@@ -1,17 +1,14 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 import Common from './modules/common.jsx'
 import Details from './modules/details.jsx'
 import ConfirmDelete from './confirm-delete.jsx'
-import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
 
 let entityNamePlural;
 
-class SimpleDetails extends React.Component {
+export default class SimpleDetails extends Component {
   constructor(props) {
     super(props);
     entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
@@ -31,27 +28,28 @@ class SimpleDetails extends React.Component {
   }
 
   componentDidMount() {
-    let pathDirectories = window.location.pathname.split('/');
-    this.props.fetchEntity({
-      id: pathDirectories[pathDirectories.length - 1],
-      directory: pathDirectories[pathDirectories.length - 2],
-      entityName: this.props.entityName
-    }).then(() => {
-      let obj = {
-        fetching: false,
-        [this.props.entityName]: this.props[this.props.entityName],
-        [`${this.props.entityName}Saved`]: HandyTools.deepCopy(this.props[this.props.entityName]),
-        changesToSave: false
-      };
-      if (this.props.fetchData) {
-        this.props.fetchData.forEach((arrayName) => {
-          obj[arrayName] = this.props[arrayName];
-        })
-      }
-      this.setState(obj, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
-      });
-    });
+    const pathDirectories = window.location.pathname.split('/');
+    const id = pathDirectories[pathDirectories.length - 1]
+    const directory = pathDirectories[pathDirectories.length - 2]
+    const { entityName, fetchData } = this.props;
+    fetch(`/api/${directory}/${id}`)
+      .then(data => data.json())
+      .then((response) => {
+        let newState = {
+          fetching: false,
+          [entityName]: response[entityName],
+          [`${entityName}Saved`]: HandyTools.deepCopy(response[entityName]),
+          changesToSave: false
+        };
+        if (fetchData) {
+          fetchData.forEach((arrayName) => {
+            newState[arrayName] = response[arrayName];
+          })
+        }
+        this.setState(newState, () => {
+          HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        });
+      })
   }
 
   changeFieldArgs() {
@@ -65,32 +63,52 @@ class SimpleDetails extends React.Component {
   }
 
   clickSave() {
+    const { entityName, csrfToken: useCsrfToken } = this.props;
+    let csrfToken = null;
+    if (useCsrfToken) {
+      const selector = document.querySelector('meta[name="csrf-token"]')
+      if (selector) { // doesn't exist in test environments
+        csrfToken = selector.getAttribute('content')
+      }
+    }
     this.setState({
       fetching: true,
       justSaved: true
     }, () => {
-      let pathDirectories = window.location.pathname.split('/');
-      let entity = this.state[this.props.entityName];
-      entity = this.removeFinanceSymbols(entity);
-      this.props.updateEntity({
-        id: pathDirectories[pathDirectories.length - 1],
-        directory: pathDirectories[pathDirectories.length - 2],
-        entityName: this.props.entityName,
-        entity,
-        csrfToken: this.props.csrfToken
-      }).then(() => {
-        this.setState({
-          fetching: false,
-          [this.props.entityName]: this.props[this.props.entityName],
-          [`${this.props.entityName}Saved`]: HandyTools.deepCopy(this.props[this.props.entityName]),
-          changesToSave: false
-        });
-      }, () => {
-        this.setState({
-          fetching: false,
-          errors: this.props.errors
-        });
-      });
+      const pathDirectories = window.location.pathname.split('/');
+      const id = pathDirectories[pathDirectories.length - 1]
+      const directory = pathDirectories[pathDirectories.length - 2]
+      const entity = this.removeFinanceSymbols(this.state[entityName]);
+
+      fetch(`/api/${directory}/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'x-csrf-token': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          [HandyTools.convertToUnderscore(entityName)]: HandyTools.convertObjectKeysToUnderscore(entity),
+        })
+      })
+        .then(async (unprocessedResponse) => {
+          const response = await unprocessedResponse.json();
+          if (!unprocessedResponse.ok) {
+            return Promise.reject(response);
+          }
+          const entity = response[entityName];
+          this.setState({
+            fetching: false,
+            [entityName]: entity,
+            [`${entityName}Saved`]: HandyTools.deepCopy(entity),
+            changesToSave: false,
+          })
+        }).catch((response) => {
+          const { errors } = response;
+          this.setState({
+            fetching: false,
+            errors,
+          })
+        })
     });
   }
 
@@ -220,13 +238,3 @@ class SimpleDetails extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers, props) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SimpleDetails);
