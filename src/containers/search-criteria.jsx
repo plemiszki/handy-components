@@ -1,14 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import Modal from 'react-modal'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
 import Common from './modules/common.jsx'
-import { fetchDataForNew } from '../actions/index'
 
-class SearchCriteria extends React.Component {
+export default class SearchCriteria extends Component {
 
   constructor(props) {
     super(props);
@@ -50,15 +47,17 @@ class SearchCriteria extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.fetchDataForNew({ directory: ChangeCase.snakeCase(this.props.entityNamePlural) }).then(() => {
-      let obj = { fetching: false };
-      modalFields.forEach((field) => {
-        obj[field.responseArrayName] = this.props[field.responseArrayName];
+    fetch(`/api/${ChangeCase.snakeCase(this.props.entityNamePlural)}/new`)
+      .then(data => data.json())
+      .then((response) => {
+        let newState = { fetching: false };
+        modalFields.forEach((field) => {
+          newState[field.responseArrayName] = response[field.responseArrayName];
+        })
+        this.setState(newState, () => {
+          this.setupNiceSelectIfNeeded();
+        });
       })
-      this.setState(obj, () => {
-        this.setupNiceSelectIfNeeded();
-      });
-    });
   }
 
   validateCriteria(criteria) {
@@ -497,13 +496,3 @@ class SearchCriteria extends React.Component {
     })
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchDataForNew }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchCriteria);
