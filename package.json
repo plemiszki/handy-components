@@ -18,9 +18,7 @@
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-modal": "3.8.1",
-    "react-redux": "8.0.1",
-    "redux": "4.2.0",
-    "styled-jsx": "^3.4.7",
+    "styled-jsx": "5.0.4",
     "webpack": "4.29.6"
   },
   "devDependencies": {
