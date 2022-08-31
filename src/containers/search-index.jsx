@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import ChangeCase from 'change-case'
 import HandyTools from 'handy-tools'
-import _ from 'lodash'
-import { fetchEntities, sendRequest } from '../actions/index'
 import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 
-class SearchIndex extends React.Component {
+export default class SearchIndex extends Component {
 
   constructor(props) {
     super(props);
@@ -73,21 +69,24 @@ class SearchIndex extends React.Component {
   }
 
   fetchEntities() {
-    const { directory, page, orderByColumn, searchCriteria, arrayName } = this.state;
-    const serverSearchCriteria = Object.assign({}, searchCriteria, this.props.staticSearchCriteria || {});
-    this.props.fetchEntities({
-      directory,
-      batchSize: this.props.batchSize,
+    const { batchSize, staticSearchCriteria } = this.props;
+    const { directory, page, orderByColumn, orderByDir, searchCriteria, arrayName } = this.state;
+    const serverSearchCriteria = Object.assign({}, searchCriteria, staticSearchCriteria || {});
+    const queryParams = {
+      batchSize,
       page,
       orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
-      orderDir: this.state.orderByDir,
-      searchCriteria: HandyTools.convertObjectKeysToUnderscore(serverSearchCriteria)
-    }).then(() => {
-      this.setState({
-        fetching: false,
-        [arrayName]: this.props[arrayName]
-      });
-    });
+      orderDir: orderByDir,
+      searchCriteria: serverSearchCriteria,
+    }
+    fetch(`/api/${directory}?${$.param(HandyTools.convertObjectKeysToUnderscore(queryParams))}`)
+      .then(data => data.json())
+      .then((response) => {
+        this.setState({
+          fetching: false,
+          [arrayName]: response[arrayName],
+        });
+      })
   }
 
   updateIndex(entities) {
@@ -141,20 +140,20 @@ class SearchIndex extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: `/api/${directory}/export`,
-      data: {
-        orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
-        orderDir: orderByColumn.sortDir || 'asc',
-        searchCriteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria)
-      }
-    }).then(() => {
-      this.setState({
-        job: this.props.job,
-        fetching: false,
-        jobModalOpen: true
-      });
-    });
+    const queryParams = {
+      order_by: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
+      order_dir: orderByColumn.sortDir || 'asc',
+      search_criteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria),
+    }
+    fetch(`/api/${directory}/export?${$.param(queryParams)}`)
+      .then(data => data.json())
+      .then((response) => {
+        this.setState({
+          job: response['job'],
+          fetching: false,
+          jobModalOpen: true,
+        });
+      })
   }
 
   newEntityCallback() {
@@ -453,13 +452,3 @@ class SearchIndex extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntities, sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchIndex);
