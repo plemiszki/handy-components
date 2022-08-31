@@ -28,7 +28,7 @@ export default class SearchIndex extends Component {
       entityNamePlural,
       directory,
       arrayName,
-      fetching: true,
+      spinner: true,
       [arrayName]: [],
       orderByColumn: columns[0],
       orderByDir: columns[0].sortDir || 'asc',
@@ -83,7 +83,7 @@ export default class SearchIndex extends Component {
       .then(data => data.json())
       .then((response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           [arrayName]: response[arrayName],
         });
       })
@@ -98,7 +98,7 @@ export default class SearchIndex extends Component {
 
   changePage(pageNumber) {
     this.setState({
-      fetching: true,
+      spinner: true,
       page: pageNumber
     }, () => {
       this.fetchEntities();
@@ -124,7 +124,7 @@ export default class SearchIndex extends Component {
         orderByDir = column.sortDir || 'asc';
       }
       this.setState({
-        fetching: true,
+        spinner: true,
         page: 1,
         [this.state.arrayName]: [],
         orderByColumn: column,
@@ -138,7 +138,7 @@ export default class SearchIndex extends Component {
   clickExport() {
     const { orderByColumn, searchCriteria, directory } = this.state;
     this.setState({
-      fetching: true
+      spinner: true
     });
     const queryParams = {
       order_by: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
@@ -150,7 +150,7 @@ export default class SearchIndex extends Component {
       .then((response) => {
         this.setState({
           job: response['job'],
-          fetching: false,
+          spinner: false,
           jobModalOpen: true,
         });
       })
@@ -165,7 +165,7 @@ export default class SearchIndex extends Component {
       searchCriteria,
       searchModalOpen: false,
       newEntityModalOpen: false,
-      fetching: true,
+      spinner: true,
       page: 1,
       [this.state.arrayName]: []
     }, () => {
@@ -177,7 +177,7 @@ export default class SearchIndex extends Component {
   }
 
   render() {
-    let { fetching, columns, directory, orderByColumn, arrayName, entityNamePlural, searchCriteria } = this.state;
+    let { spinner, columns, directory, orderByColumn, arrayName, entityNamePlural, searchCriteria } = this.state;
     const searchActive = Object.keys(searchCriteria).length > 0;
     const searchCriteriaComponent = React.Children.map(
       this.props.children,
@@ -210,11 +210,11 @@ export default class SearchIndex extends Component {
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderNewButton() }
         { this.renderExportButton() }
-        <a className={ 'btn search-button' + Common.renderDisabledButtonClass(this.state.fetching) + (searchActive ? ' active' : '') } onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></a>
+        <a className={ 'btn search-button' + Common.renderDisabledButtonClass(this.state.spinner) + (searchActive ? ' active' : '') } onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></a>
         <div className="white-box">
           <div className="top-section">
-            { Common.renderGrayedOut(fetching, -36, -32, 5) }
-            { Common.renderSpinner(fetching) }
+            { Common.renderGrayedOut(spinner, -36, -32, 5) }
+            { Common.renderSpinner(spinner) }
             <div className="horizontal-scroll">
               <table className="admin-table sortable">
                 <thead>
@@ -334,7 +334,7 @@ export default class SearchIndex extends Component {
     if (this.props.showNewButton) {
       return(
         <>
-          <a className={ "new-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Index.clickNew.bind(this) }>{ this.props.newButtonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` }</a>
+          <a className={ "new-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Index.clickNew.bind(this) }>{ this.props.newButtonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` }</a>
           <style jsx>{`
             .new-button {
               float: right;
@@ -350,7 +350,7 @@ export default class SearchIndex extends Component {
     if (this.props.showExportButton) {
       return(
         <>
-          <a className={ "export-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
+          <a className={ "export-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickExport.bind(this) }>Export</a>
           <style jsx>{`
             .export-button {
               float: right;

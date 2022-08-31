@@ -45,12 +45,12 @@ export default class SearchCriteria extends Component {
 
   fetchDynamicData(modalFields) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     fetch(`/api/${ChangeCase.snakeCase(this.props.entityNamePlural)}/new`)
       .then(data => data.json())
       .then((response) => {
-        let newState = { fetching: false };
+        let newState = { spinner: false };
         modalFields.forEach((field) => {
           newState[field.responseArrayName] = response[field.responseArrayName];
         })
@@ -227,10 +227,10 @@ export default class SearchCriteria extends Component {
           <form className="white-box">
             { this.renderFields() }
             <hr />
-            <input type="submit" className={ "submit-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
+            <input type="submit" className={ "submit-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
           </form>
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.spinner, -36, -32, 5) }
+          { Common.renderSpinner(this.state.spinner) }
         </div>
         <style jsx>{`
           hr {

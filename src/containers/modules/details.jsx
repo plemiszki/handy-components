@@ -105,7 +105,7 @@ let Details = {
     const { csrfToken, callback } = args;
     this.setState({
       deleteModalOpen: false,
-      fetching: true
+      spinner: true
     });
     const urlSections = window.location.pathname.split('/');
     const id = urlSections[urlSections.length - 1]
@@ -639,22 +639,23 @@ let Details = {
 
   updateEntity() {
     let entityName = this.props.entityName;
+    const [id, directory] = Common.parseUrl();
     this.props.updateEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
+      id,
+      directory,
       entityName: entityName,
       entity: this.state[entityName]
     }).then(() => {
       let savedEntity = this.props[entityName];
       this.setState({
-        fetching: false,
+        spinner: false,
         [entityName]: savedEntity,
         [`${entityName}Saved`]: HandyTools.deepCopy(savedEntity),
         changesToSave: false
       });
     }, () => {
       this.setState({
-        fetching: false,
+        spinner: false,
         errors: this.props.errors
       });
     });

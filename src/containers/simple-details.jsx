@@ -13,7 +13,7 @@ export default class SimpleDetails extends Component {
     super(props);
     entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
     let obj = {
-      fetching: true,
+      spinner: true,
       [this.props.entityName]: this.props.initialEntity,
       [`${this.props.entityName}Saved`]: this.props.initialEntity,
       errors: [],
@@ -28,15 +28,13 @@ export default class SimpleDetails extends Component {
   }
 
   componentDidMount() {
-    const pathDirectories = window.location.pathname.split('/');
-    const id = pathDirectories[pathDirectories.length - 1]
-    const directory = pathDirectories[pathDirectories.length - 2]
     const { entityName, fetchData } = this.props;
+    const [id, directory] = Common.parseUrl();
     fetch(`/api/${directory}/${id}`)
       .then(data => data.json())
       .then((response) => {
         let newState = {
-          fetching: false,
+          spinner: false,
           [entityName]: response[entityName],
           [`${entityName}Saved`]: HandyTools.deepCopy(response[entityName]),
           changesToSave: false
@@ -72,14 +70,11 @@ export default class SimpleDetails extends Component {
       }
     }
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
-      const pathDirectories = window.location.pathname.split('/');
-      const id = pathDirectories[pathDirectories.length - 1]
-      const directory = pathDirectories[pathDirectories.length - 2]
+      const [id, directory] = Common.parseUrl();
       const entity = this.removeFinanceSymbols(this.state[entityName]);
-
       fetch(`/api/${directory}/${id}`, {
         method: 'PATCH',
         headers: {
@@ -97,7 +92,7 @@ export default class SimpleDetails extends Component {
           }
           const entity = response[entityName];
           this.setState({
-            fetching: false,
+            spinner: false,
             [entityName]: entity,
             [`${entityName}Saved`]: HandyTools.deepCopy(entity),
             changesToSave: false,
@@ -105,7 +100,7 @@ export default class SimpleDetails extends Component {
         }).catch((response) => {
           const { errors } = response;
           this.setState({
-            fetching: false,
+            spinner: false,
             errors,
           })
         })
@@ -159,14 +154,14 @@ export default class SimpleDetails extends Component {
             })
           }
           <div>
-            <a className={ "btn standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+            <a className={ "btn standard-width" + Common.renderDisabledButtonClass(this.state.spinner || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
               { Details.saveButtonText.call(this) }
             </a>
             { this.renderDeleteButton.call(this) }
             { this.renderCopyButton.call(this) }
           </div>
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.spinner, -36, -32, 5) }
+          { Common.renderSpinner(this.state.spinner) }
         </div>
         { this.renderCopyModal.call(this, children) }
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
@@ -202,7 +197,7 @@ export default class SimpleDetails extends Component {
   renderCopyButton() {
     if (this.props.copy) {
       return(
-        <a className={ "btn float-button margin-right" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
+        <a className={ "btn float-button margin-right" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickCopy.bind(this) }>
           Copy
         </a>
       );
@@ -221,7 +216,7 @@ export default class SimpleDetails extends Component {
   renderDeleteButton() {
     if (!this.props.hideDeleteButton) {
       return(
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
           Delete
         </a>
       );
