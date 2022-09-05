@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 import ChangeCase from 'change-case'
-import HandyTools from 'handy-tools'
-import _ from 'lodash'
+import { orderBy } from 'lodash'
 import Common from './modules/common.jsx'
 import Index from './modules/index.js'
+import { ellipsis } from './utils/convert.js'
+import { commonSort } from './utils/sort.js'
 
 export default function FullIndex(props) {
 
@@ -74,12 +75,12 @@ export default function FullIndex(props) {
 
   const standardIndexSort = (entity) => {
     const searchProperty = searchColumn.sortColumn || searchColumn.name
-    return HandyTools.commonSort(searchProperty, entity)
+    return commonSort(searchProperty, entity)
   }
 
   const renderValue = (value, column) => {
     if (column.ellipsis) {
-      return HandyTools.ellipsis(value, column.ellipsis)
+      return ellipsis(value, column.ellipsis)
     } else {
       return value
     }
@@ -142,7 +143,7 @@ export default function FullIndex(props) {
                   )
                 }) }
               </tr>
-              { _.orderBy(
+              { orderBy(
                 filteredEntities,
                 [standardIndexSort.bind(this)],
                 (searchColumn.sortDir || 'asc'),

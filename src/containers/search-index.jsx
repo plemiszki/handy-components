@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import Modal from 'react-modal'
 import ChangeCase from 'change-case'
-import HandyTools from 'handy-tools'
 import Common from './modules/common.jsx'
 import Index from './modules/index.js'
+
+import { convertObjectKeysToUnderscore, stringifyFullDate } from './utils/convert'
 
 export default class SearchIndex extends Component {
 
@@ -79,7 +80,7 @@ export default class SearchIndex extends Component {
       orderDir: orderByDir,
       searchCriteria: serverSearchCriteria,
     }
-    fetch(`/api/${directory}?${$.param(HandyTools.convertObjectKeysToUnderscore(queryParams))}`)
+    fetch(`/api/${directory}?${$.param(convertObjectKeysToUnderscore(queryParams))}`)
       .then(data => data.json())
       .then((response) => {
         this.setState({
@@ -143,7 +144,7 @@ export default class SearchIndex extends Component {
     const queryParams = {
       order_by: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
       order_dir: orderByColumn.sortDir || 'asc',
-      search_criteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria),
+      search_criteria: convertObjectKeysToUnderscore(searchCriteria),
     }
     fetch(`/api/${directory}/export?${$.param(queryParams)}`)
       .then(data => data.json())
@@ -243,7 +244,7 @@ export default class SearchIndex extends Component {
                       <tr key={ index } className={ !this.props.useLinks ? 'no-links' : '' }>
                         { columns.map((column, index) => {
                           const value = entity[column.name];
-                          const displayedValue = column.convertToLocalTime ? HandyTools.stringifyFullDate(new Date(value * 1000)) : value;
+                          const displayedValue = column.convertToLocalTime ? stringifyFullDate(new Date(value * 1000)) : value;
                           if (this.props.useLinks === false) {
                             return(
                               <td key={ index } className={ column.classes || '' }>

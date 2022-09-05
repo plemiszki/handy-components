@@ -11,6 +11,16 @@ import FullIndex from './containers/full-index.jsx'
 import SearchIndex from './containers/search-index.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
 
+import { stringIsNumber, stringIsDate } from './containers/utils/compare'
+import {
+  convertObjectKeysToUnderscore,
+  ellipsis,
+  ordinatize,
+  stringifyFullDate,
+} from './containers/utils/convert'
+import { deepCopy } from './containers/utils/copy'
+import { alphabetizeArrayOfObjects, commonSort } from './containers/utils/sort'
+
 const ModalSelectStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
@@ -28,16 +38,25 @@ const ModalSelectStyles = {
 }
 
 export {
+  alphabetizeArrayOfObjects,
   Common,
+  commonSort,
+  convertObjectKeysToUnderscore,
   ConfirmDelete,
+  deepCopy,
   Details,
+  ellipsis,
   FullIndex,
   Index,
   Message,
   ModalMessage,
   ModalSelect,
   ModalSelectStyles,
+  ordinatize,
   SearchCriteria,
   SearchIndex,
   SimpleDetails,
+  stringIsDate,
+  stringIsNumber,
+  stringifyFullDate,
 }

@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 import Common from './modules/common.jsx'
 import Details from './modules/details.jsx'
 import ConfirmDelete from './confirm-delete.jsx'
+
+import { objectsAreEqual } from './utils/compare.js'
+import { removeFinanceSymbols, removeFinanceSymbolsFromEntity } from './utils/convert.js'
+import { deepCopy } from './utils/copy.js'
+import { setUpNiceSelect } from './utils/nice-select'
+import { convertObjectKeysToUnderscore } from './utils/convert.js'
 
 let entityNamePlural;
 
@@ -36,7 +41,7 @@ export default class SimpleDetails extends Component {
         let newState = {
           spinner: false,
           [entityName]: response[entityName],
-          [`${entityName}Saved`]: HandyTools.deepCopy(response[entityName]),
+          [`${entityName}Saved`]: deepCopy(response[entityName]),
           changesToSave: false
         };
         if (fetchData) {
@@ -45,7 +50,7 @@ export default class SimpleDetails extends Component {
           })
         }
         this.setState(newState, () => {
-          HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+          setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
         });
       })
   }
@@ -57,11 +62,11 @@ export default class SimpleDetails extends Component {
   }
 
   checkForChanges() {
-    return !HandyTools.objectsAreEqual(this.state[this.props.entityName], this.state[`${this.props.entityName}Saved`]);
+    return !objectsAreEqual(this.state[this.props.entityName], this.state[`${this.props.entityName}Saved`]);
   }
 
   clickSave() {
-    const { entityName, csrfToken: useCsrfToken } = this.props;
+    const { entityName, csrfToken: useCsrfToken, fields } = this.props;
     let csrfToken = null;
     if (useCsrfToken) {
       const selector = document.querySelector('meta[name="csrf-token"]')
@@ -74,7 +79,7 @@ export default class SimpleDetails extends Component {
       justSaved: true
     }, () => {
       const [id, directory] = Common.parseUrl();
-      const entity = this.removeFinanceSymbols(this.state[entityName]);
+      const entity = removeFinanceSymbolsFromEntity(this.state[entityName], fields);
       fetch(`/api/${directory}/${id}`, {
         method: 'PATCH',
         headers: {
@@ -82,7 +87,7 @@ export default class SimpleDetails extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          [HandyTools.convertToUnderscore(entityName)]: HandyTools.convertObjectKeysToUnderscore(entity),
+          [ChangeCase.snakeCase(entityName)]: convertObjectKeysToUnderscore(entity),
         })
       })
         .then(async (unprocessedResponse) => {
@@ -94,7 +99,7 @@ export default class SimpleDetails extends Component {
           this.setState({
             spinner: false,
             [entityName]: entity,
-            [`${entityName}Saved`]: HandyTools.deepCopy(entity),
+            [`${entityName}Saved`]: deepCopy(entity),
             changesToSave: false,
           })
         }).catch((response) => {
@@ -110,7 +115,7 @@ export default class SimpleDetails extends Component {
   removeFinanceSymbols(entity) {
     this.props.fields.flat().forEach((field) => {
       if (field.removeFinanceSymbols) {
-        entity[field.property] = HandyTools.removeFinanceSymbols(entity[field.property]);
+        entity[field.property] = removeFinanceSymbols(entity[field.property]);
       }
     });
     return entity;

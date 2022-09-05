@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Index from './modules/index.js'
-import HandyTools from 'handy-tools'
+import { alphabetizeArrayOfObjects } from './utils/sort.js'
 
 export default function ModalSelect(props) {
 
@@ -22,7 +22,7 @@ export default function ModalSelect(props) {
         { noneOption && (
           <li onClick={ func } data-id={ null } data-type={ null }>(None)</li>
         ) }
-        { HandyTools.alphabetizeArrayOfObjects(filteredOptions, property).map((option, index) => {
+        { alphabetizeArrayOfObjects(filteredOptions, property).map((option, index) => {
           return(
             <li key={ index } onClick={ () => { func(option) } } data-id={ option.id } data-type={ option.itemType }>{ option[property] }</li>
           )

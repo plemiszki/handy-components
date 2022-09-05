@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import Modal from 'react-modal'
 import ChangeCase from 'change-case'
-import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
 import Common from './modules/common.jsx'
+
+import { stringIsDate, stringIsNumber } from './utils/compare.js'
+import { stringifyDate } from './utils/convert.js'
+import { removeFromArray } from './utils/mutate.js'
+import { setUpNiceSelect } from './utils/nice-select.js'
 
 export default class SearchCriteria extends Component {
 
@@ -35,7 +39,7 @@ export default class SearchCriteria extends Component {
 
   setupNiceSelectIfNeeded() {
     if (this.niceSelectRequired()) {
-      HandyTools.setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
+      setUpNiceSelect({ selector: 'select', func: this.updateField.bind(this) });
     }
   }
 
@@ -64,14 +68,14 @@ export default class SearchCriteria extends Component {
     for (const [key, obj] of Object.entries(criteria)) {
       if (obj.minValue) { // number range
         let { minValue, maxValue } = obj;
-        if (HandyTools.stringIsNumber(minValue) == false || HandyTools.stringIsNumber(maxValue) == false) {
+        if (stringIsNumber(minValue) == false || stringIsNumber(maxValue) == false) {
           delete criteria[key];
         } else if (+maxValue < +minValue) {
           delete criteria[key];
         }
       } else if (obj.startDate) { // date range
         let { startDate, endDate } = obj;
-        if (HandyTools.stringIsDate(startDate) == false || HandyTools.stringIsDate(endDate) == false) {
+        if (stringIsDate(startDate) == false || stringIsDate(endDate) == false) {
           delete criteria[key];
         } else if (Date.parse(startDate) > Date.parse(endDate)) {
           delete criteria[key];
@@ -137,7 +141,7 @@ export default class SearchCriteria extends Component {
     }, () => {
       if (checked) {
         if (this.niceSelectRequired()) {
-          HandyTools.setUpNiceSelect({ selector: fieldDropdownSelector, func: this.updateField.bind(this) });
+          setUpNiceSelect({ selector: fieldDropdownSelector, func: this.updateField.bind(this) });
         }
       }
     });
@@ -150,7 +154,7 @@ export default class SearchCriteria extends Component {
     if (checked) {
       array.push(option.value);
     } else {
-      HandyTools.removeFromArray(array, option.value);
+      removeFromArray(array, option.value);
     }
     this.setState({
       criteria
@@ -167,8 +171,8 @@ export default class SearchCriteria extends Component {
         break;
       case 'date range':
         const date = new Date();
-        result.startDate = HandyTools.stringifyDate(date);
-        result.endDate = HandyTools.stringifyDate(date);
+        result.startDate = stringifyDate(date);
+        result.endDate = stringifyDate(date);
         break;
       case 'static dropdown':
         result.value = field.options[0].value;
@@ -390,8 +394,8 @@ export default class SearchCriteria extends Component {
       case 'number range':
         const minValue = (criteria[field.name] && criteria[field.name].hasOwnProperty('minValue')) ? criteria[field.name].minValue : '';
         const maxValue = (criteria[field.name] && criteria[field.name].hasOwnProperty('maxValue')) ? criteria[field.name].maxValue : '';
-        const minValueIsNumber = HandyTools.stringIsNumber(minValue);
-        const maxValueIsNumber = HandyTools.stringIsNumber(maxValue);
+        const minValueIsNumber = stringIsNumber(minValue);
+        const maxValueIsNumber = stringIsNumber(maxValue);
         const invalidRange = minValueIsNumber && maxValueIsNumber && +minValue > +maxValue;
         const minValueRed = fieldActive && (!minValueIsNumber || invalidRange);
         const maxValueRed = fieldActive && (!maxValueIsNumber || invalidRange);
@@ -419,8 +423,8 @@ export default class SearchCriteria extends Component {
       case 'date range':
         const startDate = (criteria[field.name] && criteria[field.name].hasOwnProperty('startDate')) ? criteria[field.name].startDate : '';
         const endDate = (criteria[field.name] && criteria[field.name].hasOwnProperty('endDate')) ? criteria[field.name].endDate : '';
-        const startDateIsValid = HandyTools.stringIsDate(startDate);
-        const endDateIsValid = HandyTools.stringIsDate(endDate);
+        const startDateIsValid = stringIsDate(startDate);
+        const endDateIsValid = stringIsDate(endDate);
         const invalidDateRange = startDateIsValid && endDateIsValid && (Date.parse(startDate) > Date.parse(endDate));
         const startDateRed = fieldActive && (!startDateIsValid || invalidDateRange);
         const endDateRed = fieldActive && (!endDateIsValid || invalidDateRange);

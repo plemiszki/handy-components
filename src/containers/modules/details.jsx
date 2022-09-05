@@ -1,10 +1,14 @@
 import $ from 'jquery'
 import React from 'react'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 import ModalSelect from '../modal-select.jsx'
 import Common from './common.jsx'
+
+import { convertBooleanToTFString, convertTFStringsToBoolean, removeFinanceSymbols } from '../utils/convert'
+import { deepCopy } from '../utils/copy'
+import { pluckFromObjectsArray } from '../utils/extract'
+import { alphabetizeArrayOfObjects } from '../utils/sort'
 
 let Details = {
 
@@ -55,7 +59,7 @@ let Details = {
     // what is the new value of the property?
     let newValue;
     if ($(input).is('select')) {
-      newValue = HandyTools.convertTFStringsToBoolean(input.value);
+      newValue = convertTFStringsToBoolean(input.value);
     } else if (input.type === 'checkbox') {
       newValue = input.checked;
     } else {
@@ -190,7 +194,7 @@ let Details = {
           <option key={ 1 } value="f">No</option>
         ]);
       } else {
-        { return HandyTools.alphabetizeArrayOfObjects(options, args.optionSortProperty || args.optionDisplayProperty || 'text').map((option, index) => {
+        { return alphabetizeArrayOfObjects(options, args.optionSortProperty || args.optionDisplayProperty || 'text').map((option, index) => {
           return(
             <option key={ index } value={ args.optionValueProperty || option.value || option.id }>
               { option[args.optionDisplayProperty || 'text'] }
@@ -210,7 +214,7 @@ let Details = {
     if (args.boolean && args.readOnly) {
       value = this.state[entity][property] ? 'Yes' : 'No';
     } else if (args.boolean) {
-      value = HandyTools.convertBooleanToTFString(this.state[entity][property]) || "";
+      value = convertBooleanToTFString(this.state[entity][property]) || "";
     } else {
       value = this.state[entity][property] || '';
     }
@@ -360,7 +364,7 @@ let Details = {
         let selectedId = this.state[entity][`${idEntity}Id`];
         value = '';
         if (this.state[calculatedOptionsArrayName] && selectedId) {
-          value = HandyTools.pluckFromObjectsArray({
+          value = pluckFromObjectsArray({
             array: this.state[calculatedOptionsArrayName],
             property: 'id',
             value: +selectedId
@@ -389,7 +393,7 @@ let Details = {
             style={ Common.selectModalStyles() }
           >
             <ModalSelect
-              options={ HandyTools.alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
+              options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
               property={ optionDisplayProperty }
               func={ (option) => { Details.selectModalOption.call(this, option, idEntity, entity) } }
               noneOption={ noneOption }
@@ -650,7 +654,7 @@ let Details = {
       this.setState({
         spinner: false,
         [entityName]: savedEntity,
-        [`${entityName}Saved`]: HandyTools.deepCopy(savedEntity),
+        [`${entityName}Saved`]: deepCopy(savedEntity),
         changesToSave: false
       });
     }, () => {
@@ -666,9 +670,9 @@ let Details = {
   },
 
   removeFinanceSymbolsFromEntity(args) {
-    let result = HandyTools.deepCopy(args.entity);
+    let result = deepCopy(args.entity);
     args.fields.forEach((field) => {
-      result[field] = HandyTools.removeFinanceSymbols(args.entity[field]);
+      result[field] = removeFinanceSymbols(args.entity[field]);
     });
     return result;
   }

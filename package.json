@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "change-case": "3.1.0",
-    "handy-tools": "2.13.2",
     "jquery": "3.5.0",
     "lodash": "4.17.19",
     "react": "18.0.0",
