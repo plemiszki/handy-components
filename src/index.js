@@ -11,15 +11,22 @@ import FullIndex from './containers/full-index.jsx'
 import SearchIndex from './containers/search-index.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
 
-import { stringIsNumber, stringIsDate } from './containers/utils/compare'
+import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/utils/compare'
 import {
   convertObjectKeysToUnderscore,
   ellipsis,
+  MONTHS,
   ordinatize,
+  pluralize,
+  removeFinanceSymbols,
   stringifyFullDate,
+  stringifyDate,
 } from './containers/utils/convert'
 import { deepCopy } from './containers/utils/copy'
-import { alphabetizeArrayOfObjects, commonSort } from './containers/utils/sort'
+import { pluckFromObjectsArray } from './containers/utils/extract'
+import { todayDMY } from './containers/utils/misc'
+import { resetNiceSelect, setUpNiceSelect } from './containers/utils/nice-select'
+import { alphabetizeArrayOfObjects, commonSort, sortArrayOfObjects } from './containers/utils/sort'
 
 const ModalSelectStyles = {
   overlay: {
@@ -52,11 +59,21 @@ export {
   ModalMessage,
   ModalSelect,
   ModalSelectStyles,
+  MONTHS,
+  objectsAreEqual,
   ordinatize,
+  pluckFromObjectsArray,
+  pluralize,
+  removeFinanceSymbols,
+  resetNiceSelect,
   SearchCriteria,
   SearchIndex,
+  setUpNiceSelect,
   SimpleDetails,
+  sortArrayOfObjects,
   stringIsDate,
   stringIsNumber,
+  stringifyDate,
   stringifyFullDate,
+  todayDMY,
 }

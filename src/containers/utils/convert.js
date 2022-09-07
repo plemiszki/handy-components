@@ -1,6 +1,6 @@
 import ChangeCase from 'change-case'
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export const convertBooleanToTFString = (boolean) => {
   return boolean ? 't' : 'f';
@@ -51,8 +51,15 @@ export const ordinatize = (input) => {
   return input + "th";
 }
 
+export const pluralize = (string, n) => {
+  if (n === 1) {
+    return string;
+  } else {
+    return string + 's';
+  }
+}
+
 export const removeFinanceSymbols = (string) => {
-  console.log(string);
   return string.replace('$', '').replace(',', '');
 }
 

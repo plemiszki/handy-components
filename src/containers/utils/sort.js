@@ -20,15 +20,39 @@ export const alphabetizeArrayOfObjects = (array, property) => {
 }
 
 export const commonSort = (property, entity) => {
-    if (!property || !entity) {
-      throw `commonSort is missing proper arguments`;
-    }
-    var propertyValue = entity[property];
-    if (typeof propertyValue === "string" || propertyValue instanceof String) {
-      return propertyValue.toLowerCase();
-    } else if (typeof propertyValue == "boolean") {
-      return propertyValue.toString().toLowerCase();
-    } else {
-      return propertyValue;
-    }
+  if (!property || !entity) {
+    throw `commonSort is missing proper arguments`;
   }
+  var propertyValue = entity[property];
+  if (typeof propertyValue === "string" || propertyValue instanceof String) {
+    return propertyValue.toLowerCase();
+  } else if (typeof propertyValue == "boolean") {
+    return propertyValue.toString().toLowerCase();
+  } else {
+    return propertyValue;
+  }
+}
+
+export const sortArrayOfObjects = (array, arg) => {
+  let property = Array.isArray(arg) ? arg[0] : arg;
+  return array.sort(function(a, b) {
+    if (parseInt(a[property]) < parseInt(b[property])) {
+      return -1;
+    } else if (parseInt(a[property]) > parseInt(b[property])) {
+      return 1;
+    } else {
+      if (Array.isArray(arg)) {
+        property = arg[1];
+        if (parseInt(a[property]) < parseInt(b[property])) {
+          return -1;
+        } else if (parseInt(a[property]) > parseInt(b[property])) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        return 0;
+      }
+    }
+  });
+}
