@@ -25,6 +25,7 @@ import {
 import { deepCopy } from './containers/utils/copy'
 import { pluckFromObjectsArray, parseUrl } from './containers/utils/extract'
 import { todayDMY } from './containers/utils/misc'
+import { removeFromArray } from './containers/utils/mutate'
 import { resetNiceSelect, setUpNiceSelect } from './containers/utils/nice-select'
 import { fetchEntity, createEntity, updateEntity, deleteEntity } from './containers/utils/requests.js'
 import { alphabetizeArrayOfObjects, commonSort, sortArrayOfObjects } from './containers/utils/sort'
@@ -70,6 +71,7 @@ export {
   pluckFromObjectsArray,
   pluralize,
   removeFinanceSymbols,
+  removeFromArray,
   resetNiceSelect,
   SearchCriteria,
   SearchIndex,
