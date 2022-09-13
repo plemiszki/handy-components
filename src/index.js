@@ -23,9 +23,10 @@ import {
   stringifyDate,
 } from './containers/utils/convert'
 import { deepCopy } from './containers/utils/copy'
-import { pluckFromObjectsArray } from './containers/utils/extract'
+import { pluckFromObjectsArray, parseUrl } from './containers/utils/extract'
 import { todayDMY } from './containers/utils/misc'
 import { resetNiceSelect, setUpNiceSelect } from './containers/utils/nice-select'
+import { fetchEntity, createEntity, updateEntity, deleteEntity } from './containers/utils/requests.js'
 import { alphabetizeArrayOfObjects, commonSort, sortArrayOfObjects } from './containers/utils/sort'
 
 const ModalSelectStyles = {
@@ -50,9 +51,12 @@ export {
   commonSort,
   convertObjectKeysToUnderscore,
   ConfirmDelete,
+  createEntity,
   deepCopy,
+  deleteEntity,
   Details,
   ellipsis,
+  fetchEntity,
   FullIndex,
   Index,
   Message,
@@ -62,6 +66,7 @@ export {
   MONTHS,
   objectsAreEqual,
   ordinatize,
+  parseUrl,
   pluckFromObjectsArray,
   pluralize,
   removeFinanceSymbols,
@@ -76,4 +81,5 @@ export {
   stringifyDate,
   stringifyFullDate,
   todayDMY,
+  updateEntity,
 }

@@ -173,13 +173,6 @@ const Common = {
     }
   },
 
-  parseUrl() {
-    const pathDirectories = window.location.pathname.split('/');
-    const id = pathDirectories[pathDirectories.length - 1];
-    const directory = pathDirectories[pathDirectories.length - 2];
-    return [id, directory];
-  },
-
   renderDisabledButtonClass: function(condition) {
     return condition ? " disabled" : "";
   },

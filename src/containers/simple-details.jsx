@@ -8,6 +8,7 @@ import ConfirmDelete from './confirm-delete.jsx'
 import { objectsAreEqual } from './utils/compare.js'
 import { removeFinanceSymbols, removeFinanceSymbolsFromEntity } from './utils/convert.js'
 import { deepCopy } from './utils/copy.js'
+import { parseUrl } from './utils/extract'
 import { setUpNiceSelect } from './utils/nice-select'
 import { convertObjectKeysToUnderscore } from './utils/convert.js'
 
@@ -34,7 +35,7 @@ export default class SimpleDetails extends Component {
 
   componentDidMount() {
     const { entityName, fetchData } = this.props;
-    const [id, directory] = Common.parseUrl();
+    const [id, directory] = parseUrl();
     fetch(`/api/${directory}/${id}`)
       .then(data => data.json())
       .then((response) => {
@@ -78,7 +79,7 @@ export default class SimpleDetails extends Component {
       spinner: true,
       justSaved: true
     }, () => {
-      const [id, directory] = Common.parseUrl();
+      const [id, directory] = parseUrl();
       const entity = removeFinanceSymbolsFromEntity(this.state[entityName], fields);
       fetch(`/api/${directory}/${id}`, {
         method: 'PATCH',

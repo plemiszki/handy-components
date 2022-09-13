@@ -7,8 +7,9 @@ import Common from './common.jsx'
 
 import { convertBooleanToTFString, convertTFStringsToBoolean, removeFinanceSymbols } from '../utils/convert'
 import { deepCopy } from '../utils/copy'
-import { pluckFromObjectsArray } from '../utils/extract'
+import { pluckFromObjectsArray, parseUrl } from '../utils/extract'
 import { alphabetizeArrayOfObjects } from '../utils/sort'
+import { deleteEntity } from '../utils/requests'
 
 let Details = {
 
@@ -106,29 +107,20 @@ let Details = {
   },
 
   clickDelete(args) {
-    const { csrfToken, callback } = args;
+    const { callback } = args;
     this.setState({
       deleteModalOpen: false,
-      spinner: true
+      spinner: true,
+      fetching: true,
     });
-    const urlSections = window.location.pathname.split('/');
-    const id = urlSections[urlSections.length - 1]
-    const directory = urlSections[urlSections.length - 2]
-    fetch(`/api/${directory}/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'x-csrf-token': csrfToken,
-      },
+    deleteEntity().then((response) => {
+      if (callback) {
+        callback.call({}, response);
+      } else {
+        const directory = parseUrl()[1];
+        window.location.pathname = directory
+      }
     })
-      .then(async (unprocessedResponse) => {
-        const response = await unprocessedResponse.json();
-        if (callback) {
-          callback.call({}, response);
-        } else {
-          urlSections.pop()
-          window.location.pathname = urlSections.join('/');
-        }
-      })
   },
 
   errorClass(stateErrors, fieldErrors) {
@@ -643,7 +635,7 @@ let Details = {
 
   updateEntity() {
     let entityName = this.props.entityName;
-    const [id, directory] = Common.parseUrl();
+    const [id, directory] = parseUrl();
     this.props.updateEntity({
       id,
       directory,
