@@ -69,10 +69,16 @@ export const deleteEntity = (args = {}) => {
             'x-csrf-token': csrfToken,
             'Content-Type': 'application/json',
         },
-    }).then(data => data.json())
+    }).then(async (response) => {
+        const payload = await response.json();
+        if (!response.ok) {
+            return Promise.reject(payload);
+        }
+        return Promise.resolve(payload);
+    })
 }
 
-const getCsrfToken = () => {
+export const getCsrfToken = () => {
     const metaTag = document.querySelector('meta[name="csrf-token"]')
     if (metaTag) {
         return metaTag.getAttribute('content');

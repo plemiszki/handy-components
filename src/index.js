@@ -27,7 +27,7 @@ import { pluckFromObjectsArray, parseUrl } from './containers/utils/extract'
 import { todayDMY } from './containers/utils/misc'
 import { removeFromArray } from './containers/utils/mutate'
 import { resetNiceSelect, setUpNiceSelect } from './containers/utils/nice-select'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from './containers/utils/requests.js'
+import { fetchEntity, createEntity, updateEntity, deleteEntity, getCsrfToken } from './containers/utils/requests.js'
 import { alphabetizeArrayOfObjects, commonSort, sortArrayOfObjects } from './containers/utils/sort'
 
 const ModalSelectStyles = {
@@ -58,6 +58,7 @@ export {
   Details,
   ellipsis,
   fetchEntity,
+  getCsrfToken,
   FullIndex,
   Index,
   Message,
