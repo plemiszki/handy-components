@@ -45,11 +45,13 @@ export const updateEntity = (args = {}) => {
     const body = {
         [snakeCase(entityName)]: convertObjectKeysToUnderscore(entity),
     }
-    Object.keys(additionalData).forEach((key) => {
-        Object.assign(body, {
-            [snakeCase(key)]: convertObjectKeysToUnderscore(additionalData[key]),
-        });
-    })
+    if (additionalData) {
+        Object.keys(additionalData).forEach((key) => {
+            Object.assign(body, {
+                [snakeCase(key)]: convertObjectKeysToUnderscore(additionalData[key]),
+            });
+        })
+    }
     return fetch(`/api/${directory}/${id}`, {
         method: 'PUT',
         headers: {
