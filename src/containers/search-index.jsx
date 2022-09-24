@@ -183,7 +183,7 @@ export default class SearchIndex extends Component {
     const searchCriteriaComponent = React.Children.map(
       this.props.children,
       (child) => {
-        if (child.props.fields) {
+        if (child && child.props.fields) {
           return React.cloneElement(child, {
             callback: this.updateSearchCriteria.bind(this),
             criteria: this.state.searchCriteria,
@@ -196,7 +196,7 @@ export default class SearchIndex extends Component {
     const newEntityComponent = React.Children.map(
       this.props.children,
       (child) => {
-        if (child.props.initialEntity) {
+        if (child && child.props.initialEntity) {
           return React.cloneElement(child, {
             entityName: this.props.entityName,
             entityNamePlural,
