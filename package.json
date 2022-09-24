@@ -13,10 +13,10 @@
   "dependencies": {
     "change-case": "3.1.0",
     "jquery": "3.5.0",
-    "lodash": "4.17.19",
+    "lodash": "4.17.21",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-modal": "3.8.1",
+    "react-modal": "3.15.1",
     "styled-jsx": "5.0.4",
     "webpack": "4.29.6"
   },
