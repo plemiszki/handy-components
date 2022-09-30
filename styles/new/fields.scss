@@ -1,0 +1,25 @@
+.handy-component {
+
+    input, .nice-select, textarea {
+        border: 1px solid #E4E9ED;
+        border-radius: 3px;
+        color: #5F5F5F;
+        letter-spacing: inherit;
+        padding: 13px;
+    }
+
+    .nice-select {
+        font-size: inherit;
+        line-height: inherit;
+        height: 45px;
+
+        ul {
+          width: 100%;
+        }
+    }
+
+    textarea {
+        resize: none;
+        width: 100%;
+    }
+}

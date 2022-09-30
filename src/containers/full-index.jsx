@@ -86,7 +86,7 @@ export default function FullIndex(props) {
     }
   }
 
-  let componentClasses = ["component"]
+  let componentClasses = ["handy-component"]
   if (includeLinks) {
     componentClasses.push("include-links")
   }
@@ -105,7 +105,7 @@ export default function FullIndex(props) {
       <h1>{ header || ChangeCase.titleCase(entityNamePlural) }</h1>
       { includeNewButton && (
         <a
-          className={ "btn float-button" + Common.renderDisabledButtonClass(spinner) }
+          className={ "standard-button btn float-button" + Common.renderDisabledButtonClass(spinner) }
           onClick={ () => { setNewEntityModalOpen(true) } }
         >Add { ChangeCase.titleCase(entityName) }</a>
       )}

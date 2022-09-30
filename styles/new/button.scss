@@ -1,0 +1,26 @@
+.handy-component {
+
+    .standard-button {
+        display: inline-block;
+        font-family: 'TeachableSans-Medium';
+        padding: 15px 40px;
+        text-align: center;
+        font-size: 12px;
+        border-radius: 100px;
+        background-color: var(--button-color);
+        color: white;
+        letter-spacing: inherit;
+        border: none;
+
+        &:hover {
+            cursor: pointer;
+            text-decoration: none;
+            background-color: var(--highlight-color);
+            color: white;
+        }
+    }
+
+    .float-button {
+        float: right;
+    }
+}

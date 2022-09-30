@@ -207,7 +207,7 @@ export default class SearchIndex extends Component {
     );
 
     return(
-      <div className="search-index component">
+      <div className="search-index handy-component">
         <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
         { this.renderNewButton() }
         { this.renderExportButton() }
@@ -335,7 +335,7 @@ export default class SearchIndex extends Component {
     if (this.props.showNewButton) {
       return(
         <>
-          <a className={ "new-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Index.clickNew.bind(this) }>{ this.props.newButtonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` }</a>
+          <a className={ "standard-button new-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Index.clickNew.bind(this) }>{ this.props.newButtonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` }</a>
           <style jsx>{`
             .new-button {
               float: right;
@@ -351,7 +351,7 @@ export default class SearchIndex extends Component {
     if (this.props.showExportButton) {
       return(
         <>
-          <a className={ "export-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickExport.bind(this) }>Export</a>
+          <a className={ "standard-button export-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickExport.bind(this) }>Export</a>
           <style jsx>{`
             .export-button {
               float: right;

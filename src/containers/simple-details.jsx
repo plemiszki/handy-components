@@ -141,7 +141,7 @@ export default class SimpleDetails extends Component {
     );
 
     return(
-      <div id="simple-details" className="component details-component">
+      <div className="handy-component details-component">
         <h1>{ this.props.header || `${ChangeCase.titleCase(this.props.entityName)} Details` }</h1>
         <div className="white-box">
           {

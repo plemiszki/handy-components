@@ -1,0 +1,66 @@
+.handy-component {
+
+    .horizontal-scroll {
+        overflow-x: scroll;
+    }
+
+    table {
+        width: 100%;
+        user-select: none;
+        font-size: 12px;
+
+        thead {
+          border-bottom: solid 1px #dadee2;
+
+          th {
+            font-family: 'TeachableSans-SemiBold';
+            color: black;
+            padding-bottom: 20px;
+
+            &:first-of-type {
+              padding-left: 10px;
+            }
+
+            div {
+              display: inline;
+
+              &.sort-header-active {
+                cursor: pointer;
+                color: var(--highlight-color, #000);
+                font-family: 'TeachableSans-ExtraBold';
+              }
+
+              &.sort-header-inactive {
+                cursor: pointer;
+              }
+            }
+          }
+        }
+
+        tbody {
+
+          tr:first-child td {
+            padding-top: 10px;
+          }
+
+          td {
+            position: relative;
+            color: #96939B;
+
+            &:first-of-type {
+              padding-left: 10px;
+            }
+
+            a, div.link-padding {
+              display: block;
+              width: 100%;
+              padding: 10px 0;
+            }
+          }
+        }
+
+        &:not(.no-hover) tr:not(:first-child):not(.no-hover):hover {
+          background-color: #F5F5F5;
+        }
+    }
+}
