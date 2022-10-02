@@ -160,7 +160,7 @@ export default class SimpleDetails extends Component {
             })
           }
           <div>
-            <a className={ "btn standard-width" + Common.renderDisabledButtonClass(this.state.spinner || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+            <a className={ "standard-button standard-width btn" + Common.renderDisabledButtonClass(this.state.spinner || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
               { Details.saveButtonText.call(this) }
             </a>
             { this.renderDeleteButton.call(this) }
@@ -203,7 +203,7 @@ export default class SimpleDetails extends Component {
   renderCopyButton() {
     if (this.props.copy) {
       return(
-        <a className={ "btn float-button margin-right" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickCopy.bind(this) }>
+        <a className={ "standard-button btn float-button margin-right" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickCopy.bind(this) }>
           Copy
         </a>
       );

@@ -227,11 +227,11 @@ export default class SearchCriteria extends Component {
   render() {
     return(
       <>
-        <div className="search-criteria component admin-modal">
+        <div className="search-criteria handy-component admin-modal">
           <form className="white-box">
             { this.renderFields() }
             <hr />
-            <input type="submit" className={ "submit-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
+            <input type="submit" className={ "submit-button standard-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
           </form>
           { Common.renderGrayedOut(this.state.spinner, -36, -32, 5) }
           { Common.renderSpinner(this.state.spinner) }
@@ -493,6 +493,7 @@ export default class SearchCriteria extends Component {
               input {
                 margin: 0 !important;
                 margin-right: 10px !important;
+                display: inline-block;
               }
           `}</style>
         </div>

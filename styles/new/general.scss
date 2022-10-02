@@ -28,5 +28,13 @@
         border-radius: 6px;
         box-shadow: 1px 2px 3px 0px #e6e9ec;
         color: #5F5F5F;
+
+        table {
+            width: 100%;
+        }
+    }
+
+    .admin-modal .white-box {
+        box-shadow: none;
     }
 }

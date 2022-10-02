@@ -18,9 +18,29 @@
             background-color: var(--highlight-color);
             color: white;
         }
+
+        &.standard-width {
+            min-width: 175px;
+        }
     }
 
     .float-button {
         float: right;
+    }
+
+    .delete-button {
+        float: right;
+        color: #E9563D;
+        background-color: white;
+        border: solid 0.5px #E9563D;
+        font-family: 'TeachableSans-Medium';
+        border-radius: 100px;
+        padding: 15px 40px;
+        font-size: 12px;
+
+        &:hover {
+          color: #E9563D;
+          background-color: #FBDDD8;
+        }
     }
 }

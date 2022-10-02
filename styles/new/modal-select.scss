@@ -1,0 +1,25 @@
+.handy-component.modal-select {
+
+    .search-box {
+      float: none;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    li {
+      cursor: pointer;
+      padding: 10px;
+      border: solid 1px #5F5F5F;
+      border-radius: 6px;
+      user-select: none;
+      margin-bottom: 10px;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        background-color: #F5F6F7;
+      }
+    }
+  }
