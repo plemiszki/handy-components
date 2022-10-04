@@ -261,16 +261,22 @@ const Common = {
                 line-height: 27px;
                 max-width: none;
                 margin: auto;
-                margin-bottom: 0;
+                margin-bottom: 20px;
               }
               a {
-                width: 124px;
-                padding-left: 0;
-                padding-right: 0;
-                margin-top: 20px;
-                margin-right: 20px;
-                margin-left: 20px;
+                display: inline-block;
+                text-align: center;
+                font-size: 12px;
+                border-radius: 100px;
+                font-family: 'TeachableSans-Bold';
+                padding: 15px 40px;
                 user-select: none;
+                color: white;
+                background-color: var(--button-color);
+                cursor: pointer;
+              }
+              a:hover {
+                background-color: var(--highlight-color);
               }
             `}</style>
           </Modal>
