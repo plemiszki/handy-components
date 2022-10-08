@@ -11,6 +11,7 @@ import FullIndex from './containers/full-index.jsx'
 import SearchIndex from './containers/search-index.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
 import Button from './containers/button.jsx'
+import Table from './containers/table.jsx'
 
 import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/utils/compare'
 import {
@@ -87,6 +88,7 @@ export {
   stringIsNumber,
   stringifyDate,
   stringifyFullDate,
+  Table,
   todayDMY,
   updateEntity,
 }
