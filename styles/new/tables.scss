@@ -61,6 +61,19 @@
               width: 100%;
               padding: 10px 0;
             }
+
+            .x-button {
+              display: inline-block;
+              position: absolute;
+              right: 0;
+              top: 10px;
+              margin-right: 10px;
+              background-image: asset-url('gray-x.png');
+              background-size: contain;
+              width: 17px;
+              height: 17px;
+              cursor: pointer;
+            }
           }
         }
 

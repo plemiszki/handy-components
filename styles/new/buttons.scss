@@ -43,4 +43,13 @@
           background-color: #FBDDD8;
         }
     }
+
+    .outline-button {
+        padding: 7px 20px;
+        min-width: 120px;
+        color: var(--button-color);
+        border: solid 1px var(--button-color);
+        font-size: 12px;
+        border-radius: 100px;
+    }
 }

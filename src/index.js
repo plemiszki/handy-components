@@ -10,6 +10,7 @@ import SimpleDetails from './containers/simple-details.jsx'
 import FullIndex from './containers/full-index.jsx'
 import SearchIndex from './containers/search-index.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
+import Button from './containers/button.jsx'
 
 import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/utils/compare'
 import {
@@ -48,6 +49,7 @@ const ModalSelectStyles = {
 
 export {
   alphabetizeArrayOfObjects,
+  Button,
   Common,
   commonSort,
   convertObjectKeysToUnderscore,
