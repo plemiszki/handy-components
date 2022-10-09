@@ -13,6 +13,7 @@ import SearchCriteria from './containers/search-criteria.jsx'
 import Button from './containers/button.jsx'
 import DeleteButton from './containers/delete-button.jsx'
 import Table from './containers/table.jsx'
+import SearchBar from './containers/search-bar.jsx'
 
 import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/utils/compare'
 import {
@@ -80,6 +81,7 @@ export {
   removeFinanceSymbols,
   removeFromArray,
   resetNiceSelect,
+  SearchBar,
   SearchCriteria,
   SearchIndex,
   sendRequest,

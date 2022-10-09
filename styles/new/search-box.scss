@@ -1,19 +1,6 @@
 .handy-component {
 
     input.search-box {
-        float: right;
-        width: 250px;
-        font-size: 12px;
-        line-height: 17px;
-        color: #5F5F5F;
-        padding: 15px 15px 15px 50px;
-        background-position: 15px 15px;
-        border: solid 1px #E4E9ED;
-        border-radius: 100px;
         background-image: image-url('handy-components/images/magnifying-glass.svg') !important;
-
-        &.margin {
-            margin-right: 30px;
-        }
     }
 }

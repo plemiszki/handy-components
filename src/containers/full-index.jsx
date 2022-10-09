@@ -6,6 +6,7 @@ import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 import { ellipsis } from './utils/convert.js'
 import { commonSort } from './utils/sort.js'
+import SearchBar from './search-bar.jsx'
 
 export default function FullIndex(props) {
 
@@ -109,8 +110,8 @@ export default function FullIndex(props) {
           onClick={ () => { setNewEntityModalOpen(true) } }
         >Add { ChangeCase.titleCase(entityName) }</a>
       )}
-      <input
-        className={ `search-box${includeNewButton ? ' margin' : ''}` }
+      <SearchBar
+        margin={ includeNewButton }
         onChange={ (e) => { setSearchText(e.target.value) } }
         value={ searchText }
       />
