@@ -11,6 +11,7 @@ import FullIndex from './containers/full-index.jsx'
 import SearchIndex from './containers/search-index.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
 import Button from './containers/button.jsx'
+import DeleteButton from './containers/delete-button.jsx'
 import Table from './containers/table.jsx'
 
 import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/utils/compare'
@@ -57,6 +58,7 @@ export {
   ConfirmDelete,
   createEntity,
   deepCopy,
+  DeleteButton,
   deleteEntity,
   Details,
   ellipsis,
