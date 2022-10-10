@@ -2,7 +2,7 @@ import React from 'react'
 import Common from './modules/common.jsx'
 
 export default function Button(props) {
-    const { text, styles, onClick, disabled = false } = props;
+    const { text, styles, onClick, disabled = false, float = false } = props;
 
     return(
         <>
@@ -20,6 +20,7 @@ export default function Button(props) {
                     letter-spacing: inherit;
                     border: none;
                     cursor: pointer;
+                    float: ${float ? 'right' : 'none'}
                 }
                 a:hover {
                     text-decoration: none;

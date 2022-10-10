@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function SearchBar(props) {
-	const { margin, onChange, value } = props;
+	const { margin = false, onChange, value } = props;
 
 	return (
 		<>

@@ -7,6 +7,7 @@ import Index from './modules/index.js'
 import { ellipsis } from './utils/convert.js'
 import { commonSort } from './utils/sort.js'
 import SearchBar from './search-bar.jsx'
+import Button from './button.jsx'
 
 export default function FullIndex(props) {
 
@@ -105,10 +106,12 @@ export default function FullIndex(props) {
     <div className={ componentClasses.join(" ") }>
       <h1>{ header || ChangeCase.titleCase(entityNamePlural) }</h1>
       { includeNewButton && (
-        <a
-          className={ "standard-button btn float-button" + Common.renderDisabledButtonClass(spinner) }
+        <Button
           onClick={ () => { setNewEntityModalOpen(true) } }
-        >Add { ChangeCase.titleCase(entityName) }</a>
+          text={ `Add ${ChangeCase.titleCase(entityName)}` }
+          disabled={ spinner }
+          float
+        />
       )}
       <SearchBar
         margin={ includeNewButton }
