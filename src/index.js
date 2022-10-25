@@ -24,7 +24,7 @@ import {
 } from './containers/utils/convert'
 import { deepCopy } from './containers/utils/copy'
 import { pluckFromObjectsArray, parseUrl } from './containers/utils/extract'
-import { todayDMY } from './containers/utils/misc'
+import { todayDMY, rearrangeFields } from './containers/utils/misc'
 import { removeFromArray } from './containers/utils/mutate'
 import { resetNiceSelect, setUpNiceSelect } from './containers/utils/nice-select'
 import { fetchEntity, fetchEntities, createEntity, updateEntity, deleteEntity, getCsrfToken, sendRequest } from './containers/utils/requests.js'
@@ -72,6 +72,7 @@ export {
   parseUrl,
   pluckFromObjectsArray,
   pluralize,
+  rearrangeFields,
   removeFinanceSymbols,
   removeFromArray,
   resetNiceSelect,
