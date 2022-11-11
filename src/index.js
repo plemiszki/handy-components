@@ -7,6 +7,7 @@ import Button from './containers/button.jsx'
 import ConfirmDelete from './containers/confirm-delete.jsx'
 import DeleteButton from './containers/delete-button.jsx'
 import FullIndex from './containers/full-index.jsx'
+import GrayedOut from './containers/grayed-out.jsx'
 import Message from './containers/message.jsx'
 import ModalMessage from './containers/modal-message.jsx'
 import ModalSelect from './containers/modal-select.jsx'
@@ -15,6 +16,7 @@ import SimpleDetails from './containers/simple-details.jsx'
 import SearchBar from './containers/search-bar.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
 import SearchIndex from './containers/search-index.jsx'
+import Spinner from './containers/spinner.jsx'
 import Table from './containers/table.jsx'
 
 import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/utils/compare'
@@ -68,8 +70,9 @@ export {
   ellipsis,
   fetchEntity,
   fetchEntities,
-  getCsrfToken,
   FullIndex,
+  getCsrfToken,
+  GrayedOut,
   Index,
   Message,
   ModalMessage,
@@ -92,6 +95,7 @@ export {
   setUpNiceSelect,
   SimpleDetails,
   sortArrayOfObjects,
+  Spinner,
   stringIsDate,
   stringIsNumber,
   stringifyDate,

@@ -8,6 +8,8 @@ import { ellipsis } from './utils/convert.js'
 import { commonSort } from './utils/sort.js'
 import SearchBar from './search-bar.jsx'
 import Button from './button.jsx'
+import Spinner from './spinner.jsx'
+import GrayedOut from './grayed-out.jsx'
 
 export default function FullIndex(props) {
 
@@ -119,8 +121,8 @@ export default function FullIndex(props) {
         value={ searchText }
       />
       <div className="white-box">
-        { Common.renderGrayedOut(spinner, -36, -32, 5) }
-        { Common.renderSpinner(spinner) }
+        <GrayedOut visible={ spinner } />
+        <Spinner visible={ spinner } />
         <div className="horizontal-scroll">
           <table className="admin-table sortable">
             <thead>
