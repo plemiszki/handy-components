@@ -30,7 +30,10 @@ export default function DeleteButton(props) {
 			<Modal isOpen={ modalOpen } onRequestClose={ () => { setModalOpen(false) } } contentLabel="Modal" style={ deleteModalStyles }>
 				<ConfirmDelete
 					entityName={ entityName }
-					confirmDelete={ (e) => { confirmDelete(e) } }
+					confirmDelete={ (e) => {
+						setModalOpen(false)
+						confirmDelete(e)
+					} }
 					closeModal={ () => { setModalOpen(false) } }
 				/>
 			</Modal>

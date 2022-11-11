@@ -2,19 +2,20 @@ import Common from './containers/modules/common.jsx'
 import Details from './containers/modules/details.jsx'
 import Index from './containers/modules/index.js'
 
-import ConfirmDelete from './containers/confirm-delete.jsx'
-import ModalMessage from './containers/modal-message.jsx'
-import Message from './containers/message.jsx'
-import ModalSelect from './containers/modal-select.jsx'
-import SimpleDetails from './containers/simple-details.jsx'
-import FullIndex from './containers/full-index.jsx'
-import SearchIndex from './containers/search-index.jsx'
-import SearchCriteria from './containers/search-criteria.jsx'
+import BottomButtons from './containers/bottom-buttons.jsx'
 import Button from './containers/button.jsx'
+import ConfirmDelete from './containers/confirm-delete.jsx'
 import DeleteButton from './containers/delete-button.jsx'
-import Table from './containers/table.jsx'
-import SearchBar from './containers/search-bar.jsx'
+import FullIndex from './containers/full-index.jsx'
+import Message from './containers/message.jsx'
+import ModalMessage from './containers/modal-message.jsx'
+import ModalSelect from './containers/modal-select.jsx'
 import SaveButton from './containers/save-button.jsx'
+import SimpleDetails from './containers/simple-details.jsx'
+import SearchBar from './containers/search-bar.jsx'
+import SearchCriteria from './containers/search-criteria.jsx'
+import SearchIndex from './containers/search-index.jsx'
+import Table from './containers/table.jsx'
 
 import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/utils/compare'
 import {
@@ -53,6 +54,7 @@ const ModalSelectStyles = {
 
 export {
   alphabetizeArrayOfObjects,
+  BottomButtons,
   Button,
   Common,
   commonSort,
