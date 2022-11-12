@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 import ChangeCase from 'change-case'
-import { orderBy } from 'lodash'
 import Common from './modules/common.jsx'
-import Index from './modules/index.js'
-import { ellipsis } from './utils/convert.js'
-import { commonSort } from './utils/sort.js'
 import SearchBar from './search-bar.jsx'
 import Button from './button.jsx'
 import Spinner from './spinner.jsx'
 import GrayedOut from './grayed-out.jsx'
+import Table from './table.jsx'
 
 export default function FullIndex(props) {
 
@@ -41,7 +38,6 @@ export default function FullIndex(props) {
   const [spinner, setSpinner] = useState(true)
   const [entities, setEntities] = useState([])
   const [searchText, setSearchText] = useState('')
-  const [searchColumn, setSearchColumn] = useState(columns[0])
   const [newEntityModalOpen, setNewEntityModalOpen] = useState(false)
 
   const mappedChildren = React.Children.map(
@@ -69,43 +65,8 @@ export default function FullIndex(props) {
     setEntities(entities)
   }
 
-  const columnWidth = (column) => {
-    if (column.width) {
-      return {
-        minWidth: +column.width
-      }
-    }
-  }
-
-  const standardIndexSort = (entity) => {
-    const searchProperty = searchColumn.sortColumn || searchColumn.name
-    return commonSort(searchProperty, entity)
-  }
-
-  const renderValue = (value, column) => {
-    if (column.ellipsis) {
-      return ellipsis(value, column.ellipsis)
-    } else {
-      return value
-    }
-  }
-
-  let componentClasses = ["handy-component"]
-  if (includeLinks) {
-    componentClasses.push("include-links")
-  }
-  if (includeHover) {
-    componentClasses.push("include-hover")
-  }
-
-  let filteredEntities = Index.filterSearchText({
-    entities,
-    text: searchText,
-    property: searchColumn.name
-  })
-
   return(
-    <div className={ componentClasses.join(" ") }>
+    <div className="handy-component">
       <h1>{ header || ChangeCase.titleCase(entityNamePlural) }</h1>
       { includeNewButton && (
         <Button
@@ -123,64 +84,12 @@ export default function FullIndex(props) {
       <div className="white-box">
         <GrayedOut visible={ spinner } />
         <Spinner visible={ spinner } />
-        <div className="horizontal-scroll">
-          <table className="admin-table sortable">
-            <thead>
-              <tr>
-                { columns.map((column, index) => {
-                  return(
-                    <th key={ index } style={ columnWidth(column) }>
-                      <div
-                        className={ Index.sortClass(column.name, searchColumn) }
-                        onClick={ () => { setSearchColumn(column) } }
-                      >
-                        { column.header || ChangeCase.titleCase(column.name) }
-                      </div>
-                    </th>
-                  )
-                }) }
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                { columns.map((_, index) => {
-                  return(
-                    <td key={ index }></td>
-                  )
-                }) }
-              </tr>
-              { orderBy(
-                filteredEntities,
-                [standardIndexSort.bind(this)],
-                (searchColumn.sortDir || 'asc'),
-              ).map((entity, index) => {
-                  return(
-                    <tr key={ index }>
-                      { columns.map((column, index) => {
-                        if (includeLinks) {
-                          return(
-                            <td key={ index } className={ column.classes || '' }>
-                              <a href={ `${directory}/${entity.id}${column.links || ''}` }>
-                                { renderValue(entity[column.name], index) }
-                              </a>
-                            </td>
-                          );
-                        } else {
-                          return(
-                            <td key={ index } className={ column.classes || '' }>
-                              <div className="link-padding">
-                                { renderValue(entity[column.name], index) }
-                              </div>
-                            </td>
-                          );
-                        }
-                      }) }
-                    </tr>
-                  )
-                }) }
-            </tbody>
-          </table>
-        </div>
+        <Table
+          columns={ columns }
+          rows={ entities }
+          searchText={ searchText }
+          urlPrefix={ ChangeCase.lower(entityNamePlural) }
+        />
       </div>
       { includeNewButton && (
         <Modal isOpen={ newEntityModalOpen } onRequestClose={ () => { setNewEntityModalOpen(false) } } contentLabel="Modal" style={ Common.newEntityModalStyles(modalDimensions, modalRows) }>
