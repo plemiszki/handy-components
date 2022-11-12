@@ -8,6 +8,9 @@ import { stringIsDate, stringIsNumber } from './utils/compare.js'
 import { stringifyDate } from './utils/convert.js'
 import { removeFromArray } from './utils/mutate.js'
 import { setUpNiceSelect } from './utils/nice-select.js'
+import GrayedOut from './grayed-out.jsx'
+import Spinner from './spinner.jsx'
+import Button from './button.jsx'
 
 export default class SearchCriteria extends Component {
 
@@ -96,8 +99,7 @@ export default class SearchCriteria extends Component {
     return criteria;
   }
 
-  clickSearch(e) {
-    e.preventDefault();
+  clickSearch() {
     let validatedCriteria = this.validateCriteria(this.state.criteria);
     this.props.callback.call(this, validatedCriteria);
   }
@@ -225,16 +227,22 @@ export default class SearchCriteria extends Component {
   }
 
   render() {
-    return(
+    const { spinner, buttonText } = this.state;
+    return (
       <>
         <div className="search-criteria handy-component admin-modal">
           <form className="white-box">
             { this.renderFields() }
             <hr />
-            <input type="submit" className={ "submit-button standard-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } value={ this.state.buttonText } onClick={ this.clickSearch.bind(this) } />
+            <Button
+              onClick={ () => this.clickSearch() }
+              text={ buttonText }
+              disabled={ spinner }
+              submit
+            />
           </form>
-          { Common.renderGrayedOut(this.state.spinner, -36, -32, 5) }
-          { Common.renderSpinner(this.state.spinner) }
+          <GrayedOut visible={ spinner } />
+          <Spinner visible={ spinner } />
         </div>
         <style jsx>{`
           hr {
