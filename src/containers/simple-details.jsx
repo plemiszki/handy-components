@@ -127,7 +127,6 @@ export default class SimpleDetails extends Component {
   }
 
   clickCopy() {
-    console.log('click copy');
     this.setState({
       copyModalOpen: true
     });
@@ -188,7 +187,7 @@ export default class SimpleDetails extends Component {
               />
             ) }
             { copy && (
-              <Button float text="Copy" disabled={ spinner } onClick={ () => { this.clickCopy() }} />
+              <Button float margin text="Copy" disabled={ spinner } onClick={ () => { this.clickCopy() }} />
             ) }
           </div>
           <GrayedOut visible={ spinner } />

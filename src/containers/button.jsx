@@ -2,7 +2,16 @@ import React from 'react'
 import Common from './modules/common.jsx'
 
 export default function Button(props) {
-	const { text, styles, onClick, disabled = false, float = false, submit = false } = props;
+	const {
+		text,
+		styles,
+		onClick,
+		disabled = false,
+		float = false,
+		submit = false,
+		marginRight = false,
+		marginLeft = false
+	} = props;
 
 	return (
 		<>
@@ -35,7 +44,9 @@ export default function Button(props) {
 					letter-spacing: inherit;
 					border: none;
 					cursor: pointer;
-					float: ${float ? 'right' : 'none'}
+					float: ${float ? 'right' : 'none'};
+					margin-right: ${marginRight ? '30px' : 0};
+					margin-left: ${marginLeft ? '30px' : 0};
 				}
 				a:hover, input:hover {
 					text-decoration: none;
