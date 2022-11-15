@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Index from './modules/index.js'
 import { alphabetizeArrayOfObjects } from './utils/sort.js'
+import SearchBar from './search-bar.jsx'
 
 export default function ModalSelect(props) {
 
@@ -15,9 +16,12 @@ export default function ModalSelect(props) {
 
   const filteredOptions = Index.filterSearchText({ entities: options, text: searchText, property })
 
-  return(
+  return (
     <div className="modal-select handy-component">
-      <input className="search-box" onChange={ (e) => { setSearchText(e.target.value) } } value={ searchText } data-field="searchText" />
+      <SearchBar
+        onChange={ (e) => { setSearchText(e.target.value) } }
+        value={ searchText }
+      />
       <ul className="licensor-modal-list">
         { noneOption && (
           <li onClick={ func } data-id={ null } data-type={ null }>(None)</li>
