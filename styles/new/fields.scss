@@ -83,6 +83,15 @@
       overflow-y: scroll;
     }
 
+    a.link {
+      margin-top: 10px;
+      display: inline-block;
+      font-size: 10px;
+      cursor: pointer;
+      color: #95949B;
+      text-decoration: underline;
+    }
+
     &.admin-modal {
 
         .yes-field-error {

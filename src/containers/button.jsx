@@ -10,7 +10,8 @@ export default function Button(props) {
 		float = false,
 		submit = false,
 		marginRight = false,
-		marginLeft = false
+		marginLeft = false,
+		marginBottom = false,
 	} = props;
 
 	return (
@@ -38,6 +39,7 @@ export default function Button(props) {
 					padding: 15px 40px;
 					text-align: center;
 					font-size: 12px;
+					line-height: 17px;
 					border-radius: 100px;
 					background-color: var(--button-color);
 					color: white;
@@ -47,6 +49,7 @@ export default function Button(props) {
 					float: ${float ? 'right' : 'none'};
 					margin-right: ${marginRight ? '30px' : 0};
 					margin-left: ${marginLeft ? '30px' : 0};
+					margin-bottom: ${marginBottom ? '30px' : 0};
 				}
 				a:hover, input:hover {
 					text-decoration: none;

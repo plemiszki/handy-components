@@ -281,7 +281,7 @@ let Details = {
             data-field={ args.property }
           />
           <label className="checkbox" htmlFor={ `${args.entity}-${args.property}` }>{ columnHeader }</label>
-          { Details.renderFieldError(errorText) }
+          { Details.renderFieldError(errorText, args) }
         </div>
       );
     }
@@ -312,12 +312,10 @@ let Details = {
     const {
       columnOffset,
       columnWidth,
-      entities,
       entitiesIndex,
       entity,
       errorsProperty,
       hidden,
-      leftLabel,
       noneOption,
       optionDisplayProperty,
       optionsArrayName,
@@ -325,11 +323,11 @@ let Details = {
       property,
       readOnly,
       rows,
-      showErrorText,
-      showFieldError,
+      styles,
       type,
-      uploadLinkFunction,
     } = args;
+
+    console.log(styles);
 
     const containerClass = columnOffset ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}` : `col-xs-${columnWidth}`;
 
@@ -337,7 +335,6 @@ let Details = {
       return <div className={ containerClass }></div>;
     }
 
-    const changeFieldArgs = this.changeFieldArgs();
     const errors = Details.getErrors.call(this, args);
     const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
@@ -363,7 +360,7 @@ let Details = {
           })[optionDisplayProperty];
         }
         return([
-          <div key={ 1 } className={ `col-xs-${columnWidth - 1}` }>
+          <div key={ 1 } className={ `col-xs-${columnWidth - 1}` } style={ styles }>
             { Details.renderHeader(args) }
             <input
               className={ Details.inputClassName(hasError) }
@@ -396,7 +393,7 @@ let Details = {
         value = Details.getValue.call(this, args);
         return(
           <>
-            <div className={ `textbox-field ${containerClass}` }>
+            <div className={ `textbox-field ${containerClass}` } style={ styles }>
               { Details.renderHeader(args) }
               <textarea
                 rows={ rows }
@@ -421,8 +418,8 @@ let Details = {
         );
       case 'json':
         value = Details.getValue.call(this, args);
-        return(
-          <div className={ containerClass }>
+        return (
+          <div className={ containerClass } style={ styles }>
             { Details.renderHeader(args) }
             <>
               <textarea
@@ -446,8 +443,8 @@ let Details = {
         );
       default:
         value = Details.getValue.call(this, args);
-        return(
-          <div className={ containerClass }>
+        return (
+          <div className={ containerClass } style={ styles }>
             { Details.renderHeader(args) }
             { Details.renderLeftLabel(args) }
             <input
@@ -473,12 +470,16 @@ let Details = {
         { Details.renderUploadLink(uploadLinkFunction) }
         { Details.renderLink(args) }
         { Details.renderWarning(args) }
-        { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+        { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('', args) : Details.renderFieldError(errorText, args)) }
       </>
     );
   },
 
-  renderFieldError(errorText) {
+  renderFieldError(errorText, args) {
+    const { hideFieldError } = args;
+    if (hideFieldError) {
+      return null;
+    }
     if (errorText) {
       return React.createElement("div", { className: "yes-field-error" }, errorText);
     } else {
@@ -571,11 +572,13 @@ let Details = {
         <>
           <p>{ warning }</p>
           <style jsx>{`
-            margin-top: 10px;
-            background-color: lightyellow;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: 'TeachableSans-Bold';
+            p {
+              margin-top: 10px;
+              background-color: lightyellow;
+              padding: 10px;
+              border-radius: 5px;
+              font-family: 'TeachableSans-Bold';
+            }
           `}</style>
         </>
       );

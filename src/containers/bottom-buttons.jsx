@@ -3,7 +3,7 @@ import DeleteButton from './delete-button';
 import SaveButton from './save-button';
 
 export default function BottomButtons(props) {
-  const { entityName, confirmDelete, clickSave, disabled, changesToSave, justSaved } = props;
+  const { entityName, confirmDelete, clickSave, disabled, changesToSave, justSaved, marginBottom = false } = props;
 
   return (
     <div>
@@ -12,6 +12,7 @@ export default function BottomButtons(props) {
         changesToSave={ changesToSave }
         disabled={ disabled }
         onClick={ () => { clickSave() } }
+        marginBottom={ marginBottom }
       />
       <DeleteButton entityName={ entityName } confirmDelete={ confirmDelete } />
     </div>
