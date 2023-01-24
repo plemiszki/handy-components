@@ -19,6 +19,7 @@ import SimpleDetails from './containers/simple-details.jsx'
 import SearchBar from './containers/search-bar.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
 import SearchIndex from './containers/search-index.jsx'
+import SortableAssociation from './containers/sortable-association.jsx'
 import Spinner from './containers/spinner.jsx'
 import Table from './containers/table.jsx'
 
@@ -100,6 +101,7 @@ export {
   sendRequest,
   setUpNiceSelect,
   SimpleDetails,
+  SortableAssociation,
   sortArrayOfObjects,
   Spinner,
   stringIsDate,

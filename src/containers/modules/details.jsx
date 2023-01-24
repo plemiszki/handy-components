@@ -316,6 +316,7 @@ let Details = {
       entity,
       errorsProperty,
       hidden,
+      inputStyles,
       noneOption,
       optionDisplayProperty,
       optionsArrayName,
@@ -326,8 +327,6 @@ let Details = {
       styles,
       type,
     } = args;
-
-    console.log(styles);
 
     const containerClass = columnOffset ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}` : `col-xs-${columnWidth}`;
 
@@ -369,6 +368,7 @@ let Details = {
               placeholder={ placeholder }
               data-field={ property }
               readOnly={ true }
+              style={ inputStyles }
             />
             { Details.renderTagsBelowField(args, errorText) }
           </div>,
@@ -402,6 +402,7 @@ let Details = {
                 value={ value }
                 data-entity={ entity }
                 data-field={ property }
+                style={ inputStyles }
               ></textarea>
               { Details.renderTagsBelowField(args, errorText) }
               { Details.renderCharacterCount.call(this, args) }
@@ -430,6 +431,7 @@ let Details = {
                 data-entity={ entity }
                 data-field={ property }
                 data-json={ true }
+                style={ inputStyles }
               />
               <style jsx>{`
                 textarea {
@@ -456,6 +458,7 @@ let Details = {
               placeholder={ placeholder }
               readOnly={ readOnly }
               data-test-index={ entitiesIndex }
+              style={ inputStyles }
             />
             { Details.renderTagsBelowField(args, errorText) }
           </div>
@@ -509,14 +512,16 @@ let Details = {
       <>
         <label>{ leftLabel }</label>
         <style jsx>{`
-          position: absolute;
-          right: 100%;
-          width: 300px;
-          text-align: right;
-          margin-top: 10px;
-          font-family: 'TeachableSans-Medium';
-          font-size: 12px;
-          color: #2C2F33;
+          label {
+            position: absolute;
+            right: 100%;
+            width: 300px;
+            text-align: right;
+            margin-top: 10px;
+            font-family: 'TeachableSans-Medium';
+            font-size: 12px;
+            color: #2C2F33;
+          }
         `}</style>
       </>
     );

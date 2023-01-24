@@ -12,6 +12,7 @@ export default function Button(props) {
 		marginRight = false,
 		marginLeft = false,
 		marginBottom = false,
+		square = false,
 	} = props;
 
 	return (
@@ -35,12 +36,12 @@ export default function Button(props) {
 			<style jsx>{`
 				a, input {
 					display: inline-block;
-					font-family: 'TeachableSans-Medium';
-					padding: 15px 40px;
+					font-family: 'TeachableSans-${square ? 'Bold' : 'Medium'}';
+					padding: ${square ? '12px 20px' : '15px 40px'};
 					text-align: center;
 					font-size: 12px;
 					line-height: 17px;
-					border-radius: 100px;
+					border-radius: ${square ? '5px' : '100px'};
 					background-color: var(--button-color);
 					color: white;
 					letter-spacing: inherit;
@@ -50,6 +51,7 @@ export default function Button(props) {
 					margin-right: ${marginRight ? '30px' : 0};
 					margin-left: ${marginLeft ? '30px' : 0};
 					margin-bottom: ${marginBottom ? '30px' : 0};
+					user-select: none;
 				}
 				a:hover, input:hover {
 					text-decoration: none;

@@ -1,11 +1,15 @@
 .handy-component {
 
   .x-gray-circle {
-      background-image: image-url('handy-components/images/x-gray-circle.png');
+    background-image: image-url('handy-components/images/x-gray-circle.png');
   }
 
   .edit-image {
     background-image: image-url('handy-components/images/edit.svg');
+  }
+
+  .handle {
+    background-image: image-url('handy-components/images/handle.png');
   }
 }
 

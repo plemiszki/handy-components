@@ -8,6 +8,7 @@
         width: 100%;
         user-select: none;
         font-size: 12px;
+        line-height: 17px;
 
         thead {
           border-bottom: solid 1px #dadee2;
@@ -41,6 +42,11 @@
 
           tr:first-child td {
             padding-top: 10px;
+          }
+
+          tr.bold td {
+            font-family: 'TeachableSans-Medium';
+            color: black;
           }
 
           td {

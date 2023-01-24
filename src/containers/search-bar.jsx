@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function SearchBar(props) {
-	const { margin = false, onChange, value } = props;
+	const { margin = false, onChange, value, styles } = props;
 
 	return (
 		<>
@@ -9,6 +9,7 @@ export default function SearchBar(props) {
 				className="search-box"
 				onChange={ onChange }
 				value={ value }
+				style={ styles }
 			/>
 			<style jsx>{`
 				input.search-box {
