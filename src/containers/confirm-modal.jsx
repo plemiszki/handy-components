@@ -8,6 +8,7 @@ export default function ConfirmModal(props) {
     headerText,
     confirm,
     cancel,
+    dismiss,
     isOpen,
   } = props
 
@@ -15,7 +16,7 @@ export default function ConfirmModal(props) {
     <>
       <Modal
         isOpen={isOpen}
-        onRequestClose={ cancel }
+        onRequestClose={ dismiss || cancel }
         contentLabel="Modal"
         style={{
           overlay: {
@@ -23,24 +24,34 @@ export default function ConfirmModal(props) {
           },
           content: {
             background: '#F5F6F7',
-            padding: '20px 20px 35px 20px',
+            padding: '20px 20px 30px 20px',
             margin: 'auto',
             maxWidth: 600,
-            height: 151,
+            height: 146,
           },
         }}
       >
         <div className="confirm-modal text-center">
           <h1>{ headerText }</h1>
-          <Button
-            text="Yes"
-            onClick={ confirm }
-            marginRight
-          />
-          <Button
-            text="No"
-            onClick={ cancel }
-          />
+          { confirm && (
+            <Button
+              text="Yes"
+              onClick={ confirm }
+              marginRight
+            />
+          ) }
+          { cancel && (
+            <Button
+              text="No"
+              onClick={ cancel }
+            />
+          ) }
+          { dismiss && (
+            <Button
+              text="OK"
+              onClick={ dismiss }
+            />
+          ) }
         </div>
       </Modal>
       <style jsx>{`
