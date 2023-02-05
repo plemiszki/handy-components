@@ -5,6 +5,7 @@ import Index from './containers/modules/index.js'
 import BottomButtons from './containers/bottom-buttons.jsx'
 import Button from './containers/button.jsx'
 import ConfirmDelete from './containers/confirm-delete.jsx'
+import ConfirmModal from './containers/confirm-modal.jsx'
 import DeleteButton from './containers/delete-button.jsx'
 import FullIndex from './containers/full-index.jsx'
 import GrayedOut from './containers/grayed-out.jsx'
@@ -66,6 +67,7 @@ export {
   commonSort,
   convertObjectKeysToUnderscore,
   ConfirmDelete,
+  ConfirmModal,
   createEntity,
   deepCopy,
   DeleteButton,
