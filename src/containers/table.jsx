@@ -4,7 +4,7 @@ import Index from './modules/index.js'
 import { orderBy } from 'lodash'
 import { commonSort } from './utils/sort.js'
 
-const columnWidth = (column) => {
+const columnWidth = (column, defaultColumnWidth) => {
 	const { width, isDeleteButton } = column;
 	if (width) {
 		return {
@@ -16,6 +16,11 @@ const columnWidth = (column) => {
 			width: 27, // image width (17) + padding (10)
 		}
 	}
+	if (defaultColumnWidth) {
+		return {
+			width: defaultColumnWidth,
+		}
+	}
 }
 
 export default function Table({
@@ -24,6 +29,8 @@ export default function Table({
 	clickEdit,
 	clickRow,
 	columns,
+	defaultColumnWidth,
+	defaultSearchColumn,
 	hover = true,
 	fixed = false,
 	links = true,
@@ -54,7 +61,7 @@ export default function Table({
 		});
 	}
 
-	const [searchColumn, setSearchColumn] = useState(mappedColumns[0])
+	const [searchColumn, setSearchColumn] = useState(defaultSearchColumn ? mappedColumns.find(column => column.name === defaultSearchColumn) : mappedColumns[0])
 	if (mappedColumns.length === 1) {
 		sortable = false;
 	}
@@ -83,21 +90,23 @@ export default function Table({
 					<thead>
 						<tr>
 							{ mappedColumns.map((column, columnIndex) => {
+								const { name, header, blankHeader } = column;
+								const headerText = blankHeader ? '' : (header || ChangeCase.titleCase(name));
 								if (sortable) {
 									return (
-										<th key={ columnIndex } style={ columnWidth(column) }>
+										<th key={ columnIndex } style={ columnWidth(column, defaultColumnWidth) }>
 											<div
-												className={ Index.sortClass(column.name, searchColumn) }
+												className={ Index.sortClass(name, searchColumn) }
 												onClick={ () => { setSearchColumn(column) } }
 											>
-												{ column.header || ChangeCase.titleCase(column.name) }
+												{ headerText }
 											</div>
 										</th>
 									);
 								} else {
 									return (
-										<th key={ columnIndex } style={ columnWidth(column) }>
-											{ column.header || ChangeCase.titleCase(column.name) }
+										<th key={ columnIndex } style={ columnWidth(column, defaultColumnWidth) }>
+											{ headerText }
 										</th>
 									);
 								}
@@ -240,6 +249,7 @@ export default function Table({
 				td {
 					position: relative;
 					color: #96939B;
+					white-space: nowrap;
 				}
 				td:first-of-type {
 					padding-left: 10px;
