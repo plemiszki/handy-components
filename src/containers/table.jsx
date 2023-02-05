@@ -161,7 +161,7 @@ export default function Table({
 												<td key={ columnIndex } className={ className }>
 													<div
 														className="link-padding custom-button"
-														onClick={ () => { clickButton(row) } }
+														onClick={ () => clickButton(row) }
 													>
 														{ buttonText }
 													</div>
