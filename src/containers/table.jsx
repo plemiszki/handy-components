@@ -76,8 +76,6 @@ export default function Table({
 		(searchColumn.sortDir || 'asc'),
 	)
 
-	console.log('columns', columns);
-
 	return (
 		<>
 			<div className="horizontal-scroll">

@@ -307,6 +307,9 @@ export default class SearchIndex extends Component {
               font-size: 12px;
               line-height: 17px;
             }
+            table:not(.no-hover) tr:not(:first-child):not(.no-hover):hover {
+              background-color: #F5F5F5;
+            }
             thead {
               border-bottom: solid 1px #dadee2;
             }
