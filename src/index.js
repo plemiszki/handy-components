@@ -9,6 +9,7 @@ import DeleteButton from './containers/delete-button.jsx'
 import FullIndex from './containers/full-index.jsx'
 import GrayedOut from './containers/grayed-out.jsx'
 import ListBox from './containers/list-box.jsx'
+import ListBoxReorderable from './containers/list-box-reorderable.jsx'
 import ListEntry from './containers/list-entry.jsx'
 import Message from './containers/message.jsx'
 import ModalMessage from './containers/modal-message.jsx'
@@ -19,7 +20,6 @@ import SimpleDetails from './containers/simple-details.jsx'
 import SearchBar from './containers/search-bar.jsx'
 import SearchCriteria from './containers/search-criteria.jsx'
 import SearchIndex from './containers/search-index.jsx'
-import SortableAssociation from './containers/sortable-association.jsx'
 import Spinner from './containers/spinner.jsx'
 import Table from './containers/table.jsx'
 
@@ -79,6 +79,7 @@ export {
   GrayedOut,
   Index,
   ListBox,
+  ListBoxReorderable,
   ListEntry,
   Message,
   ModalMessage,
@@ -102,7 +103,6 @@ export {
   sendRequest,
   setUpNiceSelect,
   SimpleDetails,
-  SortableAssociation,
   sortArrayOfObjects,
   Spinner,
   stringIsDate,

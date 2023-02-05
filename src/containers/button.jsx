@@ -4,7 +4,7 @@ import Common from './modules/common.jsx'
 export default function Button(props) {
 	const {
 		text,
-		styles,
+		style,
 		onClick,
 		disabled = false,
 		float = false,
@@ -13,6 +13,7 @@ export default function Button(props) {
 		marginLeft = false,
 		marginBottom = false,
 		square = false,
+		hoverColor,
 	} = props;
 
 	return (
@@ -28,7 +29,7 @@ export default function Button(props) {
 					}}
 				/>) : (
 				<a
-					style={ styles }
+					style={ style }
 					className={ `${Common.renderDisabledButtonClass(disabled)}` }
 					onClick={ () => onClick() }
 				>{ text }</a>)
@@ -55,7 +56,7 @@ export default function Button(props) {
 				}
 				a:hover, input:hover {
 					text-decoration: none;
-					background-color: var(--highlight-color);
+					background-color: ${hoverColor ? `${hoverColor} !important` : 'var(--highlight-color)'};
 					color: white;
 				}
 				a.disabled, input.disabled {

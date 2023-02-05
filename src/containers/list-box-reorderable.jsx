@@ -3,8 +3,18 @@ import OutlineButton from './outline-button';
 import { sortArrayOfObjects } from './utils/sort';
 import ChangeCase from 'change-case'
 
-export default function SortableAssociation(props) {
-  const { entityName, entities, clickDelete, clickAdd, renderFunction } = props;
+export default function ListBoxReorderable(props) {
+  const {
+    entityName,
+    entityNamePlural: entityNamePluralArgument,
+    entities,
+    clickDelete,
+    clickAdd,
+    displayFunction,
+    displayProperty,
+    style
+  } = props;
+  const entityNamePlural = entityNamePluralArgument || `${entityName}s`
 
   const mouseDownHandle = (e) => {
     $('*').addClass('grabbing');
@@ -24,14 +34,14 @@ export default function SortableAssociation(props) {
 
   return (
     <>
-      <div>
+      <div style={ style }>
         <ul>
-          <li className="drop-zone" data-index="-1" data-section={ 'directors' }></li>
+          <li className="drop-zone" data-index="-1" data-section={ entityNamePlural }></li>
           { sortArrayOfObjects(entities, 'order').map((entity, index) => {
             return (
               <div key={ entity.id }>
-                <li data-id={ entity.id } data-index={ index } data-section="directors">
-                  { renderFunction(entity) }
+                <li data-id={ entity.id } data-index={ index } data-section={ entityNamePlural }>
+                  { displayProperty ? entity[displayProperty] : displayFunction(entity) }
                   <div
                     className="handle"
                     onMouseDown={ mouseDownHandle.bind(this) }
@@ -43,7 +53,7 @@ export default function SortableAssociation(props) {
                     data-id={ entity.id }
                   ></div>
                 </li>
-                <li className="drop-zone" data-index={ index } data-section="directors"></li>
+                <li className="drop-zone" data-index={ index } data-section={ entityNamePlural }></li>
               </div>
             );
           }) }

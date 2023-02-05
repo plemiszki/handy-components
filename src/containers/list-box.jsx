@@ -1,22 +1,57 @@
 import React from 'react'
+import OutlineButton from './outline-button';
+import ChangeCase from 'change-case'
 
 export default function ListBox(props) {
-	const { list, clickDelete, styles, textFunc } = props
+	const { entities, entityNamePlural: passedEntityNamePlural, clickDelete, style, displayFunction, displayProperty, clickAdd, entityName, buttonText, sort, styleIf } = props
+  const entityNamePlural = passedEntityNamePlural || `${entityName}s`
+
+  const getValue = (entity) => {
+    return displayProperty ? entity[displayProperty] : displayFunction(entity)
+  }
+
+  const getStyle = (styleIf, entity) => {
+    if (!styleIf) {
+      return null;
+    }
+    let result = {}
+    styleIf.forEach((obj) => {
+      const { func, style } = obj;
+      if (func(entity)) {
+        result = Object.assign(result, style);
+      }
+    })
+    return result;
+  }
 
 	return (
     <>
-      <ul style={ styles }>
-        { list.map((entity) => {
-          return (
-            <li key={ entity.id }>{ textFunc(entity) }<div className="x-gray-circle" onClick={ () => { clickDelete(entity) } }></div></li>
-          );
-        }) }
-      </ul>
+      <div style={ style }>
+        <ul data-test={ ChangeCase.hyphenCase(entityNamePlural) }>
+          { (sort ? entities.sort((a, b) => getValue(a).localeCompare(getValue(b))) : entities).map((entity, index) => {
+            return (
+              <li key={ index } style={ getStyle(styleIf, entity) }>
+                { getValue(entity) }
+                { clickDelete && (
+                  <div className="x-gray-circle" onClick={ () => { clickDelete(entity) } }></div>
+                ) }
+              </li>
+            );
+          }) }
+        </ul>
+        { clickAdd && (
+          <OutlineButton
+            text={ buttonText || `Add ${ChangeCase.titleCase(entityName)}` }
+            onClick={ () => { clickAdd() } }
+          />
+        ) }
+      </div>
       <style jsx>{`
         ul {
           border: 1px solid #E4E9ED;
           border-radius: 5px;
           padding: 15px;
+          margin-bottom: ${clickAdd ? 15 : 30}px;
         }
         li {
           position: relative;

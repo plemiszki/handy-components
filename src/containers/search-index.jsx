@@ -297,18 +297,65 @@ export default class SearchIndex extends Component {
         { this.renderSearchModal.call(this, searchCriteriaComponent) }
         { Common.renderJobModal.call(this, this.state.job) }
         <style jsx>{`
+            .horizontal-scroll {
+              overflow-x: scroll;
+            }
             table {
               table-layout: fixed;
+              width: 100%;
+              user-select: none;
+              font-size: 12px;
+              line-height: 17px;
+            }
+            thead {
+              border-bottom: solid 1px #dadee2;
+            }
+            th {
+              font-family: 'TeachableSans-SemiBold';
+              color: black;
+              padding-bottom: 20px;
+            }
+            th:first-of-type {
+              padding-left: 10px;
+            }
+            th div {
+              display: inline;
+            }
+            th div.sort-header-active {
+              cursor: pointer;
+              color: var(--highlight-color, #000);
+              font-family: 'TeachableSans-ExtraBold';
+            }
+            th div.sort-header-inactive {
+              cursor: pointer;
+            }
+            tr:first-child td {
+              padding-top: 10px;
+            }
+            tr.bold td {
+              font-family: 'TeachableSans-Medium';
+              color: black;
             }
             td {
               overflow: hidden;
               white-space: nowrap;
+              position: relative;
+              color: #96939B;
+            }
+            td:first-of-type {
+              padding-left: 10px;
+            }
+            td.bold {
+              font-family: 'TeachableSans-Medium';
+              color: black;
             }
             td a {
+              display: block;
+              width: 100%;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
-              padding-right: 20px;
+              padding: 10px 20px 10px 0;
             }
             .search-button {
               float: right;

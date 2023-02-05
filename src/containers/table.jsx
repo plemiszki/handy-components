@@ -5,17 +5,39 @@ import { orderBy } from 'lodash'
 import { commonSort } from './utils/sort.js'
 
 const columnWidth = (column) => {
-	if (column.width) {
+	const { width, isDeleteButton } = column;
+	if (width) {
 		return {
-			width: +column.width,
+			width,
+		}
+	}
+	if (isDeleteButton) {
+		return {
+			width: 27, // image width (17) + padding (10)
 		}
 	}
 }
 
-export default function Table({ styles = {}, rows, columns, searchText, urlPrefix, urlProperty, sortable = true, clickDelete, clickEdit, marginBottom }) {
+export default function Table({
+	alphabetize,
+	clickDelete,
+	clickEdit,
+	clickRow,
+	columns,
+	hover = true,
+	fixed = false,
+	links = true,
+	marginBottom,
+	rows,
+	searchText,
+	sortable = true,
+	style = {},
+	urlPrefix,
+	urlProperty,
+}) {
 
 	if (marginBottom) {
-		Object.assign(styles, { marginBottom: 30 });
+		Object.assign(style, { marginBottom: 30 });
 	}
 
 	let mappedColumns = columns.map((column) => {
@@ -26,6 +48,12 @@ export default function Table({ styles = {}, rows, columns, searchText, urlPrefi
 		}
 	});
 
+	if (clickDelete && !mappedColumns.find(column => column.isDeleteButton)) {
+		mappedColumns.push({
+			isDeleteButton: true,
+		});
+	}
+
 	const [searchColumn, setSearchColumn] = useState(mappedColumns[0])
 	if (mappedColumns.length === 1) {
 		sortable = false;
@@ -33,7 +61,7 @@ export default function Table({ styles = {}, rows, columns, searchText, urlPrefi
 
 	const standardIndexSort = (entity) => {
     const searchProperty = searchColumn.sortColumn || searchColumn.name
-    return commonSort(searchProperty, entity)
+    return commonSort(searchProperty, entity, searchColumn)
   }
 
 	const filteredRows = Index.filterSearchText({
@@ -48,10 +76,12 @@ export default function Table({ styles = {}, rows, columns, searchText, urlPrefi
 		(searchColumn.sortDir || 'asc'),
 	)
 
+	console.log('columns', columns);
+
 	return (
 		<>
 			<div className="horizontal-scroll">
-				<table style={ styles }>
+				<table style={ style } className={ !hover && 'no-hover' }>
 					<thead>
 						<tr>
 							{ mappedColumns.map((column, columnIndex) => {
@@ -78,28 +108,81 @@ export default function Table({ styles = {}, rows, columns, searchText, urlPrefi
 					</thead>
 					<tbody>
 						<tr><td></td></tr>
-						{ orderedRows.map((row, rowIndex) => {
+						{ ((sortable || alphabetize) ? orderedRows : filteredRows).map((row, rowIndex) => {
 							return (
 								<tr key={ rowIndex }>
 									{ mappedColumns.map((column, columnIndex) => {
-										if (column.isDeleteButton) {
+										const {
+											bold,
+											buttonText,
+											clickButton,
+											displayFunction,
+											isButton,
+											isDeleteButton,
+											isEditButton,
+											name,
+											redIf,
+										} = column;
+
+										let classNames = [];
+										if (bold) {
+											classNames.push('bold')
+										}
+										if (redIf && redIf(row)) {
+											classNames.push('red')
+										}
+										const className = classNames.join(' ')
+
+										const displayValue = displayFunction ? displayFunction(row) : row[name];
+
+										if (isDeleteButton) {
 											return (
 												<td key={ columnIndex } className="button">
 													<div className="x-gray-circle" onClick={ () => clickDelete(row) }></div>
 												</td>
 											);
 										}
-										if (column.isEditButton) {
+										if (isEditButton) {
 											return (
 												<td key={ columnIndex } className="button">
 													<div className="edit-image" onClick={ () => clickEdit(row) }></div>
 												</td>
 											);
 										}
+										if (isButton) {
+											return (
+												<td key={ columnIndex } className={ className }>
+													<div
+														className="link-padding custom-button"
+														onClick={ () => { clickButton(row) } }
+													>
+														{ buttonText }
+													</div>
+												</td>
+											);
+										}
+										if (!links) {
+											return (
+												<td key={ columnIndex } className={ className }>
+													<div className="link-padding">
+														{ displayValue }
+													</div>
+												</td>
+											);
+										}
+										if (clickRow) {
+											return (
+												<td key={ columnIndex } className={ className }>
+													<div className="link-padding pointer" onClick={ () => { clickRow(row) } }>
+														{ displayValue }
+													</div>
+												</td>
+											);
+										}
 										return (
-											<td key={ columnIndex } className={ column.bold && 'bold' }>
+											<td key={ columnIndex } className={ className }>
 												<a href={ `/${urlPrefix}/${urlProperty ? row[urlProperty] : row.id}` }>
-													{ row[column.name] }
+													{ displayValue }
 												</a>
 											</td>
 										);
@@ -111,8 +194,71 @@ export default function Table({ styles = {}, rows, columns, searchText, urlPrefi
 				</table>
 			</div>
 			<style jsx>{`
+				.horizontal-scroll {
+					overflow-x: scroll;
+				}
 				table {
+					width: 100%;
+					user-select: none;
+					font-size: 12px;
 					line-height: 17px;
+					table-layout: ${fixed ? 'fixed' : 'auto'}
+				}
+				thead {
+					border-bottom: solid 1px #dadee2;
+				}
+				th {
+					font-family: 'TeachableSans-SemiBold';
+					color: black;
+					padding-bottom: 20px;
+				}
+				th:first-of-type {
+					padding-left: 10px;
+				}
+				th div {
+					display: inline;
+				}
+				th div.sort-header-active {
+					cursor: pointer;
+          color: var(--highlight-color, #000);
+          font-family: 'TeachableSans-ExtraBold';
+				}
+				th div.sort-header-inactive {
+					cursor: pointer;
+				}
+				tr:first-child td {
+					padding-top: 10px;
+				}
+				tr.bold td, td.bold {
+					font-family: 'TeachableSans-Medium';
+					color: black;
+				}
+				.red {
+					color: red;
+				}
+				table:not(.no-hover) tr:not(:first-child):not(.no-hover):hover {
+          background-color: #F5F5F5;
+        }
+				td {
+					position: relative;
+					color: #96939B;
+				}
+				td:first-of-type {
+					padding-left: 10px;
+				}
+				a, .link-padding {
+					display: block;
+					width: 100%;
+					padding: 10px 0;
+				}
+				.link-padding.pointer {
+					cursor: pointer;
+				}
+				.custom-button {
+					cursor: pointer;
+				}
+				.custom-button:hover {
+					text-decoration: underline;
 				}
 				td.button {
 					padding-top: 10px;

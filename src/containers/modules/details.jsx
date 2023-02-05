@@ -106,7 +106,7 @@ let Details = {
     });
   },
 
-  clickDelete(args) {
+  clickDelete(args = {}) {
     const { callback } = args;
     this.setState({
       deleteModalOpen: false,
@@ -198,7 +198,7 @@ let Details = {
 
     const columnHeader = Details.getColumnHeader(args);
     const { errors } = this.state;
-    const { entity, property, errorsProperty } = args;
+    const { entity, property, errorsProperty, hideFieldError } = args;
     const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
 
@@ -230,7 +230,7 @@ let Details = {
       return Details.renderField.call(this, Object.assign(args, { value }));
     }
 
-    return(
+    return (
       <>
         <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
           <h2>{ columnHeader }</h2>
@@ -239,7 +239,7 @@ let Details = {
             { renderNoneOption(args) }
             { renderOptions(args, options) }
           </select>
-          { Details.renderDropdownFieldError(errorText) }
+          { hideFieldError ? null : Details.renderDropdownFieldError(errorText) }
         </div>
         <style jsx>{`
           .has-error .nice-select {
@@ -292,8 +292,8 @@ let Details = {
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
     } else {
-      return(
-        <div className={ `col-xs-${args.columnWidth}` }>
+      return (
+        <div className={ `col-xs-${args.columnWidth} ${args.center ? 'text-center' : ''}` } style={ args.style }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
           { Common.renderSwitchComponent({

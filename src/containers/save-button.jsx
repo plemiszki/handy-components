@@ -6,7 +6,7 @@ export default function SaveButton(props) {
 
 	return (
 		<Button
-			styles={ { width: '175px' } }
+			style={ { width: '165px' } }
 			onClick={ onClick }
 			disabled={ disabled || !changesToSave }
 			text={ changesToSave ? 'Save' : (justSaved ? 'Saved' : 'No Changes') }
