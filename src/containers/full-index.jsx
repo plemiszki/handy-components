@@ -89,6 +89,7 @@ export default function FullIndex(props) {
           rows={ entities }
           searchText={ searchText }
           urlPrefix={ ChangeCase.snakeCase(entityNamePlural) }
+          alphabetize={ true }
         />
       </div>
       { includeNewButton && (

@@ -35,7 +35,7 @@ export default function ListBoxReorderable(props) {
   return (
     <>
       <div style={ style }>
-        <ul>
+        <ul data-test={ ChangeCase.hyphenCase(entityNamePlural) }>
           <li className="drop-zone" data-index="-1" data-section={ entityNamePlural }></li>
           { sortArrayOfObjects(entities, 'order').map((entity, index) => {
             return (

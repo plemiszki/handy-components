@@ -320,7 +320,7 @@ const Common = {
   },
 
   renderSwitchComponent(args = {}) {
-    return(
+    return (
       <>
         <label>
           <input
@@ -331,7 +331,7 @@ const Common = {
             data-field={ args.property }
             disabled={ args.readOnly }
           />
-          <div className="oval"></div>
+          <div className="oval" data-test={ args.testLabel }></div>
         </label>
         <style jsx>{`
           label {
