@@ -39,6 +39,7 @@ export default function Table({
 	searchText,
 	sortable = true,
 	style = {},
+	test,
 	urlPrefix,
 	urlProperty,
 }) {
@@ -86,7 +87,7 @@ export default function Table({
 	return (
 		<>
 			<div className="horizontal-scroll">
-				<table style={ style } className={ !hover && 'no-hover' }>
+				<table style={ style } className={ !hover && 'no-hover' } data-test={ test }>
 					<thead>
 						<tr>
 							{ mappedColumns.map((column, columnIndex) => {

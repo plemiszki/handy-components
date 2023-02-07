@@ -177,7 +177,7 @@ export default class SimpleDetails extends Component {
               <DeleteButton
                 entityName={ entityName }
                 confirmDelete={
-                  Details.clickDelete.bind(this,
+                  Details.confirmDelete.bind(this,
                     {
                       callback: ((this.props.customDeletePath || this.props.deleteCallback) ? this.deleteCallback.bind(this) : null),
                       csrfToken: this.props.csrfToken

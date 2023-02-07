@@ -106,7 +106,7 @@ let Details = {
     });
   },
 
-  clickDelete(args = {}) {
+  confirmDelete(args = {}) {
     const { callback } = args;
     this.setState({
       deleteModalOpen: false,
