@@ -172,7 +172,7 @@ export default function Table({
 										if (!links) {
 											return (
 												<td key={ columnIndex } className={ className }>
-													<div className="link-padding">
+													<div className="link-padding" data-test={`${rowIndex}-${columnIndex}`}>
 														{ displayValue }
 													</div>
 												</td>
