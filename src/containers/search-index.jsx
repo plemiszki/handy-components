@@ -366,7 +366,6 @@ export default class SearchIndex extends Component {
               height: 47px;
               padding: 0;
               background-color: white;
-              background-image: url('/assets/handy-components/images/magnifying-glass.svg');
               background-repeat: no-repeat;
               background-position: center;
               border: 1px solid #E4E9ED;
