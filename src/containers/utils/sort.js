@@ -19,12 +19,22 @@ export const alphabetizeArrayOfObjects = (array, property) => {
   });
 }
 
-export const commonSort = (property, entity) => {
+export const commonSort = (property, entity, searchColumn) => {
   if (!property || !entity) {
     throw `commonSort is missing proper arguments`;
   }
   var propertyValue = entity[property];
-  if (typeof propertyValue === "string" || propertyValue instanceof String) {
+  if (searchColumn && searchColumn.date) {
+    const sortFirst = searchColumn.dateSortFirst || [];
+    const sortLast = searchColumn.dateSortLast || [];
+    if (sortFirst.includes(propertyValue)) {
+      return new Date('Jan 01 1900')
+    }
+    if (sortLast.includes(propertyValue)) {
+      return new Date('Jan 01 3000')
+    }
+    return new Date(propertyValue);
+  } else if (typeof propertyValue === "string" || propertyValue instanceof String) {
     return propertyValue.toLowerCase();
   } else if (typeof propertyValue == "boolean") {
     return propertyValue.toString().toLowerCase();

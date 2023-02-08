@@ -3,6 +3,9 @@ import Modal from 'react-modal'
 import ChangeCase from 'change-case'
 import Common from './modules/common.jsx'
 import Index from './modules/index.js'
+import Spinner from './spinner'
+import GrayedOut from './grayed-out'
+import Button from './button'
 
 import { convertObjectKeysToUnderscore, stringifyFullDate } from './utils/convert'
 
@@ -178,7 +181,8 @@ export default class SearchIndex extends Component {
   }
 
   render() {
-    let { spinner, columns, directory, orderByColumn, arrayName, entityNamePlural, searchCriteria } = this.state;
+    const { showNewButton, showExportButton, newButtonText, entityName, header, searchModalRows } = this.props;
+    let { spinner, columns, directory, arrayName, entityNamePlural, searchCriteria } = this.state;
     const searchActive = Object.keys(searchCriteria).length > 0;
     const searchCriteriaComponent = React.Children.map(
       this.props.children,
@@ -186,8 +190,8 @@ export default class SearchIndex extends Component {
         if (child && child.props.fields) {
           return React.cloneElement(child, {
             callback: this.updateSearchCriteria.bind(this),
-            criteria: this.state.searchCriteria,
-            rows: this.props.searchModalRows,
+            criteria: searchCriteria,
+            rows: searchModalRows,
             entityNamePlural
           });
         }
@@ -198,7 +202,7 @@ export default class SearchIndex extends Component {
       (child) => {
         if (child && child.props.initialEntity) {
           return React.cloneElement(child, {
-            entityName: this.props.entityName,
+            entityName,
             entityNamePlural,
             callback: this.newEntityCallback.bind(this)
           });
@@ -206,22 +210,38 @@ export default class SearchIndex extends Component {
       }
     );
 
-    return(
-      <div className="search-index component">
-        <h1>{ this.props.header || ChangeCase.titleCase(entityNamePlural) }</h1>
-        { this.renderNewButton() }
-        { this.renderExportButton() }
+    return (
+      <div className="search-index handy-component">
+        <h1>{ header || ChangeCase.titleCase(entityNamePlural) }</h1>
+        { showNewButton && (
+          <Button
+            float
+            marginLeft
+            disabled={ spinner }
+            text={ newButtonText || `Add ${ChangeCase.titleCase(entityName)}` }
+            onClick={ Index.clickNew.bind(this) }
+          />
+        ) }
+        { showExportButton && (
+          <Button
+            float
+            marginLeft
+            disabled={ spinner }
+            onClick={ this.clickExport.bind(this) }
+            text="Export"
+          />
+        ) }
         <a className={ 'btn search-button' + Common.renderDisabledButtonClass(this.state.spinner) + (searchActive ? ' active' : '') } onClick={ Common.changeState.bind(this, 'searchModalOpen', !this.state.searchModalOpen) }></a>
         <div className="white-box">
           <div className="top-section">
-            { Common.renderGrayedOut(spinner, -36, -32, 5) }
-            { Common.renderSpinner(spinner) }
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
             <div className="horizontal-scroll">
               <table className="admin-table sortable">
                 <thead>
                   <tr>
                     { columns.map((column, index) => {
-                      return(
+                      return (
                         <th key={ index } style={ this.columnWidth(column) }>
                           <div className={ this.columnHeaderClass.call(this, column) } onClick={ () => { this.clickHeader(column) } }>
                             { column.header || ChangeCase.titleCase(column.name) }
@@ -277,18 +297,68 @@ export default class SearchIndex extends Component {
         { this.renderSearchModal.call(this, searchCriteriaComponent) }
         { Common.renderJobModal.call(this, this.state.job) }
         <style jsx>{`
+            .horizontal-scroll {
+              overflow-x: scroll;
+            }
             table {
               table-layout: fixed;
+              width: 100%;
+              user-select: none;
+              font-size: 12px;
+              line-height: 17px;
+            }
+            table:not(.no-hover) tr:not(:first-child):not(.no-hover):hover {
+              background-color: #F5F5F5;
+            }
+            thead {
+              border-bottom: solid 1px #dadee2;
+            }
+            th {
+              font-family: 'TeachableSans-SemiBold';
+              color: black;
+              padding-bottom: 20px;
+            }
+            th:first-of-type {
+              padding-left: 10px;
+            }
+            th div {
+              display: inline;
+            }
+            th div.sort-header-active {
+              cursor: pointer;
+              color: var(--highlight-color, #000);
+              font-family: 'TeachableSans-ExtraBold';
+            }
+            th div.sort-header-inactive {
+              cursor: pointer;
+            }
+            tr:first-child td {
+              padding-top: 10px;
+            }
+            tr.bold td {
+              font-family: 'TeachableSans-Medium';
+              color: black;
             }
             td {
               overflow: hidden;
               white-space: nowrap;
+              position: relative;
+              color: #96939B;
+            }
+            td:first-of-type {
+              padding-left: 10px;
+            }
+            td.bold {
+              font-family: 'TeachableSans-Medium';
+              color: black;
             }
             td a {
+              display: block;
+              width: 100%;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
-              padding-right: 20px;
+              padding: 10px 20px 10px 0;
             }
             .search-button {
               float: right;
@@ -329,38 +399,6 @@ export default class SearchIndex extends Component {
         `}</style>
       </div>
     );
-  }
-
-  renderNewButton() {
-    if (this.props.showNewButton) {
-      return(
-        <>
-          <a className={ "new-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Index.clickNew.bind(this) }>{ this.props.newButtonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` }</a>
-          <style jsx>{`
-            .new-button {
-              float: right;
-              margin-left: 30px;
-            }
-          `}</style>
-        </>
-      );
-    }
-  }
-
-  renderExportButton() {
-    if (this.props.showExportButton) {
-      return(
-        <>
-          <a className={ "export-button btn" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickExport.bind(this) }>Export</a>
-          <style jsx>{`
-            .export-button {
-              float: right;
-              margin-left: 30px;
-            }
-          `}</style>
-        </>
-      );
-    }
   }
 
   renderSearchModal(searchCriteriaComponent) {

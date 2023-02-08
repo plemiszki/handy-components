@@ -3,7 +3,6 @@ import Modal from 'react-modal'
 import ChangeCase from 'change-case'
 import Common from './modules/common.jsx'
 import Details from './modules/details.jsx'
-import ConfirmDelete from './confirm-delete.jsx'
 
 import { objectsAreEqual } from './utils/compare.js'
 import { removeFinanceSymbols, removeFinanceSymbolsFromEntity } from './utils/convert.js'
@@ -11,6 +10,11 @@ import { deepCopy } from './utils/copy.js'
 import { parseUrl } from './utils/extract'
 import { setUpNiceSelect } from './utils/nice-select'
 import { convertObjectKeysToUnderscore } from './utils/convert.js'
+import Spinner from './spinner'
+import GrayedOut from './grayed-out'
+import Button from './button'
+import SaveButton from './save-button'
+import DeleteButton from './delete-button'
 
 let entityNamePlural;
 
@@ -129,23 +133,26 @@ export default class SimpleDetails extends Component {
   }
 
   render() {
+    const { hideDeleteButton, entityName, header, fields, copy } = this.props;
+    const { spinner, justSaved, changesToSave } = this.state;
+
     const children = React.Children.map(
       this.props.children,
       (child) => {
         return React.cloneElement(child, {
-          entityName: this.props.entityName,
+          entityName,
           entityNamePlural,
-          initialEntity: this.state[`${this.props.entityName}Saved`]
+          initialEntity: this.state[`${entityName}Saved`]
         });
       }
     );
 
-    return(
-      <div id="simple-details" className="component details-component">
-        <h1>{ this.props.header || `${ChangeCase.titleCase(this.props.entityName)} Details` }</h1>
+    return (
+      <div className="handy-component details-component">
+        <h1>{ header || `${ChangeCase.titleCase(entityName)} Details` }</h1>
         <div className="white-box">
           {
-            this.props.fields.map((row, index) => {
+            fields.map((row, index) => {
               return(
                 <div key={ index } className="row">
                   { row.map((field, index2) => {
@@ -160,30 +167,33 @@ export default class SimpleDetails extends Component {
             })
           }
           <div>
-            <a className={ "btn standard-width" + Common.renderDisabledButtonClass(this.state.spinner || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-              { Details.saveButtonText.call(this) }
-            </a>
-            { this.renderDeleteButton.call(this) }
-            { this.renderCopyButton.call(this) }
+            <SaveButton
+              justSaved={ justSaved }
+              changesToSave={ changesToSave }
+              disabled={ spinner }
+              onClick={ () => { this.clickSave() } }
+            />
+            { !hideDeleteButton && (
+              <DeleteButton
+                entityName={ entityName }
+                confirmDelete={
+                  Details.confirmDelete.bind(this,
+                    {
+                      callback: ((this.props.customDeletePath || this.props.deleteCallback) ? this.deleteCallback.bind(this) : null),
+                      csrfToken: this.props.csrfToken
+                    }
+                  )
+                }
+              />
+            ) }
+            { copy && (
+              <Button float margin text="Copy" disabled={ spinner } onClick={ () => { this.clickCopy() }} />
+            ) }
           </div>
-          { Common.renderGrayedOut(this.state.spinner, -36, -32, 5) }
-          { Common.renderSpinner(this.state.spinner) }
+          <GrayedOut visible={ spinner } />
+          <Spinner visible={ spinner } />
         </div>
         { this.renderCopyModal.call(this, children) }
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName={ this.props.entityName }
-            confirmDelete={
-              Details.clickDelete.bind(this,
-                {
-                  callback: ((this.props.customDeletePath || this.props.deleteCallback) ? this.deleteCallback.bind(this) : null),
-                  csrfToken: this.props.csrfToken
-                }
-              )
-            }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
       </div>
     );
   }
@@ -200,32 +210,12 @@ export default class SimpleDetails extends Component {
     }
   }
 
-  renderCopyButton() {
-    if (this.props.copy) {
-      return(
-        <a className={ "btn float-button margin-right" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ this.clickCopy.bind(this) }>
-          Copy
-        </a>
-      );
-    }
-  }
-
   deleteCallback() {
     const { deleteCallback, customDeletePath } = this.props;
     if (deleteCallback) {
       deleteCallback.call(this);
     } else {
       window.location.pathname = customDeletePath;
-    }
-  }
-
-  renderDeleteButton() {
-    if (!this.props.hideDeleteButton) {
-      return(
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.spinner) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-      );
     }
   }
 

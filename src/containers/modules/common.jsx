@@ -181,7 +181,7 @@ const Common = {
     return condition ? " inactive" : "";
   },
 
-  renderGrayedOut: function(shouldIRender, marginTop, marginLeft, borderRadius) {
+  renderGrayedOut: function(visible, marginTop, marginLeft, borderRadius) {
     var grayedOutStyle = {
       position: 'absolute',
       backgroundColor: 'gray',
@@ -192,7 +192,7 @@ const Common = {
       top: 0,
       left: 0
     };
-    if (shouldIRender) {
+    if (visible) {
       return(
         React.createElement("div", {className: "grayed-out", style:  grayedOutStyle })
       );
@@ -215,10 +215,35 @@ const Common = {
                   error = error.substr(0, error.length - 3);
                 }
                 return(
-                  <div key={ index } className={ `import-error${greenClass}` }>{ error }</div>
+                  <div key={ index } className={ `error${greenClass}` }>{ error }</div>
                 );
               }) }
             </div>
+            <style jsx>{`
+              h1 {
+                color: #2C2F33;
+                font-family: 'TeachableSans-SemiBold';
+                font-size: 20px;
+                line-height: 27px;
+                max-width: 350px;
+                margin: auto;
+                margin-bottom: 10px;
+              }
+              .error {
+                font-size: 14px;
+                line-height: 22px;
+                background: pink;
+                border: solid 1px red;
+                border-radius: 5px;
+                padding: 3px;
+                margin-bottom: 5px;
+                color: black;
+              }
+              .error.green {
+                background: lightgreen;
+                border: solid 1px green;
+              }
+            `}</style>
           </Modal>
         )
       } else if (showSuccessMessageModal) {
@@ -226,7 +251,7 @@ const Common = {
           <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobSuccessModalStyles() }>
             <div>
               <h1>{ this.state.job.firstLine }</h1>
-              <a className="orange-button" onClick={ Common.closeModals.bind(this) }>OK</a>
+              <a onClick={ Common.closeModals.bind(this) }>OK</a>
             </div>
             <style jsx>{`
               h1 {
@@ -236,16 +261,22 @@ const Common = {
                 line-height: 27px;
                 max-width: none;
                 margin: auto;
-                margin-bottom: 0;
+                margin-bottom: 20px;
               }
-              .orange-button {
-                width: 124px;
-                padding-left: 0;
-                padding-right: 0;
-                margin-top: 20px;
-                margin-right: 20px;
-                margin-left: 20px;
+              a {
+                display: inline-block;
+                text-align: center;
+                font-size: 12px;
+                border-radius: 100px;
+                font-family: 'TeachableSans-Bold';
+                padding: 15px 40px;
                 user-select: none;
+                color: white;
+                background-color: var(--button-color);
+                cursor: pointer;
+              }
+              a:hover {
+                background-color: var(--highlight-color);
               }
             `}</style>
           </Modal>
@@ -254,7 +285,9 @@ const Common = {
         return(
           <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobModalStyles() }>
             <div className="jobs-modal">
-              { Common.renderSpinner(true) }
+              { Common.renderSpinner(true, {
+                styles: { top: 'calc(35% - 45px)' },
+              }) }
               <div className="first-line">{ job.firstLine }</div>
               <div className={ "second-line" + (job.secondLine ? "" : " hidden") }>({ job.currentValue || 0 } of { job.totalValue || 0 })</div>
             </div>
@@ -264,23 +297,30 @@ const Common = {
     }
   },
 
-  renderSpinner: function(shouldIRender, spinnerSize) {
-    spinnerSize = spinnerSize || 90;
-    var spinnerStyle = {
+  renderSpinner: (visible, args = {}) => {
+    const { spinnerSize = 90, styles = {} } = args;
+    const spinnerStyle = Object.assign({
       width: spinnerSize,
       height: spinnerSize,
       left: 'calc(50% - ' + (spinnerSize / 2) + 'px)',
       top: 'calc(50% - ' + (spinnerSize / 2) + 'px)'
-    };
-    if (shouldIRender) {
+    }, styles);
+    if (visible) {
       return(
-        React.createElement("div", { className: "spinner", style:  spinnerStyle })
+        <>
+          <div className="spinner" style={ spinnerStyle }></div>
+          <style jsx>{`
+            position: absolute;
+            background-position: center;
+            opacity: 0.75;
+          `}</style>
+        </>
       );
     }
   },
 
   renderSwitchComponent(args = {}) {
-    return(
+    return (
       <>
         <label>
           <input
@@ -291,7 +331,7 @@ const Common = {
             data-field={ args.property }
             disabled={ args.readOnly }
           />
-          <div className="oval"></div>
+          <div className="oval" data-test={ args.testLabel }></div>
         </label>
         <style jsx>{`
           label {

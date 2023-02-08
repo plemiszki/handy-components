@@ -1,0 +1,25 @@
+.handy-component {
+
+  .x-gray-circle {
+    background-image: image-url('handy-components/images/x-gray-circle.png');
+  }
+
+  .edit-image {
+    background-image: image-url('handy-components/images/edit.svg');
+  }
+
+  .handle {
+    background-image: image-url('handy-components/images/handle.png');
+  }
+
+  input.search-box {
+    background-image: image-url('handy-components/images/magnifying-glass.svg') !important;
+  }
+}
+
+.handy-component, .jobs-modal {
+
+  .spinner {
+      background-image: image-url('handy-components/images/ajax-loader.svg');
+  }
+}

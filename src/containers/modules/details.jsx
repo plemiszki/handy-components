@@ -106,7 +106,7 @@ let Details = {
     });
   },
 
-  clickDelete(args) {
+  confirmDelete(args = {}) {
     const { callback } = args;
     this.setState({
       deleteModalOpen: false,
@@ -198,7 +198,7 @@ let Details = {
 
     const columnHeader = Details.getColumnHeader(args);
     const { errors } = this.state;
-    const { entity, property, errorsProperty } = args;
+    const { entity, property, errorsProperty, hideFieldError } = args;
     const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
 
@@ -230,7 +230,7 @@ let Details = {
       return Details.renderField.call(this, Object.assign(args, { value }));
     }
 
-    return(
+    return (
       <>
         <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
           <h2>{ columnHeader }</h2>
@@ -239,7 +239,7 @@ let Details = {
             { renderNoneOption(args) }
             { renderOptions(args, options) }
           </select>
-          { Details.renderDropdownFieldError(errorText) }
+          { hideFieldError ? null : Details.renderDropdownFieldError(errorText) }
         </div>
         <style jsx>{`
           .has-error .nice-select {
@@ -281,7 +281,7 @@ let Details = {
             data-field={ args.property }
           />
           <label className="checkbox" htmlFor={ `${args.entity}-${args.property}` }>{ columnHeader }</label>
-          { Details.renderFieldError(errorText) }
+          { Details.renderFieldError(errorText, args) }
         </div>
       );
     }
@@ -292,8 +292,8 @@ let Details = {
     if (args.hidden) {
       return <div className={ `col-xs-${args.columnWidth}` }></div>;
     } else {
-      return(
-        <div className={ `col-xs-${args.columnWidth}` }>
+      return (
+        <div className={ `col-xs-${args.columnWidth} ${args.center ? 'text-center' : ''}` } style={ args.style }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
           { Common.renderSwitchComponent({
@@ -312,12 +312,11 @@ let Details = {
     const {
       columnOffset,
       columnWidth,
-      entities,
       entitiesIndex,
       entity,
       errorsProperty,
       hidden,
-      leftLabel,
+      inputStyles,
       noneOption,
       optionDisplayProperty,
       optionsArrayName,
@@ -325,10 +324,8 @@ let Details = {
       property,
       readOnly,
       rows,
-      showErrorText,
-      showFieldError,
+      styles,
       type,
-      uploadLinkFunction,
     } = args;
 
     const containerClass = columnOffset ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}` : `col-xs-${columnWidth}`;
@@ -337,7 +334,6 @@ let Details = {
       return <div className={ containerClass }></div>;
     }
 
-    const changeFieldArgs = this.changeFieldArgs();
     const errors = Details.getErrors.call(this, args);
     const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
@@ -363,7 +359,7 @@ let Details = {
           })[optionDisplayProperty];
         }
         return([
-          <div key={ 1 } className={ `col-xs-${columnWidth - 1}` }>
+          <div key={ 1 } className={ `col-xs-${columnWidth - 1}` } style={ styles }>
             { Details.renderHeader(args) }
             <input
               className={ Details.inputClassName(hasError) }
@@ -372,6 +368,7 @@ let Details = {
               placeholder={ placeholder }
               data-field={ property }
               readOnly={ true }
+              style={ inputStyles }
             />
             { Details.renderTagsBelowField(args, errorText) }
           </div>,
@@ -396,7 +393,7 @@ let Details = {
         value = Details.getValue.call(this, args);
         return(
           <>
-            <div className={ `textbox-field ${containerClass}` }>
+            <div className={ `textbox-field ${containerClass}` } style={ styles }>
               { Details.renderHeader(args) }
               <textarea
                 rows={ rows }
@@ -405,6 +402,7 @@ let Details = {
                 value={ value }
                 data-entity={ entity }
                 data-field={ property }
+                style={ inputStyles }
               ></textarea>
               { Details.renderTagsBelowField(args, errorText) }
               { Details.renderCharacterCount.call(this, args) }
@@ -421,8 +419,8 @@ let Details = {
         );
       case 'json':
         value = Details.getValue.call(this, args);
-        return(
-          <div className={ containerClass }>
+        return (
+          <div className={ containerClass } style={ styles }>
             { Details.renderHeader(args) }
             <>
               <textarea
@@ -433,6 +431,7 @@ let Details = {
                 data-entity={ entity }
                 data-field={ property }
                 data-json={ true }
+                style={ inputStyles }
               />
               <style jsx>{`
                 textarea {
@@ -446,8 +445,8 @@ let Details = {
         );
       default:
         value = Details.getValue.call(this, args);
-        return(
-          <div className={ containerClass }>
+        return (
+          <div className={ containerClass } style={ styles }>
             { Details.renderHeader(args) }
             { Details.renderLeftLabel(args) }
             <input
@@ -459,6 +458,7 @@ let Details = {
               placeholder={ placeholder }
               readOnly={ readOnly }
               data-test-index={ entitiesIndex }
+              style={ inputStyles }
             />
             { Details.renderTagsBelowField(args, errorText) }
           </div>
@@ -473,12 +473,16 @@ let Details = {
         { Details.renderUploadLink(uploadLinkFunction) }
         { Details.renderLink(args) }
         { Details.renderWarning(args) }
-        { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('') : Details.renderFieldError(errorText)) }
+        { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('', args) : Details.renderFieldError(errorText, args)) }
       </>
     );
   },
 
-  renderFieldError(errorText) {
+  renderFieldError(errorText, args) {
+    const { hideFieldError } = args;
+    if (hideFieldError) {
+      return null;
+    }
     if (errorText) {
       return React.createElement("div", { className: "yes-field-error" }, errorText);
     } else {
@@ -508,14 +512,16 @@ let Details = {
       <>
         <label>{ leftLabel }</label>
         <style jsx>{`
-          position: absolute;
-          right: 100%;
-          width: 300px;
-          text-align: right;
-          margin-top: 10px;
-          font-family: 'TeachableSans-Medium';
-          font-size: 12px;
-          color: #2C2F33;
+          label {
+            position: absolute;
+            right: 100%;
+            width: 300px;
+            text-align: right;
+            margin-top: 10px;
+            font-family: 'TeachableSans-Medium';
+            font-size: 12px;
+            color: #2C2F33;
+          }
         `}</style>
       </>
     );
@@ -571,11 +577,13 @@ let Details = {
         <>
           <p>{ warning }</p>
           <style jsx>{`
-            margin-top: 10px;
-            background-color: lightyellow;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: 'TeachableSans-Bold';
+            p {
+              margin-top: 10px;
+              background-color: lightyellow;
+              padding: 10px;
+              border-radius: 5px;
+              font-family: 'TeachableSans-Bold';
+            }
           `}</style>
         </>
       );
