@@ -111,7 +111,7 @@ let Details = {
     this.setState({
       deleteModalOpen: false,
       spinner: true,
-      fetching: true,
+      spinner: true,
     });
     deleteEntity().then((response) => {
       if (callback) {

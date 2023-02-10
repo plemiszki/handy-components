@@ -86,9 +86,12 @@ export default class SearchIndex extends Component {
     fetch(`/api/${directory}?${$.param(convertObjectKeysToUnderscore(queryParams))}`)
       .then(data => data.json())
       .then((response) => {
+        const { morePages, pageNumbers } = response;
         this.setState({
           spinner: false,
           [arrayName]: response[arrayName],
+          morePages,
+          pageNumbers,
         });
       })
   }
@@ -419,7 +422,7 @@ export default class SearchIndex extends Component {
   }
 
   renderPageLinks() {
-    const { pageNumbers, morePages } = this.props;
+    const { pageNumbers, morePages } = this.state;
     if (!pageNumbers) {
       return null;
     }
