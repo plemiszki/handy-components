@@ -34,6 +34,7 @@ import {
   removeFinanceSymbols,
   stringifyFullDate,
   stringifyDate,
+  stringifyJSONFields,
 } from './containers/utils/convert'
 import { deepCopy } from './containers/utils/copy'
 import { pluckFromObjectsArray, parseUrl } from './containers/utils/extract'
@@ -111,6 +112,7 @@ export {
   stringIsNumber,
   stringifyDate,
   stringifyFullDate,
+  stringifyJSONFields,
   Table,
   todayDMY,
   updateEntity,

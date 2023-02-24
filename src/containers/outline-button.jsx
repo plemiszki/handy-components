@@ -11,7 +11,10 @@ export default function OutlineButton(props) {
 		marginLeft = false,
     marginBottom = false,
 		float = false,
+		color: passedColor,
 	} = props;
+
+	const color = passedColor || 'var(--button-color)';
 
 	return (
 		<>
@@ -27,8 +30,8 @@ export default function OutlineButton(props) {
           min-width: 120px;
 					display: inline-block;
 					font-family: 'TeachableSans-Regular';
-          color: var(--button-color);
-          border: solid 1px var(--button-color);
+          color: ${color};
+          border: solid 1px ${color};
 					text-align: center;
 					font-size: 12px;
 					border-radius: 100px;
@@ -41,7 +44,7 @@ export default function OutlineButton(props) {
           margin-bottom: ${marginBottom ? '30px' : 0};
 				}
 				a:hover {
-					color: var(--button-color);
+					color: ${color};
 					user-select: none;
 				}
 				a.disabled {

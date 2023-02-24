@@ -79,3 +79,11 @@ export const stringifyDate = (date) => {
 export const stringifyFullDate = (date) => {
   return `${MONTHS[date.getMonth()]} ${ordinatize(date.getDate())}, ${date.getFullYear()}`;
 }
+
+export const stringifyJSONFields = (args) => {
+  const { entity, jsonFields } = args;
+  jsonFields.forEach((field) => {
+    entity[field] = JSON.stringify(entity[field], null, 2);
+  });
+  return entity;
+}
