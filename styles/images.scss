@@ -15,6 +15,14 @@
   input.search-box, .search-button {
     background-image: image-url('handy-components/images/magnifying-glass.svg') !important;
   }
+
+  .left-arrow {
+    background-image: image-url('handy-components/images/left-arrow.png');
+  }
+
+  .right-arrow {
+    background-image: image-url('handy-components/images/right-arrow.png');
+  }
 }
 
 .handy-component, .jobs-modal {
@@ -22,4 +30,8 @@
   .spinner {
       background-image: image-url('handy-components/images/ajax-loader.svg');
   }
+}
+
+.message-box .message-close {
+  background-image: image-url("handy-components/images/x.svg");
 }

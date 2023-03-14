@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import ChangeCase from 'change-case'
 import Index from './modules/index.js'
-import { orderBy } from 'lodash'
+import { orderBy, result } from 'lodash'
 import { commonSort } from './utils/sort.js'
+import Common from './modules/common.jsx'
 
 const columnWidth = (column, defaultColumnWidth) => {
-	const { width, isDeleteButton } = column;
+	const { width, isDeleteButton, useArrows } = column;
 	if (width) {
 		return {
 			width,
@@ -16,11 +17,44 @@ const columnWidth = (column, defaultColumnWidth) => {
 			width: 27, // image width (17) + padding (10)
 		}
 	}
+	if (useArrows) {
+		return {
+			width: 90,
+		}
+	}
 	if (defaultColumnWidth) {
 		return {
 			width: defaultColumnWidth,
 		}
 	}
+}
+
+const getStyle = (styleIf, entity) => {
+	if (!styleIf) {
+		return null;
+	}
+	let result = {}
+	styleIf.forEach((obj) => {
+		const { func, style } = obj;
+		if (func(entity)) {
+			result = Object.assign(result, style);
+		}
+	})
+	return result;
+}
+
+const totalRow = (columns, rows) => {
+	let result = {};
+	columns.forEach(column => {
+		if (column.totalRow) {
+			result[column.name] = rows.reduce((total, row) => total = total + row[column.name], 0);
+			result.isTotalRow = true;
+		}
+	});
+	if (Object.keys(result).length) {
+		return [result];
+	}
+	return [];
 }
 
 export default function Table({
@@ -37,8 +71,9 @@ export default function Table({
 	marginBottom,
 	rows,
 	searchText,
-	sortable = true,
+	sortable: tableSortable = true,
 	style = {},
+	styleIf,
 	test,
 	urlPrefix,
 	urlProperty,
@@ -48,13 +83,17 @@ export default function Table({
 		Object.assign(style, { marginBottom: 30 });
 	}
 
-	let mappedColumns = columns.map((column) => {
+	let mappedColumns = columns.reduce((result, column) => {
 		if (typeof column === 'string') {
-			return { name: column };
+			result.push({ name: column });
 		} else {
-			return column;
+			const { include = true } = column;
+			if (include) {
+				result.push(column);
+			}
 		}
-	});
+		return result;
+	}, []);
 
 	if (clickDelete && !mappedColumns.find(column => column.isDeleteButton)) {
 		mappedColumns.push({
@@ -64,7 +103,7 @@ export default function Table({
 
 	const [searchColumn, setSearchColumn] = useState(defaultSearchColumn ? mappedColumns.find(column => column.name === defaultSearchColumn) : mappedColumns[0])
 	if (mappedColumns.length === 1) {
-		sortable = false;
+		tableSortable = false;
 	}
 
 	const standardIndexSort = (entity) => {
@@ -91,11 +130,12 @@ export default function Table({
 					<thead>
 						<tr>
 							{ mappedColumns.map((column, columnIndex) => {
-								const { name, header, blankHeader } = column;
+								const { name, header, blankHeader, sortable: columnSortable = true, centered } = column;
 								const headerText = blankHeader ? '' : (header || ChangeCase.titleCase(name));
-								if (sortable) {
+								const className = centered ? 'text-center' : '';
+								if (tableSortable && columnSortable) {
 									return (
-										<th key={ columnIndex } style={ columnWidth(column, defaultColumnWidth) }>
+										<th key={ columnIndex } style={ columnWidth(column, defaultColumnWidth) } className={ className }>
 											<div
 												className={ Index.sortClass(name, searchColumn) }
 												onClick={ () => { setSearchColumn(column) } }
@@ -106,7 +146,7 @@ export default function Table({
 									);
 								} else {
 									return (
-										<th key={ columnIndex } style={ columnWidth(column, defaultColumnWidth) }>
+										<th key={ columnIndex } style={ columnWidth(column, defaultColumnWidth) } className={ className }>
 											{ headerText }
 										</th>
 									);
@@ -116,33 +156,57 @@ export default function Table({
 					</thead>
 					<tbody>
 						<tr><td></td></tr>
-						{ ((sortable || alphabetize) ? orderedRows : filteredRows).map((row, rowIndex) => {
+						{ ((tableSortable || alphabetize) ? orderedRows : filteredRows).concat(totalRow(mappedColumns, rows)).map((row, rowIndex) => {
+							const { isTotalRow } = row;
 							return (
-								<tr key={ rowIndex }>
+								<tr key={ rowIndex } className={ isTotalRow && 'total-row no-hover' } style={ getStyle(styleIf, row) }>
 									{ mappedColumns.map((column, columnIndex) => {
 										const {
 											bold,
+											boldIf,
 											buttonText,
 											clickButton,
+											clickSwitch,
 											displayFunction,
 											isButton,
 											isDeleteButton,
 											isEditButton,
+											isSwitch,
 											name,
 											redIf,
+											displayIf,
+											useArrows,
+											arrowsIf,
+											clickLeft,
+											clickRight,
+											centered,
 										} = column;
 
+										if (displayIf && !displayIf(row)) {
+											return (
+												<td key={ columnIndex }></td>
+											);
+										}
+
 										let classNames = [];
-										if (bold) {
-											classNames.push('bold')
+										if (isTotalRow || bold || (boldIf && boldIf(row))) {
+											classNames.push('bold');
 										}
 										if (redIf && redIf(row)) {
-											classNames.push('red')
+											classNames.push('red');
 										}
-										const className = classNames.join(' ')
+										if (centered) {
+											classNames.push('text-center');
+										}
+										const className = classNames.join(' ');
 
 										const displayValue = displayFunction ? displayFunction(row) : row[name];
 
+										if (isTotalRow && (isDeleteButton || isEditButton || isButton || isSwitch)) {
+											return (
+												<td key={ columnIndex }></td>
+											);
+										}
 										if (isDeleteButton) {
 											return (
 												<td key={ columnIndex } className="button">
@@ -165,6 +229,38 @@ export default function Table({
 														onClick={ () => clickButton(row) }
 													>
 														{ buttonText }
+													</div>
+												</td>
+											);
+										}
+										if (isSwitch) {
+											return (
+												<td key={ columnIndex } className={ className }>
+													{ Common.renderSwitchComponent({
+														onChange: (e) => {
+															clickSwitch(row, e.target.checked);
+														},
+														checked: row.useAllAvailable,
+														width: 50,
+														height: 24,
+														circleSize: 16,
+													}) }
+												</td>
+											);
+										}
+										if (useArrows || (arrowsIf && arrowsIf(row))) {
+											return (
+												<td key={ columnIndex } className={ className }>
+													<div className="link-padding" data-test={`${rowIndex}-${columnIndex}`}>
+														<div
+															className="arrow left-arrow"
+															onClick={ () => { clickLeft(row) } }
+														></div>
+														<p className="arrows-cell-value">{ displayValue }</p>
+														<div
+															className="arrow right-arrow"
+															onClick={ () => { clickRight(row) } }
+														></div>
 													</div>
 												</td>
 											);
@@ -211,6 +307,7 @@ export default function Table({
 					font-size: 12px;
 					line-height: 17px;
 					table-layout: ${fixed ? 'fixed' : 'auto'}
+					color: #96939B;
 				}
 				thead {
 					border-bottom: solid 1px #dadee2;
@@ -238,7 +335,7 @@ export default function Table({
 					padding-top: 10px;
 				}
 				tr.bold td, td.bold {
-					font-family: 'TeachableSans-Medium';
+					font-family: 'TeachableSans-SemiBold';
 					color: black;
 				}
 				.red {
@@ -249,7 +346,6 @@ export default function Table({
         }
 				td {
 					position: relative;
-					color: #96939B;
 					white-space: nowrap;
 				}
 				td:first-of-type {
@@ -280,6 +376,24 @@ export default function Table({
 					height: 17px;
 					cursor: pointer;
 					background-size: contain;
+				}
+				.arrow {
+					display: inline-block;
+					width: 20px;
+					height: 17px;
+					background-size: 30%;
+					background-position: center;
+					vertical-align: middle;
+					cursor: pointer;
+				}
+				.arrows-cell-value {
+					display: inline-block;
+					width: 50px;
+					text-align: center;
+					vertical-align: middle;
+				}
+				.total-row .left-arrow, .total-row .right-arrow {
+					background-image: none;
 				}
 			`}</style>
 		</>

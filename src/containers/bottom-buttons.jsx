@@ -3,7 +3,16 @@ import DeleteButton from './delete-button';
 import SaveButton from './save-button';
 
 export default function BottomButtons(props) {
-  const { entityName, confirmDelete, clickSave, disabled, changesToSave, justSaved, marginBottom = false } = props;
+  const {
+    entityName,
+    confirmDelete,
+    clickSave,
+    disabled,
+    changesToSave,
+    justSaved,
+    marginBottom = false,
+    children,
+  } = props;
 
   return (
     <div>
@@ -15,6 +24,7 @@ export default function BottomButtons(props) {
         marginBottom={ marginBottom }
       />
       <DeleteButton entityName={ entityName } confirmDelete={ confirmDelete } />
+      { children }
     </div>
   );
 }

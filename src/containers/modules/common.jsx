@@ -204,7 +204,7 @@ const Common = {
       const showErrorsModal = job.status === 'failed' || (job.status === 'success' && job.metadata.useErrorsModalOnSuccess);
       const showSuccessMessageModal = job.status === 'success' && job.metadata.showSuccessMessageModal;
       if (showErrorsModal) {
-        return(
+        return (
           <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.jobErrorsModalStyles() }>
             <div className="errors-modal">
               <h1>{ this.state.job.firstLine }</h1>
@@ -247,7 +247,7 @@ const Common = {
           </Modal>
         )
       } else if (showSuccessMessageModal) {
-        return(
+        return (
           <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobSuccessModalStyles() }>
             <div>
               <h1>{ this.state.job.firstLine }</h1>
@@ -282,7 +282,7 @@ const Common = {
           </Modal>
         );
       } else {
-        return(
+        return (
           <Modal isOpen={ this.state.jobModalOpen } contentLabel="Modal" style={ Common.jobModalStyles() }>
             <div className="jobs-modal">
               { Common.renderSpinner(true, {
@@ -320,6 +320,11 @@ const Common = {
   },
 
   renderSwitchComponent(args = {}) {
+    const {
+      height = 34,
+      width = 60,
+      circleSize = 26,
+    } = args;
     return (
       <>
         <label>
@@ -338,8 +343,8 @@ const Common = {
             position: relative;
             display: inline-block;
             vertical-align: middle;
-            width: 60px;
-            height: 34px;
+            width: ${width}px;
+            height: ${height}px;
           }
           input {
             display: none !important;
@@ -367,8 +372,8 @@ const Common = {
           div.oval:before {
             position: absolute;
             content: "";
-            height: 26px;
-            width: 26px;
+            height: ${circleSize}px;
+            width: ${circleSize}px;
             left: 4px;
             bottom: 4px;
             background-color: white;

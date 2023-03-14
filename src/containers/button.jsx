@@ -13,6 +13,7 @@ export default function Button(props) {
 		marginLeft = false,
 		marginBottom = false,
 		square = false,
+		color,
 		hoverColor,
 	} = props;
 
@@ -21,6 +22,7 @@ export default function Button(props) {
 			{ submit ? (
 				<input
 					type="submit"
+					style={ style }
 					className={ `${Common.renderDisabledButtonClass(disabled)}` }
 					value={ text }
 					onClick={ (e) => {
@@ -43,7 +45,7 @@ export default function Button(props) {
 					font-size: 12px;
 					line-height: 17px;
 					border-radius: ${square ? '5px' : '100px'};
-					background-color: var(--button-color);
+					background-color: ${color ? `${color} !important` : 'var(--button-color)'};
 					color: white;
 					letter-spacing: inherit;
 					border: none;

@@ -8,7 +8,7 @@
         margin-bottom: 15px;
     }
 
-    input:not([type='submit']):not([type='checkbox']):not(.search-box), .nice-select, textarea {
+    input:not([type='submit']):not([type='checkbox']):not([type='radio']):not(.search-box), .nice-select, textarea {
         width: 100%;
         border: 1px solid #E4E9ED;
         border-radius: 3px;

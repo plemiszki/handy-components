@@ -555,8 +555,19 @@ let Details = {
 
   renderUploadLink(func) {
     if (func) {
-      return(
-        <a className="upload" onClick={ func }>Upload Image</a>
+      return (
+        <>
+          <a className="upload" onClick={ func }>Upload Image</a>
+          <style jsx>{`
+            a.upload {
+              margin-top: 10px;
+              display: inline-block;
+              font-size: 10px;
+              cursor: pointer;
+              color: #95949B;
+            }
+          `}</style>
+        </>
       );
     }
   },

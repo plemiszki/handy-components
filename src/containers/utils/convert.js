@@ -7,6 +7,9 @@ export const convertBooleanToTFString = (boolean) => {
 }
 
 export const convertObjectKeysToUnderscore = (object) => {
+  if (Array.isArray(object)) {
+    return object;
+  }
   let result = {};
   Object.keys(object).forEach((key) => {
     let value = object[key];

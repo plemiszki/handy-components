@@ -52,15 +52,26 @@ export const createEntity = (args = {}) => {
         directory = parseUrl()[0],
         entityName,
         entity,
+        additionalData,
     } = args;
     const csrfToken = getCsrfToken();
+    const body = {
+        [snakeCase(entityName)]: convertObjectKeysToUnderscore(entity),
+    }
+    if (additionalData) {
+        Object.keys(additionalData).forEach((key) => {
+            Object.assign(body, {
+                [snakeCase(key)]: convertObjectKeysToUnderscore(additionalData[key]),
+            });
+        })
+    }
     return fetch(`/api/${directory}`, {
         method: 'POST',
         headers: {
             'x-csrf-token': csrfToken,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ [snakeCase(entityName)]: convertObjectKeysToUnderscore(entity) })
+        body: JSON.stringify(body),
     }).then(async (response) => {
         const payload = await response.json();
         if (!response.ok) {
@@ -95,7 +106,7 @@ export const updateEntity = (args = {}) => {
             'x-csrf-token': csrfToken,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
     }).then(async (response) => {
         const payload = await response.json();
         if (!response.ok) {
