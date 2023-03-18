@@ -1,6 +1,6 @@
 import { parseUrl } from './extract'
 import { snakeCase } from 'change-case'
-import { convertObjectKeysToUnderscore } from './convert'
+import { convertObjectKeysToUnderscore, stringifyJSONFields } from './convert'
 
 export const sendRequest = (url, args = {}) => {
     const { method = 'GET', data } = args;
@@ -86,9 +86,20 @@ export const updateEntity = (args = {}) => {
         id = parseUrl()[0],
         directory = parseUrl()[1],
         entityName,
-        entity,
         additionalData,
+        jsonFieldsToConvert = [],
     } = args;
+    let { entity } = args;
+
+    if (jsonFieldsToConvert) {
+        jsonFieldsToConvert.forEach((field) => {
+            let obj = entity[field];
+            obj = convertObjectKeysToUnderscore(obj);
+            entity[field] = obj;
+        });
+        entity = stringifyJSONFields({ entity, jsonFields: jsonFieldsToConvert });
+    }
+
     const csrfToken = getCsrfToken();
     const body = {
         [snakeCase(entityName)]: convertObjectKeysToUnderscore(entity),

@@ -10,6 +10,7 @@ import { deepCopy } from '../utils/copy'
 import { pluckFromObjectsArray, parseUrl } from '../utils/extract'
 import { alphabetizeArrayOfObjects } from '../utils/sort'
 import { deleteEntity } from '../utils/requests'
+import { get, set } from 'lodash'
 
 let Details = {
 
@@ -49,6 +50,7 @@ let Details = {
       entity,
       errorsProperty,
       property,
+      nestedKeys = [],
     } = args;
     const changeFieldArgs = this.changeFieldArgs();
     const errors = Details.getErrors.call(this, args);
@@ -76,7 +78,7 @@ let Details = {
     }
 
     // update the object
-    obj[property] = newValue;
+    set(obj, [property].concat(nestedKeys), newValue)
 
     // update any other relevant properties
     if (changeFieldArgs.beforeSave) {
@@ -147,12 +149,13 @@ let Details = {
   },
 
   getValue(args) {
-    const { value, entity, entities, entitiesIndex, property } = args;
+    const { value, entity, entities, entitiesIndex, property, nestedKeys = [] } = args;
     if (value) {
       return value || '';
     }
     if (entity) {
-      return this.state[entity][property] || '';
+      const path = [entity, property].concat(nestedKeys);
+      return get(this.state, path, '');
     }
     if (entities) {
       return this.state[entities][entitiesIndex][property] || '';
@@ -288,20 +291,22 @@ let Details = {
   },
 
   renderSwitch(args) {
+    const { entity, property, readOnly, columnWidth, center, style, hidden } = args;
     let columnHeader = Details.getColumnHeader(args);
-    if (args.hidden) {
-      return <div className={ `col-xs-${args.columnWidth}` }></div>;
+    const checked = Details.getValue.call(this, args) || false;
+    if (hidden) {
+      return <div className={ `col-xs-${columnWidth}` }></div>;
     } else {
       return (
-        <div className={ `col-xs-${args.columnWidth} ${args.center ? 'text-center' : ''}` } style={ args.style }>
+        <div className={ `col-xs-${columnWidth} ${center ? 'text-center' : ''}` } style={ style }>
           <h2>{ columnHeader }</h2>
           { Details.renderSubheader(args) }
           { Common.renderSwitchComponent({
             onChange: Details.changeField.bind(this, args),
-            checked: this.state[args.entity][args.property] || false,
-            entity: args.entity,
-            property: args.property,
-            readOnly: args.readOnly,
+            checked,
+            entity,
+            property,
+            readOnly,
           }) }
         </div>
       );
