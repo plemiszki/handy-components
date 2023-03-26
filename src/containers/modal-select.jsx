@@ -2,6 +2,23 @@ import React, { useState } from 'react'
 import Index from './modules/index.js'
 import { alphabetizeArrayOfObjects } from './utils/sort.js'
 import SearchBar from './search-bar.jsx'
+import Modal from 'react-modal'
+
+const modalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)',
+  },
+  content: {
+    background: '#FFFFFF',
+    margin: 'auto',
+    maxWidth: 540,
+    height: '90%',
+    border: 'solid 1px #5F5F5F',
+    borderRadius: '6px',
+    textAlign: 'center',
+    color: '#5F5F5F',
+  }
+}
 
 export default function ModalSelect(props) {
 
@@ -10,37 +27,40 @@ export default function ModalSelect(props) {
     noneOption,
     options,
     property,
+    isOpen,
+    onClose,
   } = props
 
   const [searchText, setSearchText] = useState('')
-
   const filteredOptions = Index.filterSearchText({ entities: options, text: searchText, property })
 
   return (
     <>
-      <div className="modal-select handy-component">
-        <SearchBar
-          onChange={ (e) => { setSearchText(e.target.value) } }
-          value={ searchText }
-          style={
-            {
-              float: 'none',
-              width: '100%',
-              marginBottom: 10,
+      <Modal isOpen={ isOpen } onRequestClose={ () => { onClose() } } style={ modalStyles }>
+        <div className="modal-select handy-component">
+          <SearchBar
+            onChange={ (e) => { setSearchText(e.target.value) } }
+            value={ searchText }
+            style={
+              {
+                float: 'none',
+                width: '100%',
+                marginBottom: 10,
+              }
             }
-          }
-        />
-        <ul className="licensor-modal-list">
-          { noneOption && (
-            <li onClick={ func } data-id={ null } data-type={ null }>(None)</li>
-          ) }
-          { alphabetizeArrayOfObjects(filteredOptions, property).map((option, index) => {
-            return (
-              <li key={ index } onClick={ () => { func(option) } } data-id={ option.id } data-type={ option.itemType }>{ option[property] }</li>
-            )
-          }) }
-        </ul>
-      </div>
+          />
+          <ul>
+            { noneOption && (
+              <li onClick={ func } data-id={ null } data-type={ null }>(None)</li>
+            ) }
+            { alphabetizeArrayOfObjects(filteredOptions, property).map((option, index) => {
+              return (
+                <li key={ index } onClick={ () => { func(option) } } data-id={ option.id } data-type={ option.itemType }>{ option[property] }</li>
+              )
+            }) }
+          </ul>
+        </div>
+      </Modal>
       <style jsx>{`
         li {
           line-height: 17px;
