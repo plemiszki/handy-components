@@ -394,9 +394,7 @@ export default class SearchCriteria extends Component {
             { fieldActive ? (
               <div className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, modalOpenVar, true) }></div>
             ) : null }
-            <Modal isOpen={ this.state[modalOpenVar] } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-              <ModalSelect options={ this.state[field.responseArrayName] } property={ field.optionDisplayProperty } func={ (option) => { this.selectModalOption(field, option, modalOpenVar) } } noneOption={ false } />
-            </Modal>
+            <ModalSelect isOpen={ this.state[modalOpenVar] } onRequestClose={ Common.closeModals.bind(this) } options={ this.state[field.responseArrayName] || [] } property={ field.optionDisplayProperty } func={ (option) => { this.selectModalOption(field, option, modalOpenVar) } } noneOption={ false } />
           </>
         );
       case 'number range':

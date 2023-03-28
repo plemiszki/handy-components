@@ -379,20 +379,15 @@ let Details = {
           </div>,
           <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
           </div>,
-          <Modal
+          <ModalSelect
             key={ 3 }
             isOpen={ this.state[`${idEntity}sModalOpen`] }
             onRequestClose={ Common.closeModals.bind(this) }
-            contentLabel="Modal"
-            style={ Common.selectModalStyles() }
-          >
-            <ModalSelect
-              options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
-              property={ optionDisplayProperty }
-              func={ (option) => { Details.selectModalOption.call(this, option, idEntity, entity) } }
-              noneOption={ noneOption }
-            />
-          </Modal>
+            options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
+            property={ optionDisplayProperty }
+            func={ (option) => { Details.selectModalOption.call(this, option, idEntity, entity) } }
+            noneOption={ noneOption }
+          />,
         ]);
       case 'textbox':
         value = Details.getValue.call(this, args);
