@@ -257,19 +257,19 @@ export default class SearchIndex extends Component {
                 <tbody>
                   <tr>
                     { columns.map((_, index) => {
-                      return(
+                      return (
                         <td key={ index }></td>
                       );
                     })}
                   </tr>
                   { this.state[arrayName].map((entity, index) => {
-                    return(
+                    return (
                       <tr key={ index } className={ !this.props.useLinks ? 'no-links' : '' }>
                         { columns.map((column, index) => {
                           const value = entity[column.name];
                           const displayedValue = column.convertToLocalTime ? stringifyFullDate(new Date(value * 1000)) : value;
                           if (this.props.useLinks === false) {
-                            return(
+                            return (
                               <td key={ index } className={ column.classes || '' }>
                                 <a>
                                   { displayedValue }
@@ -277,7 +277,7 @@ export default class SearchIndex extends Component {
                               </td>
                             );
                           } else {
-                            return(
+                            return (
                               <td key={ index } className={ column.classes || '' }>
                                 <a href={ `/${directory}/${entity.id}${column.links || ''}` } target={ this.props.openNewTabs ? '_blank' : '_self' }>
                                   { displayedValue }

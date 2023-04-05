@@ -65,7 +65,7 @@ export default function FullIndex(props) {
     setEntities(entities)
   }
 
-  return(
+  return (
     <div className="handy-component">
       <h1>{ header || ChangeCase.titleCase(entityNamePlural) }</h1>
       { includeNewButton && (

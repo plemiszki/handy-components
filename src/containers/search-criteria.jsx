@@ -257,13 +257,13 @@ export default class SearchCriteria extends Component {
 
   renderFields() {
     const rowHeight = 119;
-    return(
+    return (
       <>
         <div className="fields-container" style={ { height: this.props.rows * rowHeight } }>
           {
             this.props.fields.map((field) => {
               const fieldActive = this.isFieldActive(field);
-              return(
+              return (
                 <div key={ `${field.name}${field.type === 'number range' ? '-range' : ''}` } className={ fieldActive ? '' : 'disabled' } data-test-field={ field.name }>
                   <div className="row">
                     <div className="col-xs-2">
@@ -271,7 +271,7 @@ export default class SearchCriteria extends Component {
                         { Common.renderSwitchComponent({
                           onChange: this.updateCheckbox.bind(this, field),
                           checked: fieldActive,
-                          property: field.name
+                          property: field.name,
                         }) }
                       </div>
                     </div>
@@ -374,7 +374,7 @@ export default class SearchCriteria extends Component {
             </>
           );
         } else {
-          return(
+          return (
             <div className={ `col-xs-${field.columnWidth} `}>
               <h2>{ columnHeader }</h2>
               <input onChange={ this.updateField.bind(this) } data-field={ field.name } value={ value } disabled={ !fieldActive } />
@@ -384,7 +384,7 @@ export default class SearchCriteria extends Component {
         }
       case 'modal':
         const modalOpenVar = `${field.name}sModalOpen`;
-        return(
+        return (
           <>
             <div className={ `col-xs-${field.columnWidth} `}>
               <h2>{ columnHeader }</h2>
@@ -394,7 +394,7 @@ export default class SearchCriteria extends Component {
             { fieldActive ? (
               <div className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, modalOpenVar, true) }></div>
             ) : null }
-            <ModalSelect isOpen={ this.state[modalOpenVar] } onRequestClose={ Common.closeModals.bind(this) } options={ this.state[field.responseArrayName] || [] } property={ field.optionDisplayProperty } func={ (option) => { this.selectModalOption(field, option, modalOpenVar) } } noneOption={ false } />
+            <ModalSelect isOpen={ this.state[modalOpenVar] } onClose={ Common.closeModals.bind(this) } options={ this.state[field.responseArrayName] || [] } property={ field.optionDisplayProperty } func={ (option) => { this.selectModalOption(field, option, modalOpenVar) } } noneOption={ false } />
           </>
         );
       case 'number range':
