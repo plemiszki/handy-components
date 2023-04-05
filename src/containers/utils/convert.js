@@ -6,13 +6,13 @@ export const convertBooleanToTFString = (boolean) => {
   return boolean ? 't' : 'f';
 }
 
-export const convertObjectKeysToUnderscore = (object) => {
-  if (Array.isArray(object)) {
-    return object;
+export const convertObjectKeysToUnderscore = (input) => {
+  if (Array.isArray(input) || ['string', 'number', 'boolean'].indexOf(typeof input)) {
+    return input;
   }
   let result = {};
-  Object.keys(object).forEach((key) => {
-    let value = object[key];
+  Object.keys(input).forEach((key) => {
+    let value = input[key];
     if (typeof value === 'object' && Array.isArray(value) === false) {
       value = convertObjectKeysToUnderscore(value);
     }

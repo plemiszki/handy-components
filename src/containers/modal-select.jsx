@@ -36,7 +36,7 @@ export default function ModalSelect(props) {
 
   return (
     <>
-      <Modal isOpen={ isOpen } onRequestClose={ () => { onClose() } } style={ modalStyles }>
+      <Modal isOpen={ isOpen } onRequestClose={ onClose.bind(this) } style={ modalStyles }>
         <div className="modal-select handy-component">
           <SearchBar
             onChange={ (e) => { setSearchText(e.target.value) } }

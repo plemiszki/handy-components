@@ -382,7 +382,7 @@ let Details = {
           <ModalSelect
             key={ 3 }
             isOpen={ this.state[`${idEntity}sModalOpen`] }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
             options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
             property={ optionDisplayProperty }
             func={ (option) => { Details.selectModalOption.call(this, option, idEntity, entity) } }
