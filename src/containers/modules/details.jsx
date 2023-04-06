@@ -102,8 +102,13 @@ let Details = {
       if (changeFieldArgs.changesFunction) {
         const changesToSave = changeFieldArgs.changesFunction.call();
         this.setState({
-          changesToSave
+          changesToSave,
         });
+        if (changeFieldArgs.callback) {
+          changeFieldArgs.callback.call(this, newStateObj);
+        }
+      } else if (changeFieldArgs.callback) {
+        changeFieldArgs.callback.call(this, newStateObj);
       }
     });
   },
@@ -360,10 +365,10 @@ let Details = {
           value = pluckFromObjectsArray({
             array: this.state[calculatedOptionsArrayName],
             property: 'id',
-            value: +selectedId
+            value: +selectedId,
           })[optionDisplayProperty];
         }
-        return([
+        return ([
           <div key={ 1 } className={ `col-xs-${columnWidth - 1}` } style={ styles }>
             { Details.renderHeader(args) }
             <input
@@ -391,7 +396,7 @@ let Details = {
         ]);
       case 'textbox':
         value = Details.getValue.call(this, args);
-        return(
+        return (
           <>
             <div className={ `textbox-field ${containerClass}` } style={ styles }>
               { Details.renderHeader(args) }
@@ -640,6 +645,11 @@ let Details = {
     };
     if (this.changeFieldArgs().changesFunction) {
       obj.changesToSave = changeFieldArgs.changesFunction();
+      if (changeFieldArgs.callback) {
+        changeFieldArgs.callback.call(this, obj[entityName]);
+      }
+    } else if (changeFieldArgs.callback) {
+      changeFieldArgs.callback.call(this, obj[entityName]);
     }
     this.setState(obj);
   },
