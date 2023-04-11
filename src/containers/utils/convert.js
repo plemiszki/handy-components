@@ -7,7 +7,7 @@ export const convertBooleanToTFString = (boolean) => {
 }
 
 export const convertObjectKeysToUnderscore = (input) => {
-  if (Array.isArray(input) || ['string', 'number', 'boolean'].indexOf(typeof input)) {
+  if (Array.isArray(input) || ['string', 'number', 'boolean'].indexOf(typeof input) > -1) {
     return input;
   }
   let result = {};
