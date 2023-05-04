@@ -51,11 +51,30 @@ export default function ModalSelect(props) {
           />
           <ul>
             { noneOption && (
-              <li onClick={ func } data-id={ null } data-type={ null }>(None)</li>
+              <li
+                onClick={ () => {
+                  setSearchText('');
+                  func(option);
+                } }
+                data-id={ null }
+                data-type={ null }
+              >
+                (None)
+              </li>
             ) }
             { alphabetizeArrayOfObjects(filteredOptions, property).map((option, index) => {
               return (
-                <li key={ index } onClick={ () => { func(option) } } data-id={ option.id } data-type={ option.itemType }>{ option[property] }</li>
+                <li
+                  key={ index }
+                  onClick={ () => {
+                    setSearchText('');
+                    func(option);
+                  } }
+                  data-id={ option.id }
+                  data-type={ option.itemType }
+                >
+                  { option[property] }
+                </li>
               )
             }) }
           </ul>
