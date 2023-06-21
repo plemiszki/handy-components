@@ -47,7 +47,11 @@ const totalRow = (columns, rows) => {
 	let result = {};
 	columns.forEach(column => {
 		if (column.totalRow) {
-			result[column.name] = rows.reduce((total, row) => total = total + row[column.name], 0);
+			if (column.totalFunction) {
+				result[column.name] = rows.reduce((total, row) => total = total + column.totalFunction(row), 0);
+			} else {
+				result[column.name] = rows.reduce((total, row) => total = total + row[column.name], 0);
+			}
 			result.isTotalRow = true;
 		}
 	});
