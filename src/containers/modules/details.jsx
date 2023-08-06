@@ -1,6 +1,5 @@
 import $ from 'jquery'
 import React from 'react'
-import Modal from 'react-modal'
 import ChangeCase from 'change-case'
 import ModalSelect from '../modal-select.jsx'
 import Common from './common.jsx'
@@ -196,7 +195,7 @@ let Details = {
       } else {
         { return alphabetizeArrayOfObjects(options, args.optionSortProperty || args.optionDisplayProperty || 'text').map((option, index) => {
           return(
-            <option key={ index } value={ args.optionValueProperty || option.value || option.id }>
+            <option key={ index } value={ option[args.optionValueProperty] || option.value || option.id }>
               { option[args.optionDisplayProperty || 'text'] }
             </option>
           );
@@ -322,6 +321,7 @@ let Details = {
     const {
       columnOffset,
       columnWidth,
+      containerClassSuffix,
       entitiesIndex,
       entity,
       errorsProperty,
@@ -338,7 +338,10 @@ let Details = {
       type,
     } = args;
 
-    const containerClass = columnOffset ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}` : `col-xs-${columnWidth}`;
+    let containerClass = columnOffset ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}` : `col-xs-${columnWidth}`;
+    if (containerClassSuffix) {
+      containerClass = containerClass + ` ${containerClassSuffix}`;
+    }
 
     if (hidden) {
       return <div className={ containerClass }></div>;
