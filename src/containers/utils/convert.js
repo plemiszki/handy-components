@@ -13,7 +13,7 @@ export const convertObjectKeysToUnderscore = (input) => {
   let result = {};
   Object.keys(input).forEach((key) => {
     let value = input[key];
-    if (typeof value === 'object' && Array.isArray(value) === false) {
+    if (value && typeof value === 'object' && Array.isArray(value) === false) {
       value = convertObjectKeysToUnderscore(value);
     }
     result[ChangeCase.snakeCase(key)] = value;

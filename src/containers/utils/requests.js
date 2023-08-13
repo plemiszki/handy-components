@@ -2,6 +2,14 @@ import { parseUrl } from './extract'
 import { snakeCase } from 'change-case'
 import { convertObjectKeysToUnderscore, stringifyJSONFields } from './convert'
 
+const validateArgs = ({ args, requiredArgs, prefix }) => {
+    requiredArgs.forEach(requiredArg => {
+        if (!Object.keys(args).includes(requiredArg)) {
+            throw prefix ? `${prefix} - ${requiredArg} missing` : `${requiredArg} missing`;
+        }
+    })
+}
+
 export const sendRequest = (url, args = {}) => {
     const { method = 'GET', data } = args;
     let fetchArgs = { method };
@@ -54,6 +62,7 @@ export const createEntity = (args = {}) => {
         entity,
         additionalData,
     } = args;
+    validateArgs({ args, requiredArgs: ['entityName', 'entity', 'directory'], prefix: 'create entity' });
     const csrfToken = getCsrfToken();
     const body = {
         [snakeCase(entityName)]: convertObjectKeysToUnderscore(entity),
@@ -90,6 +99,10 @@ export const updateEntity = (args = {}) => {
         jsonFieldsToConvert = [],
     } = args;
     let { entity } = args;
+
+    if (!directory) {
+        throw 'update entity - missing directory'
+    }
 
     if (jsonFieldsToConvert) {
         jsonFieldsToConvert.forEach((field) => {

@@ -11,7 +11,7 @@ export default function Spinner(props) {
   if (visible) {
     return (
       <>
-        <div className="spinner" style={ spinnerStyle }></div>
+        <div className="spinner handy-component-spinner" style={ spinnerStyle }></div>
         <style jsx>{`
           position: absolute;
           background-position: center;
