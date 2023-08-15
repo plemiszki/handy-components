@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
-import ChangeCase from 'change-case'
+import { snakeCase, camelCase } from 'change-case'
+import { titleCase } from 'title-case'
 import Common from './modules/common.jsx'
 import SearchBar from './search-bar.jsx'
 import Button from './button.jsx'
@@ -22,8 +23,8 @@ export default function FullIndex(props) {
   } = props;
 
   const entityNamePlural = props.entityNamePlural || `${entityName}s`
-  const directory = props.directory || ChangeCase.snakeCase(entityNamePlural)
-  const arrayName = ChangeCase.camelCase(entityNamePlural)
+  const directory = props.directory || snakeCase(entityNamePlural)
+  const arrayName = camelCase(entityNamePlural)
 
   const columns = props.columns.map((column) => {
     if (typeof column === 'string') {
@@ -67,11 +68,11 @@ export default function FullIndex(props) {
 
   return (
     <div className="handy-component">
-      <h1>{ header || ChangeCase.titleCase(entityNamePlural) }</h1>
+      <h1>{ header || titleCase(entityNamePlural) }</h1>
       { includeNewButton && (
         <Button
           onClick={ () => { setNewEntityModalOpen(true) } }
-          text={ `Add ${ChangeCase.titleCase(entityName)}` }
+          text={ `Add ${titleCase(entityName)}` }
           disabled={ spinner }
           float
         />
@@ -88,7 +89,7 @@ export default function FullIndex(props) {
           columns={ columns }
           rows={ entities }
           searchText={ searchText }
-          urlPrefix={ ChangeCase.snakeCase(entityNamePlural) }
+          urlPrefix={ snakeCase(entityNamePlural) }
           alphabetize={ true }
         />
       </div>

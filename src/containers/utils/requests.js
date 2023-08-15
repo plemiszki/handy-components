@@ -91,6 +91,7 @@ export const createEntity = (args = {}) => {
 }
 
 export const updateEntity = (args = {}) => {
+    console.log('update entity')
     const {
         id = parseUrl()[0],
         directory = parseUrl()[1],

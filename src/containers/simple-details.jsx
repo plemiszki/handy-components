@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import Modal from 'react-modal'
-import ChangeCase from 'change-case'
+import { snakeCase } from 'change-case'
 import Common from './modules/common.jsx'
 import Details from './modules/details.jsx'
+import { titleCase } from 'title-case'
 
 import { objectsAreEqual } from './utils/compare.js'
 import { removeFinanceSymbols, removeFinanceSymbolsFromEntity } from './utils/convert.js'
@@ -92,7 +93,7 @@ export default class SimpleDetails extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          [ChangeCase.snakeCase(entityName)]: convertObjectKeysToUnderscore(entity),
+          [snakeCase(entityName)]: convertObjectKeysToUnderscore(entity),
         })
       })
         .then(async (unprocessedResponse) => {
@@ -149,7 +150,7 @@ export default class SimpleDetails extends Component {
 
     return (
       <div className="handy-component details-component">
-        <h1>{ header || `${ChangeCase.titleCase(entityName)} Details` }</h1>
+        <h1>{ header || `${titleCase(entityName)} Details` }</h1>
         <div className="white-box">
           {
             fields.map((row, index) => {

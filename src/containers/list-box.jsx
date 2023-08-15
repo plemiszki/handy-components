@@ -1,6 +1,7 @@
 import React from 'react'
 import OutlineButton from './outline-button';
-import ChangeCase from 'change-case'
+import { hyphenCase } from 'change-case'
+import { titleCase } from 'title-case'
 
 export default function ListBox(props) {
 	const { entities, entityNamePlural: passedEntityNamePlural, clickDelete, style, displayFunction, displayProperty, clickAdd, entityName, buttonText, sort, styleIf } = props
@@ -27,7 +28,7 @@ export default function ListBox(props) {
 	return (
     <>
       <div style={ style }>
-        <ul data-test={ ChangeCase.hyphenCase(entityNamePlural) }>
+        <ul data-test={ hyphenCase(entityNamePlural) }>
           { (sort ? entities.sort((a, b) => getValue(a).localeCompare(getValue(b))) : entities).map((entity, index) => {
             return (
               <li key={ index } style={ getStyle(styleIf, entity) }>
@@ -41,7 +42,7 @@ export default function ListBox(props) {
         </ul>
         { clickAdd && (
           <OutlineButton
-            text={ buttonText || `Add ${ChangeCase.titleCase(entityName)}` }
+            text={ buttonText || `Add ${titleCase(entityName)}` }
             onClick={ () => { clickAdd() } }
           />
         ) }

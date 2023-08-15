@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Modal from 'react-modal'
-import ChangeCase from 'change-case'
+import { snakeCase } from 'change-case'
 import ModalSelect from './modal-select.jsx'
 import Common from './modules/common.jsx'
+import { titleCase } from 'title-case'
 
 import { stringIsDate, stringIsNumber } from './utils/compare.js'
 import { stringifyDate } from './utils/convert.js'
@@ -54,7 +54,7 @@ export default class SearchCriteria extends Component {
     this.setState({
       spinner: true
     });
-    fetch(`/api/${ChangeCase.snakeCase(this.props.entityNamePlural)}/new`)
+    fetch(`/api/${snakeCase(this.props.entityNamePlural)}/new`)
       .then(data => data.json())
       .then((response) => {
         let newState = { spinner: false };
@@ -303,7 +303,7 @@ export default class SearchCriteria extends Component {
 
   renderField(field, fieldActive) {
     const { criteria } = this.state;
-    const columnHeader = field.columnHeader || ChangeCase.titleCase(field.name);
+    const columnHeader = field.columnHeader || titleCase(field.name);
     const value = (criteria[field.name] && criteria[field.name].hasOwnProperty('value')) ? criteria[field.name].value : '';
     const text = (criteria[field.name] && criteria[field.name].hasOwnProperty('text')) ? criteria[field.name].text : '';
     switch (field.type) {

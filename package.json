@@ -14,10 +14,12 @@
     "change-case": "^4.0.0",
     "jquery": "^3.0.0",
     "lodash": "^4.0.0",
+    "lower-case": "^2.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-modal": "^3.0.0",
     "styled-jsx": "^5.0.0",
+    "title-case": "^3.0.0",
     "webpack": "^5.0.0"
   },
   "devDependencies": {

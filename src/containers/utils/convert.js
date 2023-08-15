@@ -1,4 +1,4 @@
-import ChangeCase from 'change-case'
+import { snakeCase } from 'change-case'
 
 export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -16,7 +16,7 @@ export const convertObjectKeysToUnderscore = (input) => {
     if (value && typeof value === 'object' && Array.isArray(value) === false) {
       value = convertObjectKeysToUnderscore(value);
     }
-    result[ChangeCase.snakeCase(key)] = value;
+    result[snakeCase(key)] = value;
   });
   return result;
 }

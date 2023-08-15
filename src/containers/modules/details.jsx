@@ -1,8 +1,8 @@
 import $ from 'jquery'
 import React from 'react'
-import ChangeCase from 'change-case'
 import ModalSelect from '../modal-select.jsx'
 import Common from './common.jsx'
+import { titleCase } from 'title-case'
 
 import { convertBooleanToTFString, convertTFStringsToBoolean, removeFinanceSymbols } from '../utils/convert'
 import { deepCopy } from '../utils/copy'
@@ -149,7 +149,7 @@ let Details = {
   },
 
   getColumnHeader(args) {
-    return args.columnHeader || ChangeCase.titleCase(args.property);
+    return args.columnHeader || titleCase(args.property);
   },
 
   getValue(args) {
@@ -295,7 +295,7 @@ let Details = {
   },
 
   renderSwitch(args) {
-    const { entity, property, readOnly, columnWidth, center, style, hidden } = args;
+    const { entity, property, readOnly, columnWidth, center, style, hidden, color } = args;
     let columnHeader = Details.getColumnHeader(args);
     const checked = Details.getValue.call(this, args) || false;
     if (hidden) {
@@ -311,6 +311,7 @@ let Details = {
             entity,
             property,
             readOnly,
+            color,
           }) }
         </div>
       );
@@ -505,7 +506,7 @@ let Details = {
     }
     return(
       <>
-        <h2 style={ redHeader ? { color: 'red' } : null }>{ columnHeader || ChangeCase.titleCase(property) }</h2>
+        <h2 style={ redHeader ? { color: 'red' } : null }>{ columnHeader || titleCase(property) }</h2>
         { subheader ? (<p className="subheader">{ subheader }</p>) : null }
       </>
     );

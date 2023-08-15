@@ -324,6 +324,7 @@ const Common = {
       height = 34,
       width = 60,
       circleSize = 26,
+      color,
     } = args;
     return (
       <>
@@ -350,7 +351,7 @@ const Common = {
             display: none !important;
           }
           input:checked + div.oval {
-            background-color: var(--button-color);
+            background-color: ${color ? `#${color}` : 'var(--button-color)'};
           }
           input:checked + div.oval:before {
             -webkit-transform: translateX(26px);

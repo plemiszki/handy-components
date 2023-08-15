@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Modal from 'react-modal'
-import ChangeCase from 'change-case'
+import { snakeCase, camelCase } from 'change-case'
 import Common from './modules/common.jsx'
 import Index from './modules/index.js'
 import Spinner from './spinner'
 import GrayedOut from './grayed-out'
 import Button from './button'
+import { titleCase } from 'title-case'
 
 import { convertObjectKeysToUnderscore, stringifyFullDate } from './utils/convert'
 
@@ -15,8 +16,8 @@ export default class SearchIndex extends Component {
     super(props);
 
     const entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    const directory = ChangeCase.snakeCase(entityNamePlural);
-    const arrayName = ChangeCase.camelCase(entityNamePlural);
+    const directory = snakeCase(entityNamePlural);
+    const arrayName = camelCase(entityNamePlural);
 
     const columns = this.props.columns.map((column) => {
       if (typeof column === 'string') {
@@ -79,7 +80,7 @@ export default class SearchIndex extends Component {
     const queryParams = {
       batchSize,
       page,
-      orderBy: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
+      orderBy: orderByColumn.dbName || snakeCase(orderByColumn.name),
       orderDir: orderByDir,
       searchCriteria: serverSearchCriteria,
     }
@@ -148,7 +149,7 @@ export default class SearchIndex extends Component {
       spinner: true
     });
     const queryParams = {
-      order_by: orderByColumn.dbName || ChangeCase.snakeCase(orderByColumn.name),
+      order_by: orderByColumn.dbName || snakeCase(orderByColumn.name),
       order_dir: orderByColumn.sortDir || 'asc',
       search_criteria: convertObjectKeysToUnderscore(searchCriteria),
     }
@@ -215,13 +216,13 @@ export default class SearchIndex extends Component {
 
     return (
       <div className="search-index handy-component">
-        <h1>{ header || ChangeCase.titleCase(entityNamePlural) }</h1>
+        <h1>{ header || titleCase(entityNamePlural) }</h1>
         { showNewButton && (
           <Button
             float
             marginLeft
             disabled={ spinner }
-            text={ newButtonText || `Add ${ChangeCase.titleCase(entityName)}` }
+            text={ newButtonText || `Add ${titleCase(entityName)}` }
             onClick={ Index.clickNew.bind(this) }
           />
         ) }
@@ -247,7 +248,7 @@ export default class SearchIndex extends Component {
                       return (
                         <th key={ index } style={ this.columnWidth(column) }>
                           <div className={ this.columnHeaderClass.call(this, column) } onClick={ () => { this.clickHeader(column) } }>
-                            { column.header || ChangeCase.titleCase(column.name) }
+                            { column.header || titleCase(column.name) }
                           </div>
                         </th>
                       );

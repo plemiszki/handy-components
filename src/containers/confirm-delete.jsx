@@ -1,5 +1,5 @@
 import React from 'react'
-import ChangeCase from 'change-case'
+import { noCase } from 'change-case'
 import Button from './button.jsx'
 import Modal from 'react-modal'
 
@@ -33,7 +33,7 @@ export default function ConfirmDelete(props) {
     <>
       <Modal isOpen={ isOpen } onRequestClose={ closeModal } contentLabel="Modal" style={ deleteModalStyles }>
         <div className="confirm-delete">
-          <h1>Are you sure you want to permanently delete this { ChangeCase.noCase(entityName) }&#63;</h1>
+          <h1>Are you sure you want to permanently delete this { noCase(entityName) }&#63;</h1>
           <Button
             text="Yes"
             onClick={ confirmDelete }

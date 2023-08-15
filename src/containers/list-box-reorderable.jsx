@@ -1,7 +1,8 @@
 import React from 'react'
 import OutlineButton from './outline-button';
 import { sortArrayOfObjects } from './utils/sort';
-import ChangeCase from 'change-case'
+import { hyphenCase } from 'change-case'
+import { titleCase } from 'title-case'
 
 export default function ListBoxReorderable(props) {
   const {
@@ -35,7 +36,7 @@ export default function ListBoxReorderable(props) {
   return (
     <>
       <div style={ style }>
-        <ul data-test={ ChangeCase.hyphenCase(entityNamePlural) }>
+        <ul data-test={ hyphenCase(entityNamePlural) }>
           <li className="drop-zone" data-index="-1" data-section={ entityNamePlural }></li>
           { sortArrayOfObjects(entities, 'order').map((entity, index) => {
             return (
@@ -59,7 +60,7 @@ export default function ListBoxReorderable(props) {
           }) }
         </ul>
         <OutlineButton
-          text={ `Add ${ChangeCase.titleCase(entityName)}` }
+          text={ `Add ${titleCase(entityName)}` }
           onClick={ () => { clickAdd() } }
         />
       </div>
