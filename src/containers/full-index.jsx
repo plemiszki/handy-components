@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 import { snakeCase, camelCase } from 'change-case'
-import { titleCase } from 'title-case'
 import Common from './modules/common.jsx'
 import SearchBar from './search-bar.jsx'
 import Button from './button.jsx'
 import Spinner from './spinner.jsx'
 import GrayedOut from './grayed-out.jsx'
 import Table from './table.jsx'
+import { titleCase } from './utils/convert.js'
 
 export default function FullIndex(props) {
 
@@ -15,8 +15,6 @@ export default function FullIndex(props) {
     children,
     entityName,
     header,
-    includeHover,
-    includeLinks,
     includeNewButton,
     modalDimensions,
     modalRows,

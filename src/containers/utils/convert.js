@@ -1,4 +1,5 @@
-import { snakeCase } from 'change-case'
+import { snakeCase, noCase } from 'change-case'
+import { titleCase as libraryTitleCase } from 'title-case'
 
 export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -89,4 +90,8 @@ export const stringifyJSONFields = (args) => {
     entity[field] = JSON.stringify(entity[field], null, 2);
   });
   return entity;
+}
+
+export const titleCase = (string) => {
+  return libraryTitleCase(noCase(string));
 }

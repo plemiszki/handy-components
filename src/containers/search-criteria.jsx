@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { snakeCase } from 'change-case'
 import ModalSelect from './modal-select.jsx'
 import Common from './modules/common.jsx'
-import { titleCase } from 'title-case'
+import { titleCase } from './utils/convert.js'
 
 import { stringIsDate, stringIsNumber } from './utils/compare.js'
 import { stringifyDate } from './utils/convert.js'

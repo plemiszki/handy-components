@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React from 'react'
 import ModalSelect from '../modal-select.jsx'
 import Common from './common.jsx'
-import { titleCase } from 'title-case'
+import { titleCase } from '../utils/convert'
 
 import { convertBooleanToTFString, convertTFStringsToBoolean, removeFinanceSymbols } from '../utils/convert'
 import { deepCopy } from '../utils/copy'

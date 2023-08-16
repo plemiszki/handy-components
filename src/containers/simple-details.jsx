@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 import { snakeCase } from 'change-case'
 import Common from './modules/common.jsx'
 import Details from './modules/details.jsx'
-import { titleCase } from 'title-case'
+import { titleCase } from './utils/convert.js'
 
 import { objectsAreEqual } from './utils/compare.js'
 import { removeFinanceSymbols, removeFinanceSymbolsFromEntity } from './utils/convert.js'

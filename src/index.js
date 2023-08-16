@@ -35,6 +35,7 @@ import {
   stringifyFullDate,
   stringifyDate,
   stringifyJSONFields,
+  titleCase,
 } from './containers/utils/convert'
 import { deepCopy } from './containers/utils/copy'
 import { pluckFromObjectsArray, parseUrl } from './containers/utils/extract'
@@ -114,6 +115,7 @@ export {
   stringifyFullDate,
   stringifyJSONFields,
   Table,
+  titleCase,
   todayDMY,
   updateEntity,
 }

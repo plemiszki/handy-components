@@ -3,7 +3,7 @@ import Index from './modules/index.js'
 import { orderBy } from 'lodash'
 import { commonSort } from './utils/sort.js'
 import Common from './modules/common.jsx'
-import { titleCase } from 'title-case'
+import { titleCase } from './utils/convert.js'
 
 const columnWidth = (column, defaultColumnWidth) => {
 	const { width, isDeleteButton, useArrows } = column;
@@ -135,7 +135,7 @@ export default function Table({
 						<tr>
 							{ mappedColumns.map((column, columnIndex) => {
 								const { name, header, blankHeader, sortable: columnSortable = true, centered } = column;
-								const headerText = blankHeader ? '' : (header || titleCase(name));
+								const headerText = blankHeader ? '' : (header || titleCase(name || ''));
 								const className = centered ? 'text-center' : '';
 								if (tableSortable && columnSortable) {
 									return (

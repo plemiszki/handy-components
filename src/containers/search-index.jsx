@@ -6,7 +6,7 @@ import Index from './modules/index.js'
 import Spinner from './spinner'
 import GrayedOut from './grayed-out'
 import Button from './button'
-import { titleCase } from 'title-case'
+import { titleCase } from './utils/convert'
 
 import { convertObjectKeysToUnderscore, stringifyFullDate } from './utils/convert'
 

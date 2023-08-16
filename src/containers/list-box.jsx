@@ -1,7 +1,7 @@
 import React from 'react'
 import OutlineButton from './outline-button';
 import { hyphenCase } from 'change-case'
-import { titleCase } from 'title-case'
+import { titleCase } from './utils/convert';
 
 export default function ListBox(props) {
 	const { entities, entityNamePlural: passedEntityNamePlural, clickDelete, style, displayFunction, displayProperty, clickAdd, entityName, buttonText, sort, styleIf } = props
