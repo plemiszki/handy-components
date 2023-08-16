@@ -325,7 +325,10 @@ const Common = {
       width = 60,
       circleSize = 26,
       color,
+      inputClassName = null,
     } = args;
+    const GUTTER_SIZE = 4;
+    const translateX = width - circleSize - (GUTTER_SIZE * 2)
     return (
       <>
         <label>
@@ -336,6 +339,7 @@ const Common = {
             data-entity={ args.entity }
             data-field={ args.property }
             disabled={ args.readOnly }
+            className={ inputClassName }
           />
           <div className="oval" data-test={ args.testLabel }></div>
         </label>
@@ -354,9 +358,9 @@ const Common = {
             background-color: ${color ? `#${color}` : 'var(--button-color)'};
           }
           input:checked + div.oval:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
+            -webkit-transform: translateX(${translateX}px);
+            -ms-transform: translateX(${translateX}px);
+            transform: translateX(${translateX}px);
           }
           div.oval {
             position: absolute;
