@@ -28,6 +28,7 @@ import { objectsAreEqual, stringIsNumber, stringIsDate } from './containers/util
 import {
   convertObjectKeysToUnderscore,
   ellipsis,
+  hyphenCase,
   MONTHS,
   ordinatize,
   pluralize,
@@ -81,6 +82,7 @@ export {
   FullIndex,
   getCsrfToken,
   GrayedOut,
+  hyphenCase,
   Index,
   ListBox,
   ListBoxReorderable,

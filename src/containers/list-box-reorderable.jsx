@@ -1,8 +1,7 @@
 import React from 'react'
 import OutlineButton from './outline-button';
 import { sortArrayOfObjects } from './utils/sort';
-import { hyphenCase } from 'change-case'
-import { titleCase } from './utils/convert';
+import { titleCase, hyphenCase } from './utils/convert';
 
 export default function ListBoxReorderable(props) {
   const {

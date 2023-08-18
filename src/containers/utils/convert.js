@@ -95,3 +95,7 @@ export const stringifyJSONFields = (args) => {
 export const titleCase = (string) => {
   return libraryTitleCase(noCase(string));
 }
+
+export const hyphenCase = (string) => {
+  return noCase(string).replaceAll(" ", "-");
+}
