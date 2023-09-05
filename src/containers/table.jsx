@@ -176,6 +176,8 @@ export default function Table({
 											isDeleteButton,
 											isEditButton,
 											isSwitch,
+											switchChecked,
+											switchDisabled = row => false,
 											name,
 											redIf,
 											displayIf,
@@ -244,7 +246,8 @@ export default function Table({
 														onChange: (e) => {
 															clickSwitch(row, e.target.checked);
 														},
-														checked: row.useAllAvailable,
+														checked: switchChecked(row),
+														readOnly: switchDisabled(row),
 														width: 50,
 														height: 24,
 														circleSize: 16,
