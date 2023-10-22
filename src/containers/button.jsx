@@ -3,19 +3,22 @@ import Common from './modules/common.jsx'
 
 export default function Button(props) {
 	const {
-		text,
-		style,
-		onClick,
+		className,
+		color,
 		disabled = false,
 		float = false,
-		submit = false,
-		marginRight = false,
-		marginLeft = false,
-		marginBottom = false,
-		square = false,
-		color,
 		hoverColor,
+		marginBottom = false,
+		marginLeft = false,
+		marginRight = false,
+		onClick,
+		square = false,
+		style,
+		submit = false,
+		text,
 	} = props;
+
+	const classNamesString = [className, Common.renderDisabledButtonClass(disabled)].filter(e => e).join(' ');
 
 	return (
 		<>
@@ -23,7 +26,7 @@ export default function Button(props) {
 				<input
 					type="submit"
 					style={ style }
-					className={ `${Common.renderDisabledButtonClass(disabled)}` }
+					className={ classNamesString }
 					value={ text }
 					onClick={ (e) => {
 						e.preventDefault()
@@ -32,7 +35,7 @@ export default function Button(props) {
 				/>) : (
 				<a
 					style={ style }
-					className={ `${Common.renderDisabledButtonClass(disabled)}` }
+					className={ classNamesString }
 					onClick={ () => onClick() }
 				>{ text }</a>)
 			}

@@ -16,8 +16,10 @@ export default function FullIndex(props) {
     entityName,
     header,
     includeNewButton,
+    includeSearchBar = true,
     modalDimensions,
     modalRows,
+    addButtonText,
   } = props;
 
   const entityNamePlural = props.entityNamePlural || `${entityName}s`
@@ -65,21 +67,24 @@ export default function FullIndex(props) {
   }
 
   return (
-    <div className="handy-component">
+    <div className="handy-component full-index">
       <h1>{ header || titleCase(entityNamePlural) }</h1>
       { includeNewButton && (
         <Button
           onClick={ () => { setNewEntityModalOpen(true) } }
-          text={ `Add ${titleCase(entityName)}` }
+          text={ addButtonText || `Add ${titleCase(entityName)}` }
           disabled={ spinner }
           float
+          className="add-button"
         />
       )}
-      <SearchBar
-        margin={ includeNewButton }
-        onChange={ (e) => { setSearchText(e.target.value) } }
-        value={ searchText }
-      />
+      { includeSearchBar && (
+        <SearchBar
+          margin={ includeNewButton }
+          onChange={ (e) => { setSearchText(e.target.value) } }
+          value={ searchText }
+        />
+      )}
       <div className="white-box">
         <GrayedOut visible={ spinner } />
         <Spinner visible={ spinner } />
