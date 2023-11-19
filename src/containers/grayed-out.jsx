@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function GrayedOut(props) {
-  const { visible, borderRadius } = props;
+  const { visible, borderRadius, style = {} } = props;
   const grayedOutStyle = {
     position: 'absolute',
     backgroundColor: 'gray',
@@ -14,7 +14,7 @@ export default function GrayedOut(props) {
   };
   if (visible) {
     return (
-      <div className="grayed-out" style={ grayedOutStyle }>
+      <div className="grayed-out" style={ Object.assign(grayedOutStyle, style) }>
       </div>
     );
   } else {
