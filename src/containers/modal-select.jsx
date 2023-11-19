@@ -4,7 +4,7 @@ import { alphabetizeArrayOfObjects } from './utils/sort.js'
 import SearchBar from './search-bar.jsx'
 import Modal from 'react-modal'
 
-const modalStyles = {
+let modalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)',
   },
@@ -29,7 +29,14 @@ export default function ModalSelect(props) {
     property,
     isOpen,
     onClose,
+    zIndex,
   } = props
+
+  if (zIndex) {
+    let { overlay, ...rest } = modalStyles;
+    overlay = Object.assign(overlay, { zIndex });
+    modalStyles = { overlay, ...rest };
+  }
 
   const [searchText, setSearchText] = useState('')
   const filteredOptions = Index.filterSearchText({ entities: options, text: searchText, property })
