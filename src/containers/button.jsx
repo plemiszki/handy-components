@@ -54,6 +54,10 @@ export default function Button(props) {
 				}
 			</div>
 			<style jsx>{`
+				div {
+					display: inline-block;
+					float: ${float ? 'right' : 'none'};
+				}
 				a, input {
 					display: inline-block;
 					font-family: 'TeachableSans-${square ? 'Bold' : 'Medium'}';
@@ -67,7 +71,6 @@ export default function Button(props) {
 					letter-spacing: inherit;
 					border: none;
 					cursor: pointer;
-					float: ${float ? 'right' : 'none'};
 					margin-right: ${marginRight ? '30px' : 0};
 					margin-left: ${marginLeft ? '30px' : 0};
 					margin-bottom: ${marginBottom ? '30px' : 0};
