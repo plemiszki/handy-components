@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Common from './modules/common.jsx'
 
 export default function Button(props) {
@@ -6,6 +6,7 @@ export default function Button(props) {
 		className,
 		color,
 		disabled = false,
+		disabledTooltip,
 		float = false,
 		hoverColor,
 		marginBottom = false,
@@ -20,25 +21,38 @@ export default function Button(props) {
 
 	const classNamesString = [className, Common.renderDisabledButtonClass(disabled)].filter(e => e).join(' ');
 
+	useEffect(() => {
+		if (disabledTooltip) {
+			$('[data-toggle="tooltip"]').tooltip();
+		}
+	});
+
 	return (
 		<>
-			{ submit ? (
-				<input
-					type="submit"
-					style={ style }
-					className={ classNamesString }
-					value={ text }
-					onClick={ (e) => {
-						e.preventDefault()
-						onClick()
-					}}
-				/>) : (
-				<a
-					style={ style }
-					className={ classNamesString }
-					onClick={ () => onClick() }
-				>{ text }</a>)
-			}
+			<div
+				data-toggle={ disabledTooltip ? "tooltip" : null }
+				data-placement="top"
+				title={ disabledTooltip }
+			>
+				{ submit ? (
+					<input
+						type="submit"
+						style={ style }
+						className={ classNamesString }
+						value={ text }
+						onClick={ (e) => {
+							e.preventDefault()
+							onClick()
+						}}
+					/>) : (
+						<a
+							style={ style }
+							className={ classNamesString }
+							onClick={ () => onClick() }
+						>{ text }</a>
+					)
+				}
+			</div>
 			<style jsx>{`
 				a, input {
 					display: inline-block;
