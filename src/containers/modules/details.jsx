@@ -412,6 +412,7 @@ let Details = {
                 data-entity={ entity }
                 data-field={ property }
                 style={ inputStyles }
+                readOnly={ readOnly }
               ></textarea>
               { Details.renderTagsBelowField(args, errorText) }
               { Details.renderCharacterCount.call(this, args) }
