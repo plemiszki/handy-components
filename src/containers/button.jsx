@@ -57,6 +57,8 @@ export default function Button(props) {
 				div {
 					display: inline-block;
 					float: ${float ? 'right' : 'none'};
+					margin-right: ${marginRight ? '30px' : 0};
+					margin-left: ${marginLeft ? '30px' : 0};
 				}
 				a, input {
 					display: inline-block;
@@ -71,8 +73,6 @@ export default function Button(props) {
 					letter-spacing: inherit;
 					border: none;
 					cursor: pointer;
-					margin-right: ${marginRight ? '30px' : 0};
-					margin-left: ${marginLeft ? '30px' : 0};
 					margin-bottom: ${marginBottom ? '30px' : 0};
 					user-select: none;
 				}
