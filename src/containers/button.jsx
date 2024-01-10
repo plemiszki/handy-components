@@ -23,13 +23,16 @@ export default function Button(props) {
 
 	useEffect(() => {
 		if (disabledTooltip) {
-			$('[data-toggle="tooltip"]').tooltip();
+			$('.tooltip-div').tooltip();
+		} else {
+			$('.tooltip-div').tooltip('destroy');
 		}
-	});
+	}, [disabledTooltip]);
 
 	return (
 		<>
 			<div
+				className="tooltip-div"
 				data-toggle={ disabledTooltip ? "tooltip" : null }
 				data-placement="top"
 				title={ disabledTooltip }
