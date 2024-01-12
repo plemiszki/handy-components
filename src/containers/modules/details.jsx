@@ -270,7 +270,6 @@ let Details = {
     const columnHeader = Details.getColumnHeader(args);
     const { errors } = this.state;
     const { property, errorsProperty } = args;
-    const hasError = Details.fieldHasError(errors, errorsProperty || property);
     const errorText = Details.errorText(errors, errorsProperty || property);
 
     if (args.hidden) {
@@ -394,7 +393,7 @@ let Details = {
             onClose={ Common.closeModals.bind(this) }
             options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
             property={ optionDisplayProperty }
-            func={ (option) => { Details.selectModalOption.call(this, option, idEntity, entity) } }
+            func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args) } }
             noneOption={ noneOption }
           />,
         ]);
@@ -639,14 +638,18 @@ let Details = {
     return this.state.changesToSave ? 'Save' : (this.state.justSaved ? 'Saved' : 'No Changes');
   },
 
-  selectModalOption(option, idEntity, entityName) {
+  selectModalOption(option, idEntity, args) {
+    const { property, errorsProperty, entity: entityName } = args;
+    const errors = Details.getErrors.call(this, args);
+    Details.removeFieldError(errors, errorsProperty || property);
+
     const changeFieldArgs = this.changeFieldArgs();
+
     let entity = this.state[entityName];
-    entity[`${idEntity}Id`] = option.id;
-    // Details.removeFieldError(changeFieldArgs.allErrors, changeFieldArgs.errorsArray, `${idEntity}Id`); TODO
+    entity[property] = option.id;
     let obj = {
       [entityName]: entity,
-      [`${idEntity}sModalOpen`]: false
+      [`${idEntity}sModalOpen`]: false,
     };
     if (this.changeFieldArgs().changesFunction) {
       obj.changesToSave = changeFieldArgs.changesFunction();
@@ -696,9 +699,12 @@ let Details = {
   },
 
   removeFinanceSymbolsFromEntity(args) {
-    let result = deepCopy(args.entity);
-    args.fields.forEach((field) => {
-      result[field] = removeFinanceSymbols(args.entity[field]);
+    const { entity, fields } = args;
+    let result = deepCopy(entity);
+    fields.forEach((field) => {
+      if (result[field]) {
+        result[field] = removeFinanceSymbols(entity[field]);
+      }
     });
     return result;
   }
