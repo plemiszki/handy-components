@@ -371,32 +371,37 @@ let Details = {
             value: +selectedId,
           })[optionDisplayProperty];
         }
-        return ([
-          <div key={ 1 } className={ `col-xs-${columnWidth - 1}` } style={ styles }>
-            { Details.renderHeader(args) }
-            <input
-              className={ Details.inputClassName(hasError) }
-              onChange={ Details.changeField.bind(this, args) }
-              value={ value }
-              placeholder={ placeholder }
-              data-field={ property }
-              readOnly={ true }
-              style={ inputStyles }
+        return (
+          <>
+            <div className={ `col-xs-${columnWidth - 1}` } style={ styles }>
+              { Details.renderHeader(args) }
+              <input
+                className={ Details.inputClassName(hasError) }
+                onChange={ Details.changeField.bind(this, args) }
+                value={ value }
+                placeholder={ placeholder }
+                data-field={ property }
+                readOnly={ true }
+                style={ inputStyles }
+              />
+              { Details.renderTagsBelowField(args, errorText) }
+            </div>
+            { readOnly ? (
+              <div className="col-xs-1"></div>
+            ) : (
+              <div className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }></div>
+            )}
+            <ModalSelect
+              key={ 3 }
+              isOpen={ this.state[`${idEntity}sModalOpen`] }
+              onClose={ Common.closeModals.bind(this) }
+              options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
+              property={ optionDisplayProperty }
+              func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args) } }
+              noneOption={ noneOption }
             />
-            { Details.renderTagsBelowField(args, errorText) }
-          </div>,
-          <div key={ 2 } className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }>
-          </div>,
-          <ModalSelect
-            key={ 3 }
-            isOpen={ this.state[`${idEntity}sModalOpen`] }
-            onClose={ Common.closeModals.bind(this) }
-            options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
-            property={ optionDisplayProperty }
-            func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args) } }
-            noneOption={ noneOption }
-          />,
-        ]);
+          </>
+        );
       case 'textbox':
         value = Details.getValue.call(this, args);
         return (
