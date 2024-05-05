@@ -1,5 +1,6 @@
 import React from "react";
 import Common from "./modules/common.jsx";
+import { Tooltip } from "react-tooltip";
 
 export default function Button(props) {
   const {
@@ -26,21 +27,13 @@ export default function Button(props) {
     .filter((e) => e)
     .join(" ");
 
-  // useEffect(() => {
-  //   if (disabledTooltip) {
-  //     $(".tooltip-div").tooltip();
-  //   } else {
-  //     $(".tooltip-div").tooltip("destroy");
-  //   }
-  // }, [disabledTooltip]);
-
   return (
     <>
+      {disabled && disabledTooltip ? <Tooltip id="tooltip" /> : null}
       <div
-        className="tooltip-div"
-        data-toggle={disabledTooltip ? "tooltip" : null}
-        data-placement="top"
-        title={disabledTooltip}
+        data-tooltip-id="tooltip"
+        data-tooltip-content={disabledTooltip}
+        data-tooltip-placement="top"
       >
         {submit ? (
           <input
@@ -55,6 +48,7 @@ export default function Button(props) {
           />
         ) : (
           <a
+            tooltip-id="button"
             style={style}
             className={classNamesString}
             onClick={() => onClick()}
