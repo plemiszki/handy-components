@@ -356,31 +356,33 @@ let Details = {
       center,
       style,
       hidden,
+      visible,
       color,
     } = args;
     let columnHeader = Details.getColumnHeader(args);
     const checked = Details.getValue.call(this, args) || false;
-    if (hidden) {
+
+    if (hidden || (args.hasOwnProperty("visible") && !visible)) {
       return <div className={`col-xs-${columnWidth}`}></div>;
-    } else {
-      return (
-        <div
-          className={`col-xs-${columnWidth} ${center ? "text-center" : ""}`}
-          style={style}
-        >
-          <h2>{columnHeader}</h2>
-          {Details.renderSubheader(args)}
-          {Common.renderSwitchComponent({
-            onChange: Details.changeField.bind(this, args),
-            checked,
-            entity,
-            property,
-            readOnly,
-            color,
-          })}
-        </div>
-      );
     }
+
+    return (
+      <div
+        className={`col-xs-${columnWidth} ${center ? "text-center" : ""}`}
+        style={style}
+      >
+        <h2>{columnHeader}</h2>
+        {Details.renderSubheader(args)}
+        {Common.renderSwitchComponent({
+          onChange: Details.changeField.bind(this, args),
+          checked,
+          entity,
+          property,
+          readOnly,
+          color,
+        })}
+      </div>
+    );
   },
 
   renderField(args) {
