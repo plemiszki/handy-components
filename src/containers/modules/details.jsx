@@ -1,18 +1,21 @@
-import $ from 'jquery'
-import React from 'react'
-import ModalSelect from '../modal-select.jsx'
-import Common from './common.jsx'
-import { titleCase } from '../utils/convert'
+import $ from "jquery";
+import React from "react";
+import ModalSelect from "../modal-select.jsx";
+import Common from "./common.jsx";
+import { titleCase } from "../utils/convert";
 
-import { convertBooleanToTFString, convertTFStringsToBoolean, removeFinanceSymbols } from '../utils/convert'
-import { deepCopy } from '../utils/copy'
-import { pluckFromObjectsArray, parseUrl } from '../utils/extract'
-import { alphabetizeArrayOfObjects } from '../utils/sort'
-import { deleteEntity } from '../utils/requests'
-import { get, set } from 'lodash'
+import {
+  convertBooleanToTFString,
+  convertTFStringsToBoolean,
+  removeFinanceSymbols,
+} from "../utils/convert";
+import { deepCopy } from "../utils/copy";
+import { pluckFromObjectsArray, parseUrl } from "../utils/extract";
+import { alphabetizeArrayOfObjects } from "../utils/sort";
+import { deleteEntity } from "../utils/requests";
+import { get, set } from "lodash";
 
 let Details = {
-
   getErrors(args) {
     const { errorsKey } = args;
     const { errors: stateErrors } = this.state;
@@ -60,9 +63,9 @@ let Details = {
 
     // what is the new value of the property?
     let newValue;
-    if ($(input).is('select')) {
+    if ($(input).is("select")) {
       newValue = convertTFStringsToBoolean(input.value);
-    } else if (input.type === 'checkbox') {
+    } else if (input.type === "checkbox") {
       newValue = input.checked;
     } else {
       newValue = input.value;
@@ -77,7 +80,7 @@ let Details = {
     }
 
     // update the object
-    set(obj, [property].concat(nestedKeys), newValue)
+    set(obj, [property].concat(nestedKeys), newValue);
 
     // update any other relevant properties
     if (changeFieldArgs.beforeSave) {
@@ -124,19 +127,19 @@ let Details = {
         callback.call({}, response);
       } else {
         const directory = parseUrl()[1];
-        window.location.pathname = directory
+        window.location.pathname = directory;
       }
-    })
+    });
   },
 
   errorClass(stateErrors, fieldErrors) {
     var i;
     for (i = 0; i < fieldErrors.length; i++) {
       if (stateErrors.indexOf(fieldErrors[i]) > -1) {
-        return 'error';
+        return "error";
       }
     }
-    return '';
+    return "";
   },
 
   hasError(stateErrors, fieldErrors) {
@@ -153,16 +156,23 @@ let Details = {
   },
 
   getValue(args) {
-    const { value, entity, entities, entitiesIndex, property, nestedKeys = [] } = args;
+    const {
+      value,
+      entity,
+      entities,
+      entitiesIndex,
+      property,
+      nestedKeys = [],
+    } = args;
     if (value) {
-      return value || '';
+      return value || "";
     }
     if (entity) {
       const path = [entity, property].concat(nestedKeys);
-      return get(this.state, path, '');
+      return get(this.state, path, "");
     }
     if (entities) {
-      return this.state[entities][entitiesIndex][property] || '';
+      return this.state[entities][entitiesIndex][property] || "";
     }
   },
 
@@ -177,29 +187,44 @@ let Details = {
   },
 
   renderDropDown(args) {
-
     function renderNoneOption(args) {
       if (args.optional) {
-        return(
-          <option key={ -1 } value={ args.noneValue || "" }>(None)</option>
+        return (
+          <option key={-1} value={args.noneValue || ""}>
+            (None)
+          </option>
         );
       }
     }
 
     function renderOptions(args, options) {
       if (args.boolean) {
-        return([
-          <option key={ 0 } value="t">Yes</option>,
-          <option key={ 1 } value="f">No</option>
-        ]);
+        return [
+          <option key={0} value="t">
+            Yes
+          </option>,
+          <option key={1} value="f">
+            No
+          </option>,
+        ];
       } else {
-        { return alphabetizeArrayOfObjects(options, args.optionSortProperty || args.optionDisplayProperty || 'text').map((option, index) => {
-          return(
-            <option key={ index } value={ option[args.optionValueProperty] || option.value || option.id }>
-              { option[args.optionDisplayProperty || 'text'] }
-            </option>
-          );
-        })}
+        {
+          return alphabetizeArrayOfObjects(
+            options,
+            args.optionSortProperty || args.optionDisplayProperty || "text"
+          ).map((option, index) => {
+            return (
+              <option
+                key={index}
+                value={
+                  option[args.optionValueProperty] || option.value || option.id
+                }
+              >
+                {option[args.optionDisplayProperty || "text"]}
+              </option>
+            );
+          });
+        }
       }
     }
 
@@ -211,11 +236,11 @@ let Details = {
 
     let value;
     if (args.boolean && args.readOnly) {
-      value = this.state[entity][property] ? 'Yes' : 'No';
+      value = this.state[entity][property] ? "Yes" : "No";
     } else if (args.boolean) {
       value = convertBooleanToTFString(this.state[entity][property]) || "";
     } else {
-      value = this.state[entity][property] || '';
+      value = this.state[entity][property] || "";
     }
 
     if (!args.boolean) {
@@ -230,8 +255,13 @@ let Details = {
     const options = args.options || this.state[args.optionsArrayName];
 
     if (args.readOnly) {
-      if (!args.boolean && value !== '') {
-        const option = options.find(option => (args.optionValueProperty ? option[args.optionValueProperty] : (option['value'] || option['id']) ) == value);
+      if (!args.boolean && value !== "") {
+        const option = options.find(
+          (option) =>
+            (args.optionValueProperty
+              ? option[args.optionValueProperty]
+              : option["value"] || option["id"]) == value
+        );
         value = option[args.optionDisplayProperty];
       }
       return Details.renderField.call(this, Object.assign(args, { value }));
@@ -239,14 +269,27 @@ let Details = {
 
     return (
       <>
-        <div className={ `col-xs-${args.columnWidth} ${hasError ? 'has-error' : ''} ${(args.maxOptions ? `select-scroll-${args.maxOptions}` : 'select-scroll-6') }` }>
-          <h2>{ columnHeader }</h2>
-          { Details.renderSubheader(args) }
-          <select onChange={ Details.changeDropdownField.bind(this, args) } value={ value } data-entity={ args.entity } data-field={ args.property }>
-            { renderNoneOption(args) }
-            { renderOptions(args, options) }
+        <div
+          className={`col-xs-${args.columnWidth} ${
+            hasError ? "has-error" : ""
+          } ${
+            args.maxOptions
+              ? `select-scroll-${args.maxOptions}`
+              : "select-scroll-6"
+          }`}
+        >
+          <h2>{columnHeader}</h2>
+          {Details.renderSubheader(args)}
+          <select
+            onChange={Details.changeDropdownField.bind(this, args)}
+            value={value}
+            data-entity={args.entity}
+            data-field={args.property}
+          >
+            {renderNoneOption(args)}
+            {renderOptions(args, options)}
           </select>
-          { hideFieldError ? null : Details.renderDropdownFieldError(errorText) }
+          {hideFieldError ? null : Details.renderDropdownFieldError(errorText)}
         </div>
         <style jsx>{`
           .has-error .nice-select {
@@ -260,9 +303,15 @@ let Details = {
 
   renderDropdownFieldError(errorText) {
     if (errorText) {
-      return React.createElement("div", { className: "yes-dropdown-field-error" }, errorText);
+      return React.createElement(
+        "div",
+        { className: "yes-dropdown-field-error" },
+        errorText
+      );
     } else {
-      return React.createElement("div", { className: "no-dropdown-field-error" });
+      return React.createElement("div", {
+        className: "no-dropdown-field-error",
+      });
     }
   },
 
@@ -273,45 +322,62 @@ let Details = {
     const errorText = Details.errorText(errors, errorsProperty || property);
 
     if (args.hidden) {
-      return <div className={ `col-xs-${args.columnWidth}` }></div>;
+      return <div className={`col-xs-${args.columnWidth}`}></div>;
     } else {
-      return(
-        <div className={ `col-xs-${args.columnWidth}` }>
+      return (
+        <div className={`col-xs-${args.columnWidth}`}>
           <input
-            id={ `${args.entity}-${args.property}` }
+            id={`${args.entity}-${args.property}`}
             className="checkbox"
             type="checkbox"
-            onChange={ Details.changeField.bind(this, args) }
-            checked={ this.state[args.entity][args.property] || false }
-            data-entity={ args.entity }
-            data-field={ args.property }
+            onChange={Details.changeField.bind(this, args)}
+            checked={this.state[args.entity][args.property] || false}
+            data-entity={args.entity}
+            data-field={args.property}
           />
-          <label className="checkbox" htmlFor={ `${args.entity}-${args.property}` }>{ columnHeader }</label>
-          { Details.renderFieldError(errorText, args) }
+          <label
+            className="checkbox"
+            htmlFor={`${args.entity}-${args.property}`}
+          >
+            {columnHeader}
+          </label>
+          {Details.renderFieldError(errorText, args)}
         </div>
       );
     }
   },
 
   renderSwitch(args) {
-    const { entity, property, readOnly, columnWidth, center, style, hidden, color } = args;
+    const {
+      entity,
+      property,
+      readOnly,
+      columnWidth,
+      center,
+      style,
+      hidden,
+      color,
+    } = args;
     let columnHeader = Details.getColumnHeader(args);
     const checked = Details.getValue.call(this, args) || false;
     if (hidden) {
-      return <div className={ `col-xs-${columnWidth}` }></div>;
+      return <div className={`col-xs-${columnWidth}`}></div>;
     } else {
       return (
-        <div className={ `col-xs-${columnWidth} ${center ? 'text-center' : ''}` } style={ style }>
-          <h2>{ columnHeader }</h2>
-          { Details.renderSubheader(args) }
-          { Common.renderSwitchComponent({
+        <div
+          className={`col-xs-${columnWidth} ${center ? "text-center" : ""}`}
+          style={style}
+        >
+          <h2>{columnHeader}</h2>
+          {Details.renderSubheader(args)}
+          {Common.renderSwitchComponent({
             onChange: Details.changeField.bind(this, args),
             checked,
             entity,
             property,
             readOnly,
             color,
-          }) }
+          })}
         </div>
       );
     }
@@ -336,15 +402,18 @@ let Details = {
       rows,
       styles,
       type,
+      visible,
     } = args;
 
-    let containerClass = columnOffset ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}` : `col-xs-${columnWidth}`;
+    let containerClass = columnOffset
+      ? `col-xs-${columnWidth} col-xs-offset-${columnOffset}`
+      : `col-xs-${columnWidth}`;
     if (containerClassSuffix) {
       containerClass = containerClass + ` ${containerClassSuffix}`;
     }
 
-    if (hidden) {
-      return <div className={ containerClass }></div>;
+    if (hidden || (args.hasOwnProperty("visible") && !visible)) {
+      return <div className={containerClass}></div>;
     }
 
     const errors = Details.getErrors.call(this, args);
@@ -353,7 +422,7 @@ let Details = {
     let value;
 
     switch (type) {
-      case 'modal':
+      case "modal":
         if (optionDisplayProperty == null) {
           throw `missing optionDisplayProperty (rendering ${property} field)`;
         }
@@ -363,63 +432,75 @@ let Details = {
           throw `this.state.${calculatedOptionsArrayName} does not exist (rendering ${property} field)`;
         }
         let selectedId = this.state[entity][`${idEntity}Id`];
-        value = '';
+        value = "";
         if (this.state[calculatedOptionsArrayName] && selectedId) {
           value = pluckFromObjectsArray({
             array: this.state[calculatedOptionsArrayName],
-            property: 'id',
+            property: "id",
             value: +selectedId,
           })[optionDisplayProperty];
         }
         return (
           <>
-            <div className={ `col-xs-${columnWidth - 1}` } style={ styles }>
-              { Details.renderHeader(args) }
+            <div className={`col-xs-${columnWidth - 1}`} style={styles}>
+              {Details.renderHeader(args)}
               <input
-                className={ Details.inputClassName(hasError) }
-                onChange={ Details.changeField.bind(this, args) }
-                value={ value }
-                placeholder={ placeholder }
-                data-field={ property }
-                readOnly={ true }
-                style={ inputStyles }
+                className={Details.inputClassName(hasError)}
+                onChange={Details.changeField.bind(this, args)}
+                value={value}
+                placeholder={placeholder}
+                data-field={property}
+                readOnly={true}
+                style={inputStyles}
               />
-              { Details.renderTagsBelowField(args, errorText) }
+              {Details.renderTagsBelowField(args, errorText)}
             </div>
-            { readOnly ? (
+            {readOnly ? (
               <div className="col-xs-1"></div>
             ) : (
-              <div className="col-xs-1 select-from-modal" onClick={ Common.changeState.bind(this, `${idEntity}sModalOpen`, true) }></div>
+              <div
+                className="col-xs-1 select-from-modal"
+                onClick={Common.changeState.bind(
+                  this,
+                  `${idEntity}sModalOpen`,
+                  true
+                )}
+              ></div>
             )}
             <ModalSelect
-              key={ 3 }
-              isOpen={ this.state[`${idEntity}sModalOpen`] }
-              onClose={ Common.closeModals.bind(this) }
-              options={ alphabetizeArrayOfObjects(this.state[calculatedOptionsArrayName], optionDisplayProperty) }
-              property={ optionDisplayProperty }
-              func={ (option) => { Details.selectModalOption.call(this, option, idEntity, args) } }
-              noneOption={ noneOption }
+              key={3}
+              isOpen={this.state[`${idEntity}sModalOpen`]}
+              onClose={Common.closeModals.bind(this)}
+              options={alphabetizeArrayOfObjects(
+                this.state[calculatedOptionsArrayName],
+                optionDisplayProperty
+              )}
+              property={optionDisplayProperty}
+              func={(option) => {
+                Details.selectModalOption.call(this, option, idEntity, args);
+              }}
+              noneOption={noneOption}
             />
           </>
         );
-      case 'textbox':
+      case "textbox":
         value = Details.getValue.call(this, args);
         return (
           <>
-            <div className={ `textbox-field ${containerClass}` } style={ styles }>
-              { Details.renderHeader(args) }
+            <div className={`textbox-field ${containerClass}`} style={styles}>
+              {Details.renderHeader(args)}
               <textarea
-                rows={ rows }
-                className={ Details.inputClassName(hasError) }
-                onChange={ Details.changeField.bind(this, args) }
-                value={ value }
-                data-entity={ entity }
-                data-field={ property }
-                style={ inputStyles }
-                readOnly={ readOnly }
+                rows={rows}
+                className={Details.inputClassName(hasError)}
+                onChange={Details.changeField.bind(this, args)}
+                value={value}
+                data-entity={entity}
+                data-field={property}
+                style={inputStyles}
+                readOnly={readOnly}
               ></textarea>
-              { Details.renderTagsBelowField(args, errorText) }
-              { Details.renderCharacterCount.call(this, args) }
+              {Details.renderTagsBelowField(args, errorText)}
+              {Details.renderCharacterCount.call(this, args)}
             </div>
             <style jsx>{`
               textarea {
@@ -431,21 +512,21 @@ let Details = {
             `}</style>
           </>
         );
-      case 'json':
+      case "json":
         value = Details.getValue.call(this, args);
         return (
-          <div className={ containerClass } style={ styles }>
-            { Details.renderHeader(args) }
+          <div className={containerClass} style={styles}>
+            {Details.renderHeader(args)}
             <>
               <textarea
-                rows={ rows }
-                className={ Details.inputClassName(hasError) }
-                onChange={ Details.changeField.bind(this, args) }
-                value={ value }
-                data-entity={ entity }
-                data-field={ property }
-                data-json={ true }
-                style={ inputStyles }
+                rows={rows}
+                className={Details.inputClassName(hasError)}
+                onChange={Details.changeField.bind(this, args)}
+                value={value}
+                data-entity={entity}
+                data-field={property}
+                data-json={true}
+                style={inputStyles}
               />
               <style jsx>{`
                 textarea {
@@ -454,27 +535,27 @@ let Details = {
                 }
               `}</style>
             </>
-            { Details.renderTagsBelowField(args, errorText) }
+            {Details.renderTagsBelowField(args, errorText)}
           </div>
         );
       default:
         value = Details.getValue.call(this, args);
         return (
-          <div className={ containerClass } style={ styles }>
-            { Details.renderHeader(args) }
-            { Details.renderLeftLabel(args) }
+          <div className={containerClass} style={styles}>
+            {Details.renderHeader(args)}
+            {Details.renderLeftLabel(args)}
             <input
-              className={ Details.inputClassName(hasError) }
-              onChange={ Details.changeField.bind(this, args) }
-              value={ value }
-              data-entity={ entity }
-              data-field={ property }
-              placeholder={ placeholder }
-              readOnly={ readOnly }
-              data-test-index={ entitiesIndex }
-              style={ inputStyles }
+              className={Details.inputClassName(hasError)}
+              onChange={Details.changeField.bind(this, args)}
+              value={value}
+              data-entity={entity}
+              data-field={property}
+              placeholder={placeholder}
+              readOnly={readOnly}
+              data-test-index={entitiesIndex}
+              style={inputStyles}
             />
-            { Details.renderTagsBelowField(args, errorText) }
+            {Details.renderTagsBelowField(args, errorText)}
           </div>
         );
     }
@@ -482,12 +563,16 @@ let Details = {
 
   renderTagsBelowField(args, errorText) {
     const { uploadLinkFunction, showErrorText, showFieldError } = args;
-    return(
+    return (
       <>
-        { Details.renderUploadLink(uploadLinkFunction) }
-        { Details.renderLink(args) }
-        { Details.renderWarning(args) }
-        { showErrorText === false ? null : (showFieldError === false ? Details.renderFieldError('', args) : Details.renderFieldError(errorText, args)) }
+        {Details.renderUploadLink(uploadLinkFunction)}
+        {Details.renderLink(args)}
+        {Details.renderWarning(args)}
+        {showErrorText === false
+          ? null
+          : showFieldError === false
+          ? Details.renderFieldError("", args)
+          : Details.renderFieldError(errorText, args)}
       </>
     );
   },
@@ -498,7 +583,11 @@ let Details = {
       return null;
     }
     if (errorText) {
-      return React.createElement("div", { className: "yes-field-error" }, errorText);
+      return React.createElement(
+        "div",
+        { className: "yes-field-error" },
+        errorText
+      );
     } else {
       return React.createElement("div", { className: "no-field-error" });
     }
@@ -509,10 +598,12 @@ let Details = {
     if (hideHeader) {
       return null;
     }
-    return(
+    return (
       <>
-        <h2 style={ redHeader ? { color: 'red' } : null }>{ columnHeader || titleCase(property) }</h2>
-        { subheader ? (<p className="subheader">{ subheader }</p>) : null }
+        <h2 style={redHeader ? { color: "red" } : null}>
+          {columnHeader || titleCase(property)}
+        </h2>
+        {subheader ? <p className="subheader">{subheader}</p> : null}
       </>
     );
   },
@@ -522,9 +613,9 @@ let Details = {
     if (!leftLabel) {
       return null;
     }
-    return(
+    return (
       <>
-        <label>{ leftLabel }</label>
+        <label>{leftLabel}</label>
         <style jsx>{`
           label {
             position: absolute;
@@ -532,9 +623,9 @@ let Details = {
             width: 300px;
             text-align: right;
             margin-top: 10px;
-            font-family: 'TeachableSans-Medium';
+            font-family: "TeachableSans-Medium";
             font-size: 12px;
-            color: #2C2F33;
+            color: #2c2f33;
           }
         `}</style>
       </>
@@ -543,24 +634,24 @@ let Details = {
 
   renderSubheader(args) {
     if (args.subheader) {
-      return(
-        <p className="subheader">{ args.subheader }</p>
-      );
+      return <p className="subheader">{args.subheader}</p>;
     }
   },
 
   renderCharacterCount(args) {
     if (args.characterCount) {
-      const count = this.state.film[args.property] ? this.state.film[args.property].length : 0;
-      return(
+      const count = this.state.film[args.property]
+        ? this.state.film[args.property].length
+        : 0;
+      return (
         <>
-          <div className="character-count">({ count } characters)</div>
+          <div className="character-count">({count} characters)</div>
           <style jsx>{`
-              position: absolute;
-              font-size: 11px;
-              text-align: right;
-              bottom: 10px;
-              right: 15px;
+            position: absolute;
+            font-size: 11px;
+            text-align: right;
+            bottom: 10px;
+            right: 15px;
           `}</style>
         </>
       );
@@ -571,14 +662,16 @@ let Details = {
     if (func) {
       return (
         <>
-          <a className="upload" onClick={ func }>Upload Image</a>
+          <a className="upload" onClick={func}>
+            Upload Image
+          </a>
           <style jsx>{`
             a.upload {
               margin-top: 10px;
               display: inline-block;
               font-size: 10px;
               cursor: pointer;
-              color: #95949B;
+              color: #95949b;
             }
           `}</style>
         </>
@@ -589,8 +682,10 @@ let Details = {
   renderLink(args) {
     const { linkText, linkUrl } = args;
     if (linkText) {
-      return(
-        <a className="link" href={ linkUrl }>{ linkText }</a>
+      return (
+        <a className="link" href={linkUrl}>
+          {linkText}
+        </a>
       );
     }
   },
@@ -598,16 +693,16 @@ let Details = {
   renderWarning(args) {
     const { warnIf, warning } = args;
     if (warnIf) {
-      return(
+      return (
         <>
-          <p>{ warning }</p>
+          <p>{warning}</p>
           <style jsx>{`
             p {
               margin-top: 10px;
               background-color: lightyellow;
               padding: 10px;
               border-radius: 5px;
-              font-family: 'TeachableSans-Bold';
+              font-family: "TeachableSans-Bold";
             }
           `}</style>
         </>
@@ -627,11 +722,11 @@ let Details = {
       throw `missing errors for ${property} field!`;
     }
     const errorsArray = errors[property];
-    return errorsArray ? errorsArray[0] : '';
+    return errorsArray ? errorsArray[0] : "";
   },
 
   inputClassName(hasError) {
-    return hasError ? 'error' : '';
+    return hasError ? "error" : "";
   },
 
   inputClassNameFromErrors(errors, property) {
@@ -640,7 +735,11 @@ let Details = {
   },
 
   saveButtonText() {
-    return this.state.changesToSave ? 'Save' : (this.state.justSaved ? 'Saved' : 'No Changes');
+    return this.state.changesToSave
+      ? "Save"
+      : this.state.justSaved
+      ? "Saved"
+      : "No Changes";
   },
 
   selectModalOption(option, idEntity, args) {
@@ -678,29 +777,36 @@ let Details = {
   updateEntity() {
     let entityName = this.props.entityName;
     const [id, directory] = parseUrl();
-    this.props.updateEntity({
-      id,
-      directory,
-      entityName: entityName,
-      entity: this.state[entityName]
-    }).then(() => {
-      let savedEntity = this.props[entityName];
-      this.setState({
-        spinner: false,
-        [entityName]: savedEntity,
-        [`${entityName}Saved`]: deepCopy(savedEntity),
-        changesToSave: false
-      });
-    }, () => {
-      this.setState({
-        spinner: false,
-        errors: this.props.errors
-      });
-    });
+    this.props
+      .updateEntity({
+        id,
+        directory,
+        entityName: entityName,
+        entity: this.state[entityName],
+      })
+      .then(
+        () => {
+          let savedEntity = this.props[entityName];
+          this.setState({
+            spinner: false,
+            [entityName]: savedEntity,
+            [`${entityName}Saved`]: deepCopy(savedEntity),
+            changesToSave: false,
+          });
+        },
+        () => {
+          this.setState({
+            spinner: false,
+            errors: this.props.errors,
+          });
+        }
+      );
   },
 
   getAllErrors() {
-    return typeof Errors == 'undefined' ? this.changeFieldArgs().allErrors : Errors;
+    return typeof Errors == "undefined"
+      ? this.changeFieldArgs().allErrors
+      : Errors;
   },
 
   removeFinanceSymbolsFromEntity(args) {
@@ -712,7 +818,7 @@ let Details = {
       }
     });
     return result;
-  }
-}
+  },
+};
 
 export default Details;

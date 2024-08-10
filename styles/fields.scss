@@ -1,129 +1,136 @@
 .handy-component {
+  h2 {
+    font-family: "TeachableSans-Medium";
+    font-size: 12px;
+    line-height: 13px;
+    color: #2c2f33;
+    margin-bottom: 15px;
+  }
 
-    h2 {
-        font-family: 'TeachableSans-Medium';
-        font-size: 12px;
-        line-height: 13px;
-        color: #2C2F33;
-        margin-bottom: 15px;
+  input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]):not(
+      .search-box
+    ),
+  .nice-select,
+  textarea {
+    width: 100%;
+    border: 1px solid #e4e9ed;
+    border-radius: 3px;
+    color: #5f5f5f;
+    letter-spacing: inherit;
+    padding: 13px;
+
+    &::placeholder {
+      color: #cdcdcd;
     }
 
-    input:not([type='submit']):not([type='checkbox']):not([type='radio']):not(.search-box), .nice-select, textarea {
-        width: 100%;
-        border: 1px solid #E4E9ED;
-        border-radius: 3px;
-        color: #5F5F5F;
-        letter-spacing: inherit;
-        padding: 13px;
-
-        &.error {
-            border: 1px solid red;
-        }
+    &.error {
+      border: 1px solid red;
     }
+  }
 
-    input, textarea {
-        line-height: 17px;
+  input,
+  textarea {
+    line-height: 17px;
+  }
+
+  .nice-select {
+    font-size: inherit;
+    line-height: inherit;
+    height: 45px;
+
+    ul {
+      width: 100%;
     }
+  }
 
-    .nice-select {
-        font-size: inherit;
-        line-height: inherit;
-        height: 45px;
+  textarea {
+    resize: none;
+  }
 
-        ul {
-          width: 100%;
-        }
-    }
+  .select-from-modal {
+    margin-top: 35px;
+    background-image: image-url("handy-components/images/open-modal.png");
+    cursor: pointer;
+    height: 50px;
+  }
 
-    textarea {
-        resize: none;
-    }
+  .no-field-error {
+    margin-bottom: 30px;
+  }
 
-    .select-from-modal {
-        margin-top: 35px;
-        background-image: image-url('handy-components/images/open-modal.png');
-        cursor: pointer;
-        height: 50px;
+  .yes-field-error {
+    margin-top: 10px;
+    color: red;
+    height: 10px;
+    margin-bottom: 40px;
+  }
+
+  .no-dropdown-field-error {
+    margin-bottom: 81px;
+  }
+
+  .yes-dropdown-field-error {
+    padding-top: 55px;
+    height: 55px;
+    color: red;
+    margin-bottom: 30px;
+  }
+
+  .select-scroll-2 .nice-select ul {
+    max-height: 80px;
+    overflow-y: scroll;
+  }
+
+  .select-scroll-3 .nice-select ul {
+    max-height: 120px;
+    overflow-y: scroll;
+  }
+
+  .select-scroll-6 .nice-select ul {
+    max-height: 240px;
+    overflow-y: scroll;
+  }
+
+  a.link {
+    margin-top: 10px;
+    display: inline-block;
+    font-size: 10px;
+    cursor: pointer;
+    color: #95949b;
+    text-decoration: underline;
+  }
+
+  &.admin-modal {
+    .yes-field-error {
+      margin-top: 10px;
+      height: 16px;
+      color: red;
+      margin-bottom: 20px;
     }
 
     .no-field-error {
-        margin-bottom: 30px;
-    }
-
-    .yes-field-error {
-        margin-top: 10px;
-        color: red;
-        height: 10px;
-        margin-bottom: 40px;
-    }
-
-    .no-dropdown-field-error {
-        margin-bottom: 81px;
+      margin-bottom: 46px;
     }
 
     .yes-dropdown-field-error {
-        padding-top: 55px;
-        height: 55px;
-        color: red;
-        margin-bottom: 30px;
+      padding-top: 55px;
+      height: 55px;
+      color: red;
+      margin-bottom: 36px;
     }
 
-    .select-scroll-2 .nice-select ul {
-      max-height: 80px;
-      overflow-y: scroll;
+    .no-dropdown-field-error {
+      // I don't understand why the padding-bottom is necessary, but the margin-bottom won't push the next row down enough without it
+      padding-bottom: 10px;
+      margin-bottom: 81px;
     }
 
-    .select-scroll-3 .nice-select ul {
-      max-height: 120px;
-      overflow-y: scroll;
+    .row.placeholder {
+      height: 119px;
+
+      * {
+        display: none;
+      }
     }
-
-    .select-scroll-6 .nice-select ul {
-      max-height: 240px;
-      overflow-y: scroll;
-    }
-
-    a.link {
-      margin-top: 10px;
-      display: inline-block;
-      font-size: 10px;
-      cursor: pointer;
-      color: #95949B;
-      text-decoration: underline;
-    }
-
-    &.admin-modal {
-
-        .yes-field-error {
-          margin-top: 10px;
-          height: 16px;
-          color: red;
-          margin-bottom: 20px;
-        }
-
-        .no-field-error {
-          margin-bottom: 46px;
-        }
-
-        .yes-dropdown-field-error {
-          padding-top: 55px;
-          height: 55px;
-          color: red;
-          margin-bottom: 36px;
-        }
-
-        .no-dropdown-field-error {
-          // I don't understand why the padding-bottom is necessary, but the margin-bottom won't push the next row down enough without it
-          padding-bottom: 10px;
-          margin-bottom: 81px;
-        }
-
-        .row.placeholder {
-          height: 119px;
-
-          * {
-            display: none;
-          }
-        }
-    }
+  }
 }
