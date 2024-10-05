@@ -256,13 +256,17 @@ let Details = {
 
     if (args.readOnly) {
       if (!args.boolean && value !== "") {
-        const option = options.find(
-          (option) =>
-            (args.optionValueProperty
-              ? option[args.optionValueProperty]
-              : option["value"] || option["id"]) == value
-        );
-        value = option[args.optionDisplayProperty];
+        if (args.optional && args.noneValue === value) {
+          value = "(None)";
+        } else {
+          const option = options.find(
+            (option) =>
+              (args.optionValueProperty
+                ? option[args.optionValueProperty]
+                : option["value"] || option["id"]) == value
+          );
+          value = option[args.optionDisplayProperty];
+        }
       }
       return Details.renderField.call(this, Object.assign(args, { value }));
     }
