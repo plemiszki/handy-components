@@ -686,10 +686,14 @@ let Details = {
   },
 
   renderLink(args) {
-    const { linkText, linkUrl } = args;
+    const { linkText, linkUrl, linkNewWindow } = args;
     if (linkText) {
       return (
-        <a className="link" href={linkUrl}>
+        <a
+          className="link"
+          href={linkUrl}
+          target={linkNewWindow ? "_blank" : "_self"}
+        >
           {linkText}
         </a>
       );
