@@ -1,6 +1,6 @@
 {
   "name": "handy-components",
-  "version": "3.12.0",
+  "version": "3.12.1",
   "main": "build/index.js",
   "repository": {
     "type": "git",
